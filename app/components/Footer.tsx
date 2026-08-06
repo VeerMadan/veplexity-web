@@ -30,7 +30,7 @@ export default function Footer() {
             <MessageSquare className="w-4 h-4" /> Discord
           </a>
           {/* Link back to your main portfolio */}
-          <a href="https://veermadan.com" target="_blank" rel="noreferrer" className="flex items-center gap-2 text-sm font-bold uppercase tracking-widest text-zinc-400 hover:text-white transition-colors">
+          <a href="https://veermadan.dev" target="_blank" rel="noreferrer" className="flex items-center gap-2 text-sm font-bold uppercase tracking-widest text-zinc-400 hover:text-white transition-colors">
             <ExternalLink className="w-4 h-4" /> Creator Portfolio
           </a>
         </div>
