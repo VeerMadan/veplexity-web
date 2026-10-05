@@ -64,8 +64,8 @@ export default function DashboardPage() {
         <div className="absolute bottom-1/4 left-1/3 w-[400px] h-[400px] bg-purple-600/15 rounded-full blur-[120px] pointer-events-none" />
 
         <div className="relative z-10 max-w-md w-full p-8 rounded-3xl bg-white/[0.03] border border-white/10 backdrop-blur-xl shadow-2xl text-center space-y-6">
-          <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-fuchsia-600 to-purple-600 flex items-center justify-center mx-auto shadow-lg shadow-fuchsia-500/20">
-            <Shield className="w-8 h-8 text-white" />
+          <div className="relative w-28 h-auto mx-auto drop-shadow-[0_0_25px_rgba(217,70,239,0.5)]">
+            <img src="/vp-logo-icon.png" alt="VePlexity" className="w-full h-auto object-contain" />
           </div>
 
           <div className="space-y-2">
@@ -103,10 +103,8 @@ export default function DashboardPage() {
       <header className="border-b border-white/5 bg-[#070308]/80 backdrop-blur-xl sticky top-0 z-40">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <Link href="/" className="flex items-center gap-2">
-              <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-fuchsia-600 to-purple-600 flex items-center justify-center shadow-md shadow-fuchsia-500/20 font-bold text-sm">
-                VP
-              </div>
+            <Link href="/" className="flex items-center gap-2.5">
+              <img src="/vp-logo-icon.png" alt="VP" className="w-9 h-auto object-contain drop-shadow-[0_0_12px_rgba(217,70,239,0.5)]" />
               <span className="font-bold text-lg tracking-tight bg-gradient-to-r from-white via-white to-gray-300 bg-clip-text text-transparent">
                 VePlexity
               </span>
@@ -170,6 +168,51 @@ export default function DashboardPage() {
             >
               <RefreshCw className={`w-4 h-4 ${loading ? "animate-spin" : ""}`} />
             </button>
+          </div>
+        </div>
+
+        {/* Community & Buy Me a Coffee Support Banner */}
+        <div className="p-6 rounded-3xl bg-gradient-to-r from-fuchsia-950/40 via-purple-950/30 to-amber-950/20 border border-fuchsia-500/20 shadow-xl flex flex-col md:flex-row items-center justify-between gap-6 relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-80 h-80 bg-fuchsia-600/10 rounded-full blur-[90px] pointer-events-none" />
+
+          <div className="flex items-center gap-5 z-10">
+            <div className="w-16 h-16 rounded-2xl bg-white/5 border border-white/10 p-2 shrink-0 flex items-center justify-center shadow-lg">
+              <img src="/bmc/bmc-logo-yellow.png" alt="BMC" className="w-12 h-12 object-contain" />
+            </div>
+
+            <div className="space-y-1">
+              <div className="flex items-center gap-2 flex-wrap">
+                <h3 className="font-bold text-base text-white">Join the Community & Fuel 24/7 Hosting</h3>
+                <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 font-semibold border border-amber-500/30">
+                  VIP Perks
+                </span>
+              </div>
+              <p className="text-xs text-gray-300 max-w-xl leading-relaxed">
+                Unlock exclusive server commands, 24/7 lossless music radio, and supporter roles by joining our official Discord or buying a coffee!
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-3 shrink-0 z-10 w-full sm:w-auto flex-wrap sm:flex-nowrap">
+            <a
+              href="https://www.discord.gg/R6ZrqpWEcc"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="py-2.5 px-4 rounded-xl bg-white/10 hover:bg-white/15 border border-white/10 text-white font-semibold text-xs transition flex items-center justify-center gap-2"
+            >
+              <span>Join VePlexity Point</span>
+              <ExternalLink className="w-3.5 h-3.5" />
+            </a>
+
+            <a
+              href="https://www.buymeacoffee.com/veplexity1"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="py-2.5 px-5 rounded-xl bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-400 hover:to-yellow-400 text-black font-bold text-xs transition flex items-center justify-center gap-2 shadow-lg shadow-amber-500/20"
+            >
+              <span>☕ Support on BMC</span>
+              <ExternalLink className="w-3.5 h-3.5" />
+            </a>
           </div>
         </div>
 
