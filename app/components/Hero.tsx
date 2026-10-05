@@ -1,6 +1,7 @@
 "use client";
 import { motion } from "framer-motion";
-import { MonitorPlay, MessageSquare, Terminal } from "lucide-react";
+import { MonitorPlay, MessageSquare, Terminal, Shield } from "lucide-react";
+import Link from "next/link";
 
 export default function Hero() {
   return (
@@ -47,22 +48,20 @@ export default function Hero() {
           transition={{ delay: 0.3 }}
           className="flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto"
         >
+          <Link 
+            href="/dashboard" 
+            className="w-full sm:w-auto px-8 py-5 bg-gradient-to-r from-fuchsia-600 to-purple-600 hover:from-fuchsia-500 hover:to-purple-500 text-white font-black uppercase tracking-widest rounded-2xl flex items-center justify-center gap-3 transition-transform hover:scale-105 shadow-[0_0_30px_rgba(217,70,239,0.4)]"
+          >
+            <Shield className="w-5 h-5" /> Bot Dashboard
+          </Link>
+
           <a 
-            href="https://youtube.com/@VePlexity" 
+            href="/invite" 
             target="_blank"
             rel="noreferrer"
-            className="w-full sm:w-auto px-10 py-5 bg-gradient-to-br from-orange-500 to-fuchsia-600 text-white font-black uppercase tracking-widest rounded-2xl flex items-center justify-center gap-3 transition-transform hover:scale-105 shadow-[0_0_30px_rgba(217,70,239,0.4)]"
+            className="w-full sm:w-auto px-8 py-5 bg-[#0c0512] text-fuchsia-400 border-[3px] border-fuchsia-500/30 hover:bg-fuchsia-500/10 font-black uppercase tracking-widest rounded-2xl flex items-center justify-center gap-3 transition-all hover:border-fuchsia-500/60"
           >
-            <MonitorPlay className="w-6 h-6" /> Watch Content
-          </a>
-          
-          <a 
-            href="https://www.discord.gg/R6ZrqpWEcc" 
-            target="_blank"
-            rel="noreferrer"
-            className="w-full sm:w-auto px-10 py-5 bg-[#0c0512] text-fuchsia-400 border-[3px] border-fuchsia-500/30 hover:bg-fuchsia-500/10 font-black uppercase tracking-widest rounded-2xl flex items-center justify-center gap-3 transition-all hover:border-fuchsia-500/60"
-          >
-            <MessageSquare className="w-6 h-6" /> Join Server
+            <MessageSquare className="w-5 h-5" /> Add to Discord
           </a>
         </motion.div>
 
