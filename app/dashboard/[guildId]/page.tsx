@@ -261,6 +261,23 @@ export default function GuildDashboard({ params }: { params: Promise<{ guildId: 
   ]);
   const [activeArPreviewIndex, setActiveArPreviewIndex] = useState(0);
 
+  const guildIconUrl = useMemo(() => {
+    if (!guild?.icon) return null;
+    if (guild.icon.startsWith("http://") || guild.icon.startsWith("https://")) {
+      return guild.icon;
+    }
+    return `https://cdn.discordapp.com/icons/${guild.id}/${guild.icon}.png?size=128`;
+  }, [guild?.id, guild?.icon]);
+
+  const guildInitials = useMemo(() => {
+    if (!guild?.name) return "VP";
+    const parts = guild.name.trim().split(/\s+/);
+    if (parts.length >= 2) {
+      return (parts[0][0] + parts[1][0]).toUpperCase();
+    }
+    return guild.name.slice(0, 2).toUpperCase();
+  }, [guild?.name]);
+
   // Initial Snapshot for unsaved changes detection
   const [initialSnapshot, setInitialSnapshot] = useState<string>("");
 
@@ -725,11 +742,16 @@ export default function GuildDashboard({ params }: { params: Promise<{ guildId: 
           <div className="h-4 w-px bg-white/10 hidden sm:block" />
 
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl bg-[#1e1f24] border border-white/10 overflow-hidden flex items-center justify-center font-bold text-sm text-fuchsia-400 shrink-0">
-              {guild?.icon ? (
-                <img src={`https://cdn.discordapp.com/icons/${guild.id}/${guild.icon}.png?size=64`} alt="" className="w-full h-full object-cover" />
+            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-fuchsia-600/20 via-[#1e1f24] to-purple-800/30 border border-white/10 overflow-hidden flex items-center justify-center font-bold text-xs text-fuchsia-300 shrink-0 shadow-inner">
+              {guildIconUrl ? (
+                <img
+                  src={guildIconUrl}
+                  alt={guild?.name || "Server"}
+                  className="w-full h-full object-cover"
+                  onError={(e) => { (e.currentTarget.style.display = "none"); }}
+                />
               ) : (
-                guild?.name.charAt(0)
+                <span>{guildInitials}</span>
               )}
             </div>
             <div>
@@ -891,11 +913,16 @@ export default function GuildDashboard({ params }: { params: Promise<{ guildId: 
               {/* Maki-Style Expanded Server Banner Header */}
               <div className="p-6 sm:p-8 rounded-2xl bg-[#14151b] border border-white/5 flex flex-col md:flex-row items-start md:items-center justify-between gap-6 w-full">
                 <div className="flex items-center gap-5">
-                  <div className="w-20 h-20 rounded-2xl bg-[#1e1f26] border border-white/10 overflow-hidden flex items-center justify-center font-black text-2xl text-fuchsia-400 shadow-xl shrink-0">
-                    {guild?.icon ? (
-                      <img src={`https://cdn.discordapp.com/icons/${guild.id}/${guild.icon}.png?size=128`} alt="" className="w-full h-full object-cover" />
+                  <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-fuchsia-600/20 via-[#1e1f26] to-purple-800/30 border border-white/10 overflow-hidden flex items-center justify-center font-black text-2xl text-fuchsia-300 shadow-2xl shrink-0">
+                    {guildIconUrl ? (
+                      <img
+                        src={guildIconUrl}
+                        alt={guild?.name || "Server"}
+                        className="w-full h-full object-cover"
+                        onError={(e) => { (e.currentTarget.style.display = "none"); }}
+                      />
                     ) : (
-                      guild?.name.charAt(0)
+                      <span>{guildInitials}</span>
                     )}
                   </div>
                   <div className="space-y-1">

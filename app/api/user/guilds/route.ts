@@ -1,6 +1,8 @@
 import { auth } from "@/auth";
 import { fetchBotApi } from "@/lib/botApi";
 
+export const dynamic = "force-dynamic";
+
 export async function GET() {
   const session = await auth();
   if (!session) {
@@ -13,12 +15,12 @@ export async function GET() {
   }
 
   try {
-    // 1. Fetch user's Discord guilds
+    // 1. Fetch user's Discord guilds (no-store to ensure instant live reflection of new server additions)
     const discordRes = await fetch("https://discord.com/api/v10/users/@me/guilds", {
       headers: {
         Authorization: `Bearer ${accessToken}`,
       },
-      next: { revalidate: 30 },
+      cache: "no-store",
     });
 
     if (!discordRes.ok) {
