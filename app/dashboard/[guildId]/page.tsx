@@ -390,7 +390,7 @@ export default function GuildDashboard({ params }: { params: Promise<{ guildId: 
       { roleId: "", label: "Creator", emoji: "🎨" }
     ];
 
-    const arList = cfg.autoResponders?.length ? cfg.autoResponders : [
+    const arList: AutoResponderItem[] = cfg.autoResponders?.length ? cfg.autoResponders : [
       { id: "1", trigger: "!rules", matchType: "exact", response: "Please respect all members, keep chat civil, and abide by Discord ToS!", isEmbed: true },
       { id: "2", trigger: "!support", matchType: "contains", response: "Need help? Ping @Moderator or open a thread in #support!", isEmbed: false }
     ];
@@ -3365,7 +3365,7 @@ export default function GuildDashboard({ params }: { params: Promise<{ guildId: 
                           {
                             id: newId,
                             trigger: "!newtrigger",
-                            matchType: "exact",
+                            matchType: "exact" as const,
                             response: "This is a custom auto-response message!",
                             isEmbed: true
                           }

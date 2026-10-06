@@ -300,7 +300,7 @@ export default function DashboardPage() {
               <p className="text-xs text-red-300/80 mt-0.5">{error}</p>
             </div>
             <button
-              onClick={fetchGuilds}
+              onClick={() => fetchGuilds()}
               className="px-4 py-2 rounded-xl bg-red-500/20 hover:bg-red-500/30 text-xs font-medium transition-colors shrink-0"
             >
               Try Again
