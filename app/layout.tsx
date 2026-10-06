@@ -15,8 +15,8 @@ const geistMono = Geist_Mono({
 import Providers from "./Providers";
 
 export const metadata: Metadata = {
-  title: "VePlexity — Next-Gen Discord Bot & AI Infrastructure",
-  description: "Next-gen lossless studio music, savage AI chatbot, aesthetic welcomer, and automated server moderation.",
+  title: "VePlexity Network — Media, Software Labs & Digital Infrastructure",
+  description: "The central brand portfolio of Veer Madan. Live broadcasts, engineering labs, C++ game modifications, audio mastering, and the VePlexity Bot V2 commercial ecosystem.",
 };
 
 export default function RootLayout({

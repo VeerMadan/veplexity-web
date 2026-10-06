@@ -873,9 +873,23 @@ export default function GuildDashboard({ params }: { params: Promise<{ guildId: 
             </div>
           </div>
 
-          <div className="p-3.5 rounded-xl bg-white/[0.02] border border-white/5 text-xs text-gray-400 space-y-1">
-            <p className="font-bold text-gray-200">VePlexity Bot v2.0</p>
-            <p className="text-[11px] text-gray-500">All Premium Features 100% Free</p>
+          <div className="p-3.5 rounded-xl bg-gradient-to-br from-amber-500/10 via-[#18111f] to-amber-950/20 border border-amber-500/30 text-xs text-zinc-300 space-y-2.5">
+            <div className="flex items-center gap-2">
+              <img src="/bmc/bmc-logo-yellow.png" alt="BMC" className="w-5 h-5 object-contain" />
+              <p className="font-bold text-amber-300 text-xs">Support VePlexity</p>
+            </div>
+            <p className="text-[11px] text-zinc-400 leading-tight">
+              Fuel 24/7 cloud hosting & lossless audio features with Buy Me a Coffee.
+            </p>
+            <a
+              href="https://www.buymeacoffee.com/veplexity1"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-full py-1.5 px-3 rounded-lg bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/40 text-[11px] font-bold flex items-center justify-center gap-1.5 transition-colors"
+            >
+              <Coffee className="w-3.5 h-3.5 text-amber-400" />
+              <span>Buy a Coffee</span>
+            </a>
           </div>
         </aside>
 
