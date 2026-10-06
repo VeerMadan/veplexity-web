@@ -101,7 +101,7 @@ export default function DashboardPage() {
 
       {/* Navigation Header */}
       <header className="border-b border-white/5 bg-[#070308]/80 backdrop-blur-xl sticky top-0 z-40">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
+        <div className="w-full px-6 sm:px-10 lg:px-16 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <Link href="/" className="flex items-center gap-2.5">
               <img src="/vp-logo-icon.png" alt="VP" className="w-9 h-auto object-contain drop-shadow-[0_0_12px_rgba(217,70,239,0.5)]" />
@@ -142,8 +142,8 @@ export default function DashboardPage() {
         </div>
       </header>
 
-      {/* Main Container */}
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 py-10 flex-1 w-full space-y-8">
+      {/* Main Container - Full Width */}
+      <div className="w-full px-6 sm:px-10 lg:px-16 py-10 flex-1 space-y-8">
         {/* Banner Section */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div className="space-y-1">
