@@ -1,125 +1,90 @@
 "use client";
-
 import { motion } from "framer-motion";
-import { MessageSquare, Terminal, Zap, Shield, ArrowRight, Music, Server, Radio, Users } from "lucide-react";
+import { MessageSquare, Terminal, Zap, Shield, Server, ArrowRight, Music } from "lucide-react";
 
 export default function Ecosystem() {
   return (
-    <section className="relative py-28 px-4 sm:px-6 lg:px-8 bg-[#050208] border-t border-white/5" id="ecosystem">
-      
-      {/* Ambient Glow */}
-      <div className="absolute top-1/2 left-1/3 w-[600px] h-[600px] bg-fuchsia-600/10 blur-[180px] rounded-full pointer-events-none" />
-
-      <div className="w-full max-w-[1400px] mx-auto relative z-10">
+    <section className="relative py-32 px-5 z-10 bg-[#070308] border-t border-white/5" id="ecosystem">
+      <div className="max-w-7xl mx-auto">
         
-        {/* Header */}
-        <div className="text-center max-w-3xl mx-auto mb-16">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full liquid-glass border border-fuchsia-500/30 text-fuchsia-300 font-mono text-xs font-bold uppercase tracking-widest mb-4">
-            <Server className="w-3.5 h-3.5" /> High-Concurrence Engine
-          </div>
-          <h2 className="text-4xl sm:text-5xl lg:text-6xl font-black text-white tracking-tighter">
-            Community <span className="bg-gradient-to-r from-fuchsia-500 via-purple-500 to-orange-400 bg-clip-text text-transparent">Infrastructure.</span>
+        <div className="text-center mb-20">
+          <h2 className="text-5xl md:text-6xl font-black text-white mb-6 drop-shadow-[0_0_10px_rgba(217,70,239,0.3)]">
+            Community <span className="bg-gradient-to-r from-fuchsia-500 to-purple-500 bg-clip-text text-transparent">Infrastructure.</span>
           </h2>
-          <p className="text-zinc-400 text-lg sm:text-xl mt-4 leading-relaxed">
-            VePlexity is backed by a custom Node.js and Discord.js architecture designed to seamlessly bridge content creation, community engagement, and automated server operations.
+          <p className="text-gray-400 text-xl max-w-3xl mx-auto leading-relaxed">
+            VePlexity is powered by a heavily engineered custom Node.js and Discord.js architecture designed to seamlessly bridge content creation, community engagement, and automated server management.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
           
-          {/* Main Discord HQ Showcase (7 Cols) */}
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="lg:col-span-7 neo-card rounded-[2.5rem] p-8 sm:p-12 relative overflow-hidden flex flex-col justify-between group border-2 border-white/10 hover:border-fuchsia-500/40 sheen-layer"
+            className="lg:col-span-7 bg-[#0c0512] border-[4px] border-zinc-900 rounded-[2rem] p-10 relative overflow-hidden group hover:border-fuchsia-500/50 transition-colors shadow-[0_0_40px_rgba(217,70,239,0.1)]"
           >
-            <div className="absolute -right-20 -bottom-20 w-80 h-80 bg-fuchsia-600/20 blur-[100px] rounded-full pointer-events-none transition-opacity group-hover:opacity-100 opacity-40" />
+            <div className="absolute -right-20 -bottom-20 w-80 h-80 bg-fuchsia-600/20 blur-[80px] rounded-full pointer-events-none transition-opacity group-hover:opacity-100 opacity-50" />
             
-            <div className="relative z-10">
-              <div className="flex items-center justify-between mb-8">
-                <div className="w-16 h-16 rounded-2xl liquid-glass flex items-center justify-center border border-fuchsia-500/30 text-fuchsia-400 shadow-[0_0_20px_rgba(217,70,239,0.3)]">
-                  <MessageSquare className="w-8 h-8" />
-                </div>
-                <div className="flex items-center gap-2 text-xs font-mono font-bold text-zinc-400 bg-black/40 px-3 py-1.5 rounded-full border border-white/5">
-                  <Users className="w-3.5 h-3.5 text-emerald-400" />
-                  <span>Permanent Invite Active</span>
-                </div>
+            <div className="relative z-10 h-full flex flex-col">
+              <div className="w-16 h-16 rounded-2xl bg-fuchsia-500/10 flex items-center justify-center mb-8 border border-fuchsia-500/30">
+                <MessageSquare className="w-8 h-8 text-fuchsia-500" />
               </div>
               
-              <h3 className="text-3xl sm:text-4xl font-black text-white mb-4">VePlexity Discord HQ</h3>
-              <p className="text-zinc-300 text-base sm:text-lg mb-8 leading-relaxed">
-                The central nervous system of our creative network. Join to test beta bot builds, hang out in lossless music lounges, request custom features, and connect directly with Veer Madan and the dev team.
+              <h3 className="text-3xl font-black text-white mb-4">VePlexity Discord HQ</h3>
+              <p className="text-gray-400 text-lg mb-10 leading-relaxed flex-1">
+                The central nervous system of the audience. A fully optimized server featuring dynamic voice channels, automated role assignments, and a highly active community of developers.
               </p>
 
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-10">
-                <div className="p-3.5 rounded-xl bg-black/40 border border-white/5 text-center">
-                  <div className="text-lg font-black text-white">Lossless</div>
-                  <div className="text-[10px] font-mono uppercase text-zinc-400">24/7 Music Lounges</div>
-                </div>
-                <div className="p-3.5 rounded-xl bg-black/40 border border-white/5 text-center">
-                  <div className="text-lg font-black text-amber-400">VIP Perks</div>
-                  <div className="text-[10px] font-mono uppercase text-zinc-400">Buy Me Coffee Roles</div>
-                </div>
-                <div className="p-3.5 rounded-xl bg-black/40 border border-white/5 text-center col-span-2 sm:col-span-1">
-                  <div className="text-lg font-black text-emerald-400">Direct</div>
-                  <div className="text-[10px] font-mono uppercase text-zinc-400">Creator Access</div>
-                </div>
-              </div>
-            </div>
-
-            <div className="relative z-10">
               <a 
                 href="https://www.discord.gg/R6ZrqpWEcc" 
                 target="_blank"
                 rel="noreferrer"
-                className="neo-btn-primary inline-flex items-center justify-center gap-3 text-white font-black uppercase tracking-wider px-8 py-4 rounded-2xl transition-all cursor-pointer text-sm"
+                className="inline-flex items-center justify-center gap-3 bg-gradient-to-r from-fuchsia-600 to-purple-600 hover:scale-105 text-white font-black uppercase tracking-widest px-8 py-5 rounded-2xl transition-all w-fit shadow-[0_0_20px_rgba(217,70,239,0.4)]"
               >
-                Join Official Server <ArrowRight className="w-4 h-4" />
+                Join the Server <ArrowRight className="w-5 h-5" />
               </a>
             </div>
           </motion.div>
 
-          {/* Bot Architecture Card (5 Cols) */}
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.1 }}
-            className="lg:col-span-5 neo-card rounded-[2.5rem] p-8 sm:p-12 relative overflow-hidden flex flex-col justify-between border-2 border-white/10 hover:border-orange-500/40"
+            className="lg:col-span-5 bg-[#0c0512] border-[4px] border-zinc-900 rounded-[2rem] p-10 relative overflow-hidden flex flex-col justify-between group hover:border-orange-500/50 transition-colors"
           >
-            <div>
+            <div className="relative z-10">
               <div className="flex items-center justify-between mb-8">
-                <div className="w-16 h-16 rounded-2xl liquid-glass flex items-center justify-center border border-orange-500/30 text-orange-400 shadow-[0_0_20px_rgba(249,115,22,0.3)]">
-                  <Terminal className="w-8 h-8" />
+                <div className="w-16 h-16 rounded-2xl bg-orange-500/10 flex items-center justify-center border border-orange-500/30">
+                  <Terminal className="w-8 h-8 text-orange-400" />
                 </div>
-                <span className="px-3 py-1 border border-orange-500/40 text-orange-400 rounded-xl text-[10px] font-mono font-bold uppercase tracking-widest bg-orange-500/10">
-                  Node.js + Discord.js v14
+                <span className="px-4 py-2 border border-orange-500 text-orange-500 rounded-xl text-xs font-black uppercase tracking-widest bg-orange-500/10">
+                  Node.js Bot
                 </span>
               </div>
               
-              <h3 className="text-2xl sm:text-3xl font-black text-white mb-3">Engineered for Scalability</h3>
-              <p className="text-zinc-300 text-sm leading-relaxed mb-8">
-                Engineered from the ground up to handle high event concurrency, sub-second moderation decisions, dynamic voice channel lifecycle automation, and real-time telemetry REST APIs.
+              <h3 className="text-2xl font-black text-white mb-3">Custom Architecture</h3>
+              <p className="text-base text-gray-400 mb-8 leading-relaxed">
+                Engineered from scratch using modern APIs to handle real-time event webhooks, heavy-duty moderation, and high-fidelity music playback logic.
               </p>
             </div>
 
-            <div className="grid grid-cols-2 gap-3">
-              <div className="bg-black/50 border border-white/10 p-3.5 rounded-xl flex items-center gap-3">
-                <Shield className="w-4 h-4 text-orange-400" />
-                <span className="text-xs font-bold text-zinc-200 uppercase">Auto-Mod</span>
+            <div className="grid grid-cols-2 gap-4 relative z-10">
+              <div className="bg-black border border-zinc-800 p-4 rounded-xl flex items-center gap-3">
+                <Shield className="w-5 h-5 text-orange-400" />
+                <span className="text-sm font-bold text-gray-300 uppercase">Auto-Mod</span>
               </div>
-              <div className="bg-black/50 border border-white/10 p-3.5 rounded-xl flex items-center gap-3">
-                <Zap className="w-4 h-4 text-fuchsia-400" />
-                <span className="text-xs font-bold text-zinc-200 uppercase">REST API</span>
+              <div className="bg-black border border-zinc-800 p-4 rounded-xl flex items-center gap-3">
+                <Zap className="w-5 h-5 text-fuchsia-400" />
+                <span className="text-sm font-bold text-gray-300 uppercase">Webhooks</span>
               </div>
-              <div className="bg-black/50 border border-white/10 p-3.5 rounded-xl flex items-center gap-3">
-                <Music className="w-4 h-4 text-emerald-400" />
-                <span className="text-xs font-bold text-zinc-200 uppercase">FLAC Engine</span>
-              </div>
-              <div className="bg-black/50 border border-white/10 p-3.5 rounded-xl flex items-center gap-3">
-                <Radio className="w-4 h-4 text-blue-400" />
-                <span className="text-xs font-bold text-zinc-200 uppercase">Auto PVC</span>
+              <div className="col-span-2 bg-black border border-zinc-800 p-4 rounded-xl flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <Music className="w-5 h-5 text-white" />
+                  <span className="text-sm font-bold text-gray-300 uppercase">Audio Engine</span>
+                </div>
+                <span className="text-sm font-black text-green-500">Active</span>
               </div>
             </div>
           </motion.div>
