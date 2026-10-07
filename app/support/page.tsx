@@ -1,7 +1,7 @@
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import Link from "next/link";
-import { Coffee, Shield, Check, ExternalLink, QrCode, Server, Sparkles, Heart } from "lucide-react";
+import { Coffee, Check, ExternalLink, QrCode } from "lucide-react";
 
 export const metadata = {
   title: "Support & Patronage — VePlexity Network",
@@ -41,30 +41,30 @@ export default function SupportPage() {
   ];
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#09090b] text-[#fafafa]">
+    <div className="min-h-screen flex flex-col bg-[#08040d] text-[#fafafa]">
       <Navbar />
 
       <main className="flex-1 max-w-5xl w-full mx-auto px-4 sm:px-6 py-12 sm:py-20">
         
         {/* Header */}
-        <div className="border-b border-zinc-800 pb-8 mb-12">
+        <div className="border-b border-fuchsia-500/20 pb-8 mb-12">
           <div className="flex items-center gap-2 font-mono text-xs text-amber-400 uppercase tracking-widest mb-3">
             <Coffee className="w-4 h-4" />
             <span>PATRONAGE & INFRASTRUCTURE BACKING</span>
           </div>
-          <h1 className="text-3xl sm:text-5xl font-bold tracking-tight text-white">
-            Support VePlexity
+          <h1 className="text-3xl sm:text-5xl font-black tracking-tight text-white">
+            Support VePlexity<span className="text-amber-400">.</span>
           </h1>
-          <p className="text-zinc-400 mt-2 max-w-2xl text-sm leading-relaxed">
+          <p className="text-zinc-300 mt-2 max-w-2xl text-sm leading-relaxed">
             VePlexity is an independently engineered network. Direct community contributions help maintain 24/7 cloud nodes, database clusters, and ongoing software research.
           </p>
         </div>
 
         {/* Primary Patron Card & QR Code */}
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-8 p-6 sm:p-8 rounded-lg bg-[#0d0d11] border border-zinc-800 mb-16 items-center">
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-8 p-6 sm:p-8 rounded-xl bg-[#0e0717] border border-amber-500/30 mb-16 items-center">
           
           <div className="md:col-span-7 space-y-4">
-            <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded bg-amber-500/10 border border-amber-500/30 text-amber-300 font-mono text-xs">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-300 font-mono text-xs">
               <span>OFFICIAL BUY ME A COFFEE CHANNEL</span>
             </div>
 
@@ -72,8 +72,8 @@ export default function SupportPage() {
               Fuel the next generation of tools.
             </h2>
 
-            <p className="text-sm text-zinc-400 leading-relaxed">
-              Every single coffee purchased goes straight towards server operating expenses, high-speed API keys, and keeping the commercial bot free and accessible to Discord communities.
+            <p className="text-sm text-zinc-300 leading-relaxed">
+              Every coffee purchased goes straight towards server operating expenses, high-speed API keys, and keeping the commercial bot free and accessible to Discord communities.
             </p>
 
             <div className="pt-2 flex flex-wrap items-center gap-3">
@@ -81,7 +81,7 @@ export default function SupportPage() {
                 href="https://www.buymeacoffee.com/veplexity1"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-md bg-amber-400 hover:bg-amber-300 text-black font-semibold text-sm transition-colors"
+                className="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-amber-400 hover:bg-amber-300 text-black font-bold text-sm transition-colors shadow-lg shadow-amber-400/20"
               >
                 <Coffee className="w-4 h-4" />
                 <span>Support on Buy Me a Coffee</span>
@@ -92,27 +92,27 @@ export default function SupportPage() {
                 href="https://discord.gg/R6ZrqpWEcc"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-md bg-zinc-900 hover:bg-zinc-800 text-zinc-300 font-medium text-sm border border-zinc-800 transition-colors"
+                className="inline-flex items-center gap-2 px-5 py-3 rounded-lg bg-[#150a22] hover:bg-[#1a0e2a] text-zinc-200 font-semibold text-sm border border-fuchsia-500/30 transition-colors"
               >
                 <span>Join Discord Community</span>
               </a>
             </div>
 
-            <div className="font-mono text-[11px] text-zinc-500 pt-2">
-              Direct Link: <span className="text-zinc-300">buymeacoffee.com/veplexity1</span>
+            <div className="font-mono text-[11px] text-zinc-400 pt-2">
+              Direct Link: <span className="text-amber-300 font-semibold">buymeacoffee.com/veplexity1</span>
             </div>
           </div>
 
           {/* QR Code Container */}
-          <div className="md:col-span-5 flex flex-col items-center justify-center p-6 bg-zinc-900/60 rounded-md border border-zinc-800 text-center">
-            <div className="w-44 h-44 bg-white p-3 rounded-md shadow-sm mb-3">
+          <div className="md:col-span-5 flex flex-col items-center justify-center p-6 bg-[#150a22] rounded-xl border border-fuchsia-500/20 text-center">
+            <div className="w-44 h-44 bg-white p-3 rounded-lg shadow-md mb-3">
               <img
                 src="/bmc/bmc-qr-code.png"
                 alt="Buy Me a Coffee QR Code"
                 className="w-full h-full object-contain"
               />
             </div>
-            <div className="font-mono text-xs text-zinc-400 flex items-center gap-1.5 justify-center">
+            <div className="font-mono text-xs text-zinc-300 flex items-center gap-1.5 justify-center">
               <QrCode className="w-3.5 h-3.5 text-amber-400" />
               <span>Scan to open on mobile</span>
             </div>
@@ -121,36 +121,36 @@ export default function SupportPage() {
         </div>
 
         {/* Backer Perks */}
-        <div className="p-6 sm:p-8 rounded-lg bg-[#0d0d11] border border-zinc-800 mb-16">
+        <div className="p-6 sm:p-8 rounded-xl bg-[#0e0717] border border-white/10 mb-16">
           <div className="mb-6">
-            <div className="font-mono text-xs text-zinc-500 uppercase tracking-wider">SUPPORTER ACKNOWLEDGMENT</div>
+            <div className="font-mono text-xs text-orange-400 uppercase tracking-wider">SUPPORTER ACKNOWLEDGMENT</div>
             <h3 className="text-xl font-bold text-white mt-1">What Backers Receive</h3>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {perks.map((perk, idx) => (
-              <div key={idx} className="flex items-start gap-3 p-3 rounded bg-zinc-900/40 border border-zinc-800/80">
+              <div key={idx} className="flex items-start gap-3 p-3.5 rounded-lg bg-[#150a22] border border-fuchsia-500/20">
                 <Check className="w-4 h-4 text-emerald-400 mt-0.5 shrink-0" />
-                <span className="text-xs text-zinc-300 leading-relaxed">{perk}</span>
+                <span className="text-xs text-zinc-200 leading-relaxed font-medium">{perk}</span>
               </div>
             ))}
           </div>
         </div>
 
-        {/* Transparent Cost Allocation */}
+        {/* Cost Allocation */}
         <div className="mb-16">
           <div className="mb-6">
-            <div className="font-mono text-xs text-zinc-500 uppercase tracking-wider">TRANSPARENCY</div>
+            <div className="font-mono text-xs text-fuchsia-400 uppercase tracking-wider">TRANSPARENCY</div>
             <h3 className="text-xl font-bold text-white mt-1">Infrastructure Cost Allocation</h3>
             <p className="text-xs text-zinc-400 mt-1">How patronage maintains the VePlexity ecosystem.</p>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {fundingBreakdown.map((item, idx) => (
-              <div key={idx} className="p-4 rounded-lg bg-[#0d0d11] border border-zinc-800">
+              <div key={idx} className="p-4 rounded-xl bg-[#0e0717] border border-white/10">
                 <div className="flex items-center justify-between mb-1.5 font-mono text-xs">
                   <span className="font-bold text-white">{item.title}</span>
-                  <span className="text-zinc-500">{item.platform}</span>
+                  <span className="text-orange-400 font-semibold">{item.platform}</span>
                 </div>
                 <p className="text-xs text-zinc-400 leading-relaxed">
                   {item.description}
