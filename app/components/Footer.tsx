@@ -1,18 +1,18 @@
 "use client";
 
 import Link from "next/link";
-import { Coffee, ArrowUpRight, Bot } from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
 
 export default function Footer() {
   return (
-    <footer className="w-full bg-[#08040d] border-t border-fuchsia-500/15 mt-auto text-zinc-400 text-xs">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-12">
+    <footer className="w-full bg-black border-t border-white/10 mt-auto text-zinc-400 text-xs">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-14">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-10 mb-14">
           
           {/* Brand Column */}
-          <div className="md:col-span-1 space-y-3">
-            <div className="flex items-center gap-2.5">
-              <div className="w-7 h-7 rounded bg-[#12081d] border border-fuchsia-500/30 p-1 flex items-center justify-center">
+          <div className="space-y-4">
+            <div className="flex items-center gap-3">
+              <div className="w-9 h-9 rounded bg-zinc-900 border border-white/15 p-1 flex items-center justify-center">
                 <img 
                   src="/vp-logo-icon.png" 
                   alt="VePlexity" 
@@ -20,99 +20,96 @@ export default function Footer() {
                   onError={(e) => { e.currentTarget.style.display = 'none'; }} 
                 />
               </div>
-              <span className="font-bold text-white text-sm tracking-tight">
-                VePlexity<span className="text-fuchsia-500">.</span>
-              </span>
-              <span className="text-[10px] font-mono text-orange-400 uppercase bg-orange-500/10 px-1 py-0.2 rounded border border-orange-500/20">
-                Network
-              </span>
+              <div className="flex flex-col">
+                <span className="font-black text-white text-base tracking-tighter uppercase">
+                  VEPLEXITY
+                </span>
+                <span className="text-[9px] font-mono tracking-widest text-zinc-500 uppercase">
+                  STUDIOS & DIGITAL LABS
+                </span>
+              </div>
             </div>
-            <p className="text-zinc-400 leading-relaxed text-xs">
-              Independent digital technology network founded by Veer Madan. Digital infrastructure, Discord platform engineering, and studio broadcast labs.
+            <p className="text-zinc-400 leading-relaxed text-xs max-w-sm">
+              Independent software development, game engine reverse engineering, and digital infrastructure founded by Veer Madan.
             </p>
             <div className="pt-1">
               <a
                 href="https://veermadan.dev"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-1 text-zinc-300 hover:text-white transition-colors"
+                className="inline-flex items-center gap-1 text-zinc-300 hover:text-white transition-colors font-bold uppercase tracking-wider text-[11px]"
               >
                 <span>veermadan.dev</span>
-                <ArrowUpRight className="w-3 h-3 text-fuchsia-400" />
+                <ArrowUpRight className="w-3 h-3 text-pink-500" />
               </a>
             </div>
           </div>
 
-          {/* Navigation Column: Network */}
-          <div className="space-y-2.5">
-            <h4 className="text-[11px] font-mono uppercase tracking-wider text-orange-400 font-semibold">
-              Network
+          {/* Navigation Column: Products */}
+          <div className="space-y-3">
+            <h4 className="text-[11px] font-black uppercase tracking-widest text-white">
+              PROJECTS & PLATFORM
             </h4>
-            <ul className="space-y-2">
+            <ul className="space-y-2.5 text-xs font-semibold">
               <li>
-                <Link href="/" className="hover:text-white transition-colors">
-                  Overview
+                <Link href="/bot" className="hover:text-pink-400 transition-colors">
+                  Commercial Discord Bot V2
                 </Link>
               </li>
               <li>
-                <Link href="/bot" className="hover:text-fuchsia-400 transition-colors">
-                  Commercial Bot V2
+                <Link href="/dashboard" className="hover:text-pink-400 transition-colors">
+                  Server Web Dashboard
                 </Link>
               </li>
               <li>
-                <Link href="/news-wire" className="hover:text-fuchsia-400 transition-colors">
-                  News Wire & Dispatches
-                </Link>
-              </li>
-              <li>
-                <Link href="/labs" className="hover:text-fuchsia-400 transition-colors">
-                  Software & Media Labs
+                <Link href="/invite" className="hover:text-pink-400 transition-colors">
+                  Add Bot to Discord
                 </Link>
               </li>
             </ul>
           </div>
 
-          {/* Navigation Column: Resources */}
-          <div className="space-y-2.5">
-            <h4 className="text-[11px] font-mono uppercase tracking-wider text-fuchsia-400 font-semibold">
-              Platform & Access
+          {/* Navigation Column: Dispatches & Engineering */}
+          <div className="space-y-3">
+            <h4 className="text-[11px] font-black uppercase tracking-widest text-white">
+              EDITORIAL & R&D
             </h4>
-            <ul className="space-y-2">
+            <ul className="space-y-2.5 text-xs font-semibold">
               <li>
-                <Link href="/dashboard" className="hover:text-white transition-colors">
-                  Web Dashboard
+                <Link href="/news-wire" className="hover:text-pink-400 transition-colors">
+                  Official Newswire
                 </Link>
               </li>
               <li>
-                <Link href="/invite" className="hover:text-white transition-colors">
-                  Invite Bot
+                <Link href="/labs" className="hover:text-pink-400 transition-colors">
+                  VePlexity Cam Studio Rig
                 </Link>
               </li>
               <li>
-                <Link href="/support" className="hover:text-white transition-colors">
-                  Patronage & Support
+                <Link href="/labs" className="hover:text-pink-400 transition-colors">
+                  C++ Memory Injection & Game Hooks
                 </Link>
               </li>
               <li>
-                <Link href="/contact" className="hover:text-white transition-colors">
-                  Contact & Inquiries
+                <Link href="/labs" className="hover:text-pink-400 transition-colors">
+                  Audio Mastering & DSP
                 </Link>
               </li>
             </ul>
           </div>
 
           {/* Navigation Column: Community */}
-          <div className="space-y-2.5">
-            <h4 className="text-[11px] font-mono uppercase tracking-wider text-amber-400 font-semibold">
-              Community & Backing
+          <div className="space-y-3">
+            <h4 className="text-[11px] font-black uppercase tracking-widest text-white">
+              NETWORK & CONNECT
             </h4>
-            <ul className="space-y-2">
+            <ul className="space-y-2.5 text-xs font-semibold">
               <li>
                 <a
                   href="https://discord.gg/R6ZrqpWEcc"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="hover:text-white transition-colors flex items-center gap-1.5"
+                  className="hover:text-pink-400 transition-colors flex items-center gap-1.5"
                 >
                   <span>Discord Community HQ</span>
                   <ArrowUpRight className="w-3 h-3 text-zinc-500" />
@@ -123,7 +120,7 @@ export default function Footer() {
                   href="https://youtube.com/@VePlexity"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="hover:text-white transition-colors flex items-center gap-1.5"
+                  className="hover:text-pink-400 transition-colors flex items-center gap-1.5"
                 >
                   <span>YouTube Channel</span>
                   <ArrowUpRight className="w-3 h-3 text-zinc-500" />
@@ -134,29 +131,33 @@ export default function Footer() {
                   href="https://www.buymeacoffee.com/veplexity1"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-amber-400 hover:text-amber-300 transition-colors flex items-center gap-1.5 font-medium"
+                  className="text-pink-400 hover:text-pink-300 transition-colors flex items-center gap-1.5"
                 >
-                  <Coffee className="w-3.5 h-3.5" />
                   <span>Support on Buy Me a Coffee</span>
                 </a>
+              </li>
+              <li>
+                <Link href="/contact" className="hover:text-pink-400 transition-colors">
+                  Contact & Security
+                </Link>
               </li>
             </ul>
           </div>
 
         </div>
 
-        {/* Telemetry Bar */}
-        <div className="pt-6 border-t border-fuchsia-500/15 flex flex-col sm:flex-row items-center justify-between gap-4 text-zinc-500 text-[11px] font-mono">
+        {/* Bottom Bar */}
+        <div className="pt-8 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4 text-zinc-500 text-[11px] font-mono">
           <div>
-            © {new Date().getFullYear()} VePlexity Network & Veer Madan. All rights reserved.
+            © {new Date().getFullYear()} VEPLEXITY STUDIOS & VEER MADAN. ALL RIGHTS RESERVED.
           </div>
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-1.5">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-              <span className="text-zinc-300">Bot Node: Online (Render)</span>
+              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+              <span className="text-zinc-300 font-bold">ALL SYSTEMS OPERATIONAL</span>
             </div>
             <span>•</span>
-            <div>Vercel Edge & MongoDB Atlas</div>
+            <div>RENDER NODE 24/7 & MONGODB ATLAS</div>
           </div>
         </div>
 

@@ -5,7 +5,7 @@ import { Radio, ArrowUpRight, ExternalLink } from "lucide-react";
 
 interface Dispatch {
   id: string;
-  category: "RELEASE" | "BROADCAST" | "R&D" | "PATRONAGE";
+  category: string;
   tagColor: string;
   date: string;
   time: string;
@@ -20,20 +20,20 @@ interface Dispatch {
 }
 
 export const metadata = {
-  title: "The News Wire — VePlexity Network Dispatches",
-  description: "Official releases, technical changelogs, live broadcast alerts, and developer dispatches from VePlexity Network.",
+  title: "The Newswire — VePlexity Official Dispatches",
+  description: "Official releases, technical changelogs, live broadcast alerts, and developer dispatches from VePlexity Studios.",
 };
 
 export default function NewsWirePage() {
   const dispatches: Dispatch[] = [
     {
       id: "NW-2026-10-07",
-      category: "RELEASE",
-      tagColor: "bg-orange-500/10 text-orange-400 border-orange-500/30",
+      category: "FLAGSHIP RELEASE",
+      tagColor: "bg-pink-500/10 text-pink-400 border-pink-500/30",
       date: "OCTOBER 7, 2026",
       time: "11:30 IST",
-      title: "Commercial Discord Bot V2 Enters Production on Render Node",
-      summary: "VePlexity Bot V2 is officially live as a commercial multi-server Discord bot hosted 24/7 on Render cloud nodes with full MongoDB Atlas state persistence.",
+      title: "Commercial Discord Bot V2 Enters Production Across 101 Commands",
+      summary: "VePlexity Bot V2 is officially live as a multi-server commercial platform hosted 24/7 on Render cloud nodes with full MongoDB Atlas state persistence.",
       details: [
         "101 modular slash commands loaded across Music, AI, Moderation, Utility, and Fun categories.",
         "Lossless music streaming engine with 24/7 channel retention and dynamic queue control.",
@@ -42,18 +42,18 @@ export default function NewsWirePage() {
         "Direct Buy Me a Coffee support actions integrated into all major bot help and stats commands.",
       ],
       link: {
-        label: "Inspect Bot V2 Architecture",
+        label: "INSPECT BOT ARCHITECTURE",
         href: "/bot",
         isExternal: false,
       },
     },
     {
       id: "NW-2026-10-06",
-      category: "BROADCAST",
-      tagColor: "bg-red-500/10 text-red-400 border-red-500/30",
+      category: "STUDIO BROADCAST",
+      tagColor: "bg-white/10 text-white border-white/20",
       date: "OCTOBER 6, 2026",
       time: "20:00 IST",
-      title: "VePlexity Studio: Comeback Broadcast & Rig Operational",
+      title: "VePlexity Studio: Comeback Broadcast & Hardware Capture Rig Live",
       summary: "Full comeback live stream published on the official YouTube channel, marking the transition to the new multi-angle hardware capture and OBS automation system.",
       details: [
         "Low-latency HDMI camera matrix tested under live broadcast load.",
@@ -61,15 +61,15 @@ export default function NewsWirePage() {
         "Live Q&A with community members covering upcoming bot and laboratory updates.",
       ],
       link: {
-        label: "Watch Comeback Stream on YouTube",
+        label: "WATCH COMEBACK STREAM",
         href: "https://www.youtube.com/watch?v=dZvvx4SIkbM",
         isExternal: true,
       },
     },
     {
       id: "NW-2026-10-04",
-      category: "PATRONAGE",
-      tagColor: "bg-amber-500/10 text-amber-300 border-amber-500/30",
+      category: "COMMUNITY PATRONAGE",
+      tagColor: "bg-pink-500/10 text-pink-400 border-pink-500/30",
       date: "OCTOBER 4, 2026",
       time: "16:45 IST",
       title: "Official Buy Me a Coffee Support Hub Deployed",
@@ -80,15 +80,15 @@ export default function NewsWirePage() {
         "Supporters receive custom VIP Discord roles, early build access, and direct priority support.",
       ],
       link: {
-        label: "Open Support Hub",
+        label: "OPEN SUPPORT HUB",
         href: "/support",
         isExternal: false,
       },
     },
     {
       id: "NW-2026-09-28",
-      category: "R&D",
-      tagColor: "bg-fuchsia-500/10 text-fuchsia-400 border-fuchsia-500/30",
+      category: "R&D DIVISION",
+      tagColor: "bg-white/10 text-white border-white/20",
       date: "SEPTEMBER 28, 2026",
       time: "14:15 IST",
       title: "C++ Memory Hooking & Game Engine Architecture Experiments",
@@ -99,7 +99,7 @@ export default function NewsWirePage() {
         "Zero-drop frame rate overlay engine for diagnostic in-game HUDs.",
       ],
       link: {
-        label: "View Labs Specification",
+        label: "VIEW LAB SPECS",
         href: "/labs",
         isExternal: false,
       },
@@ -107,59 +107,61 @@ export default function NewsWirePage() {
   ];
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#08040d] text-[#fafafa]">
+    <div className="min-h-screen flex flex-col bg-black text-white">
       <Navbar />
 
-      <main className="flex-1 max-w-5xl w-full mx-auto px-4 sm:px-6 py-12 sm:py-20">
+      <main className="flex-1 max-w-5xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-16">
         
-        {/* Header */}
-        <div className="border-b border-fuchsia-500/20 pb-8 mb-12">
-          <div className="flex items-center gap-2 font-mono text-xs text-orange-400 uppercase tracking-widest mb-3">
-            <Radio className="w-4 h-4 text-orange-400" />
-            <span>DISPATCH ROOM // PUBLIC FEED</span>
+        {/* Header (Rockstar Newswire Style) */}
+        <div className="border-b border-white/10 pb-10 mb-14">
+          <div className="flex items-center gap-2 font-mono text-xs text-pink-400 uppercase tracking-widest mb-3 font-bold">
+            <Radio className="w-4 h-4" />
+            <span>EDITORIAL DISPATCHES // OFFICIAL PRESS</span>
           </div>
-          <h1 className="text-3xl sm:text-5xl font-black tracking-tight text-white">
-            The News Wire<span className="text-fuchsia-500">.</span>
+          <h1 className="text-4xl sm:text-6xl font-black uppercase tracking-tighter text-white">
+            THE NEWSWIRE
           </h1>
-          <p className="text-zinc-300 mt-2 max-w-2xl text-sm leading-relaxed">
+          <p className="text-zinc-400 mt-3 max-w-2xl text-sm leading-relaxed font-medium">
             The chronologically verified publication channel for VePlexity releases, software changelogs, broadcasts, and network infrastructure.
           </p>
         </div>
 
         {/* Feed List */}
-        <div className="space-y-8">
+        <div className="space-y-10">
           {dispatches.map((item) => (
             <article
               key={item.id}
-              className="p-6 sm:p-8 rounded-xl bg-[#0e0717] border border-white/10 transition-all hover:border-fuchsia-500/40 hover:bg-[#12091e]"
+              className="p-8 sm:p-10 rounded-lg bg-[#0c0c0c] border border-white/10 transition-all hover:border-pink-500/50"
             >
               {/* Meta row */}
-              <div className="flex flex-wrap items-center justify-between gap-3 mb-4 font-mono text-xs text-zinc-400 pb-4 border-b border-white/10">
+              <div className="flex flex-wrap items-center justify-between gap-3 mb-6 font-mono text-xs text-zinc-400 pb-4 border-b border-white/10">
                 <div className="flex items-center gap-3">
-                  <span className={`px-2.5 py-0.5 rounded font-semibold border ${item.tagColor}`}>
+                  <span className={`px-2.5 py-0.5 rounded font-black uppercase border ${item.tagColor}`}>
                     {item.category}
                   </span>
-                  <span className="text-zinc-500">{item.id}</span>
+                  <span className="text-zinc-500 font-bold">{item.id}</span>
                 </div>
-                <div className="text-zinc-400">
+                <div className="text-zinc-400 font-bold">
                   {item.date} • {item.time}
                 </div>
               </div>
 
               {/* Title & Summary */}
-              <h2 className="text-xl sm:text-2xl font-bold text-white mb-3">
+              <h2 className="text-2xl sm:text-3xl font-black uppercase tracking-tight text-white mb-4">
                 {item.title}
               </h2>
-              <p className="text-zinc-300 text-sm leading-relaxed mb-6">
+              <p className="text-zinc-300 text-sm leading-relaxed mb-6 font-normal">
                 {item.summary}
               </p>
 
               {/* Bullet points */}
-              <div className="space-y-2 mb-6 bg-[#150a22] p-4 rounded-lg border border-fuchsia-500/20">
-                <div className="text-[11px] font-mono uppercase text-orange-400 font-bold mb-2">Technical Highlights:</div>
-                <ul className="space-y-1.5 text-xs text-zinc-300 list-disc list-inside leading-relaxed">
+              <div className="space-y-2 mb-8 bg-black p-5 rounded border border-white/10">
+                <div className="text-[11px] font-mono uppercase text-pink-400 font-bold mb-3 tracking-wider">
+                  TECHNICAL HIGHLIGHTS:
+                </div>
+                <ul className="space-y-2 text-xs text-zinc-300 list-disc list-inside leading-relaxed">
                   {item.details.map((detail, idx) => (
-                    <li key={idx} className="marker:text-fuchsia-400">
+                    <li key={idx} className="marker:text-pink-500">
                       {detail}
                     </li>
                   ))}
@@ -174,7 +176,7 @@ export default function NewsWirePage() {
                       href={item.link.href}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-2 text-xs font-bold text-white bg-gradient-to-r from-orange-500 to-fuchsia-600 hover:from-orange-400 hover:to-fuchsia-500 px-5 py-2.5 rounded-lg transition-all shadow-md shadow-fuchsia-600/20"
+                      className="inline-flex items-center gap-2 text-xs font-black uppercase tracking-wider text-black bg-white hover:bg-zinc-200 px-6 py-3 rounded transition-colors"
                     >
                       <span>{item.link.label}</span>
                       <ExternalLink className="w-3.5 h-3.5" />
@@ -182,7 +184,7 @@ export default function NewsWirePage() {
                   ) : (
                     <Link
                       href={item.link.href}
-                      className="inline-flex items-center gap-2 text-xs font-bold text-white bg-gradient-to-r from-orange-500 to-fuchsia-600 hover:from-orange-400 hover:to-fuchsia-500 px-5 py-2.5 rounded-lg transition-all shadow-md shadow-fuchsia-600/20"
+                      className="inline-flex items-center gap-2 text-xs font-black uppercase tracking-wider text-black bg-white hover:bg-zinc-200 px-6 py-3 rounded transition-colors"
                     >
                       <span>{item.link.label}</span>
                       <ArrowUpRight className="w-3.5 h-3.5" />
