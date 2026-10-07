@@ -5,7 +5,7 @@ import { useSession, signIn, signOut } from "next-auth/react";
 import Link from "next/link";
 import { 
   Shield, Server, Plus, ArrowRight, RefreshCw, 
-  ExternalLink, Sparkles, LogOut, CheckCircle2, ChevronRight
+  ExternalLink, LogOut, CheckCircle2, ChevronRight, Bot, Coffee 
 } from "lucide-react";
 
 interface GuildItem {
@@ -59,7 +59,7 @@ export default function DashboardPage() {
     }
   }, [status]);
 
-  // 🔄 Automatic Recheck when user returns to this tab after adding bot in Discord
+  // Automatic Recheck when user returns to this tab after adding bot in Discord
   useEffect(() => {
     const handleRecheck = () => {
       if (status === "authenticated") {
@@ -76,7 +76,7 @@ export default function DashboardPage() {
     };
   }, [status]);
 
-  // 🚀 Active smart poller when "Add to Discord" is clicked
+  // Active smart poller when "Add to Discord" is clicked
   const handleInviteClick = (guildId: string, guildName: string) => {
     setPendingGuildId(guildId);
     let attempts = 0;
@@ -92,13 +92,13 @@ export default function DashboardPage() {
             if (found?.botJoined) {
               clearInterval(interval);
               setPendingGuildId(null);
-              setToast(`🎉 VePlexity successfully connected to ${guildName}!`);
-              setTimeout(() => setToast(null), 6000);
+              setToast(`🎉 VePlexity connected to ${guildName}!`);
+              setTimeout(() => setToast(null), 5000);
             }
           }
         }
       } catch (e) {
-        // Silent background catch
+        // Silent catch
       }
 
       if (attempts >= 16) {
@@ -115,35 +115,31 @@ export default function DashboardPage() {
   // ─── LOGIN SCREEN (UNAUTHENTICATED) ─────────────────────────────────────────
   if (status === "unauthenticated") {
     return (
-      <main className="min-h-screen bg-[#070308] text-white flex flex-col justify-center items-center px-4 relative overflow-hidden">
-        {/* Glow Effects */}
-        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[500px] h-[500px] bg-fuchsia-600/15 rounded-full blur-[140px] pointer-events-none" />
-        <div className="absolute bottom-1/4 left-1/3 w-[400px] h-[400px] bg-purple-600/15 rounded-full blur-[120px] pointer-events-none" />
-
-        <div className="relative z-10 max-w-md w-full p-8 rounded-3xl bg-white/[0.03] border border-white/10 backdrop-blur-xl shadow-2xl text-center space-y-6">
-          <div className="relative w-28 h-auto mx-auto drop-shadow-[0_0_25px_rgba(217,70,239,0.5)]">
-            <img src="/vp-logo-icon.png" alt="VePlexity" className="w-full h-auto object-contain" />
+      <main className="min-h-screen bg-[#09090b] text-[#fafafa] flex flex-col justify-center items-center px-4 relative">
+        <div className="max-w-md w-full p-8 rounded-lg bg-[#0d0d11] border border-zinc-800 text-center space-y-6">
+          <div className="w-12 h-12 rounded-lg bg-zinc-900 border border-zinc-800 mx-auto p-2 flex items-center justify-center">
+            <img src="/vp-logo-icon.png" alt="VePlexity" className="w-full h-full object-contain" onError={(e) => { e.currentTarget.style.display = 'none'; }} />
           </div>
 
           <div className="space-y-2">
-            <h1 className="text-2xl font-bold tracking-tight bg-gradient-to-r from-white via-gray-200 to-gray-400 bg-clip-text text-transparent">
+            <h1 className="text-xl font-bold tracking-tight text-white">
               VePlexity Command Center
             </h1>
-            <p className="text-sm text-gray-400 leading-relaxed">
-              Sign in with your Discord account to manage servers, set up moderator roles, and configure automated welcomers.
+            <p className="text-xs text-zinc-400 leading-relaxed">
+              Sign in with your Discord account to manage servers, assign roles, and configure bot settings.
             </p>
           </div>
 
           <button
             onClick={() => signIn("discord")}
-            className="w-full py-3.5 px-6 rounded-xl bg-gradient-to-r from-fuchsia-600 to-purple-600 hover:from-fuchsia-500 hover:to-purple-500 text-white font-semibold text-sm transition-all shadow-lg shadow-fuchsia-600/25 flex items-center justify-center gap-2 active:scale-[0.98]"
+            className="w-full py-2.5 px-4 rounded-md bg-white hover:bg-zinc-200 text-black font-semibold text-xs transition-colors flex items-center justify-center gap-2"
           >
             <span>Login with Discord</span>
-            <ArrowRight className="w-4 h-4" />
+            <ArrowRight className="w-3.5 h-3.5" />
           </button>
 
-          <Link href="/" className="inline-block text-xs text-gray-500 hover:text-gray-300 transition-colors">
-            ← Back to VePlexity Home
+          <Link href="/" className="inline-block text-xs text-zinc-500 hover:text-zinc-300 transition-colors font-mono">
+            ← Return to Overview
           </Link>
         </div>
       </main>
@@ -152,44 +148,51 @@ export default function DashboardPage() {
 
   // ─── AUTHENTICATED SERVER SELECTOR ──────────────────────────────────────────
   return (
-    <main className="min-h-screen bg-[#070308] text-white flex flex-col font-sans relative overflow-x-hidden">
-      {/* Background Ambience */}
-      <div className="absolute top-0 right-1/4 w-[600px] h-[600px] bg-fuchsia-600/10 rounded-full blur-[160px] pointer-events-none" />
-
+    <main className="min-h-screen bg-[#09090b] text-[#fafafa] flex flex-col font-sans">
       {/* Navigation Header */}
-      <header className="border-b border-white/5 bg-[#070308]/80 backdrop-blur-xl sticky top-0 z-40">
-        <div className="w-full px-6 sm:px-10 lg:px-16 py-4 flex items-center justify-between">
+      <header className="border-b border-zinc-800 bg-[#09090b]/90 backdrop-blur-md sticky top-0 z-40">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <Link href="/" className="flex items-center gap-2.5">
-              <img src="/vp-logo-icon.png" alt="VP" className="w-9 h-auto object-contain drop-shadow-[0_0_12px_rgba(217,70,239,0.5)]" />
-              <span className="font-bold text-lg tracking-tight bg-gradient-to-r from-white via-white to-gray-300 bg-clip-text text-transparent">
+              <div className="w-7 h-7 rounded bg-zinc-900 border border-zinc-800 p-1 flex items-center justify-center">
+                <img src="/vp-logo-icon.png" alt="VP" className="w-full h-full object-contain" onError={(e) => { e.currentTarget.style.display = 'none'; }} />
+              </div>
+              <span className="font-bold text-sm tracking-tight text-white">
                 VePlexity
               </span>
             </Link>
-            <span className="text-[11px] px-2.5 py-0.5 rounded-full bg-fuchsia-500/10 border border-fuchsia-500/20 text-fuchsia-400 font-medium">
+            <span className="text-[10px] px-2 py-0.5 rounded bg-zinc-900 border border-zinc-800 text-zinc-400 font-mono uppercase">
               Dashboard
             </span>
           </div>
 
           <div className="flex items-center gap-4">
+            <Link href="/bot" className="text-xs text-zinc-400 hover:text-white transition-colors hidden sm:inline">
+              Bot Architecture
+            </Link>
+            <Link href="/support" className="text-xs text-amber-400 hover:text-amber-300 transition-colors hidden sm:inline flex items-center gap-1">
+              <Coffee className="w-3.5 h-3.5" />
+              <span>Support</span>
+            </Link>
+
             {session?.user && (
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-full overflow-hidden border border-white/10 bg-white/5">
+              <div className="flex items-center gap-3 pl-2 border-l border-zinc-800">
+                <div className="w-7 h-7 rounded-full overflow-hidden border border-zinc-700 bg-zinc-800">
                   {session.user.image ? (
                     <img src={session.user.image} alt="Avatar" className="w-full h-full object-cover" />
                   ) : (
-                    <div className="w-full h-full flex items-center justify-center text-xs font-bold text-fuchsia-400">
+                    <div className="w-full h-full flex items-center justify-center text-xs font-bold text-white">
                       {session.user.name?.charAt(0) || "U"}
                     </div>
                   )}
                 </div>
-                <span className="text-sm font-medium text-gray-300 hidden sm:inline">
+                <span className="text-xs font-medium text-zinc-300 hidden md:inline">
                   {session.user.name}
                 </span>
                 <button
                   onClick={() => signOut()}
                   title="Sign out"
-                  className="p-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-gray-400 hover:text-red-400 transition-colors"
+                  className="p-1 rounded text-zinc-500 hover:text-red-400 transition-colors"
                 >
                   <LogOut className="w-4 h-4" />
                 </button>
@@ -199,22 +202,23 @@ export default function DashboardPage() {
         </div>
       </header>
 
-      {/* Toast Alert Banner */}
+      {/* Toast Alert */}
       {toast && (
-        <div className="fixed top-5 right-5 z-50 px-5 py-3 rounded-2xl border bg-[#182a20] border-emerald-500/40 text-emerald-300 text-xs font-semibold flex items-center gap-3 shadow-2xl backdrop-blur-xl animate-in fade-in slide-in-from-top-4 duration-300">
+        <div className="fixed top-5 right-5 z-50 px-4 py-2.5 rounded-md border bg-zinc-900 border-emerald-500/40 text-emerald-300 text-xs font-medium flex items-center gap-2 shadow-xl">
           <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
           <span>{toast}</span>
         </div>
       )}
 
-      {/* Main Container - Full Width */}
-      <div className="w-full px-6 sm:px-10 lg:px-16 py-10 flex-1 space-y-8">
+      {/* Main Content */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-10 flex-1 w-full space-y-8">
+        
         {/* Banner Section */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <div className="space-y-1">
-            <h1 className="text-3xl font-extrabold tracking-tight">Select a Server</h1>
-            <p className="text-sm text-gray-400">
-              Manage your Discord servers, assign moderator roles, and configure automated welcome cards.
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-zinc-800 pb-6">
+          <div>
+            <h1 className="text-2xl font-bold tracking-tight text-white">Select a Server</h1>
+            <p className="text-xs text-zinc-400 mt-1">
+              Servers where you hold Administrator permissions.
             </p>
           </div>
 
@@ -224,86 +228,72 @@ export default function DashboardPage() {
               placeholder="Filter servers..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="bg-white/5 border border-white/10 focus:border-fuchsia-500/50 rounded-xl px-4 py-2 text-sm text-white placeholder-gray-500 outline-none w-52 sm:w-64 transition-colors"
+              className="bg-[#0d0d11] border border-zinc-800 focus:border-zinc-600 rounded-md px-3 py-1.5 text-xs text-white placeholder-zinc-500 outline-none w-52 sm:w-60 transition-colors"
             />
             <button
               onClick={() => fetchGuilds(false)}
               title="Refresh server list"
-              className="px-3.5 py-2 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-gray-300 hover:text-white transition-colors flex items-center gap-2 text-xs font-medium"
+              className="px-3 py-1.5 rounded-md bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-zinc-300 hover:text-white transition-colors flex items-center gap-2 text-xs font-medium"
             >
-              <RefreshCw className={`w-3.5 h-3.5 ${isRefreshing ? "animate-spin text-fuchsia-400" : ""}`} />
+              <RefreshCw className={`w-3.5 h-3.5 ${isRefreshing ? "animate-spin text-white" : ""}`} />
               <span className="hidden sm:inline">Refresh</span>
             </button>
           </div>
         </div>
 
-        {/* Community & Buy Me a Coffee Support Banner */}
-        <div className="p-6 rounded-3xl bg-gradient-to-r from-fuchsia-950/40 via-purple-950/30 to-amber-950/20 border border-fuchsia-500/20 shadow-xl flex flex-col md:flex-row items-center justify-between gap-6 relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-80 h-80 bg-fuchsia-600/10 rounded-full blur-[90px] pointer-events-none" />
-
-          <div className="flex items-center gap-5 z-10">
-            <div className="w-16 h-16 rounded-2xl bg-white/5 border border-white/10 p-2 shrink-0 flex items-center justify-center shadow-lg">
-              <img src="/bmc/bmc-logo-yellow.png" alt="BMC" className="w-12 h-12 object-contain" />
+        {/* Support Callout */}
+        <div className="p-4 rounded-lg bg-[#0d0d11] border border-zinc-800 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 rounded bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400 shrink-0">
+              <Coffee className="w-4 h-4" />
             </div>
-
-            <div className="space-y-1">
-              <div className="flex items-center gap-2 flex-wrap">
-                <h3 className="font-bold text-base text-white">Join the Community & Fuel 24/7 Hosting</h3>
-                <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 font-semibold border border-amber-500/30">
-                  VIP Perks
+            <div>
+              <div className="text-xs font-bold text-white flex items-center gap-2">
+                <span>Support 24/7 Bot Infrastructure</span>
+                <span className="text-[10px] font-mono px-1.5 py-0.2 rounded bg-amber-500/10 text-amber-400 border border-amber-500/20">
+                  PATRONAGE
                 </span>
               </div>
-              <p className="text-xs text-gray-300 max-w-xl leading-relaxed">
-                Unlock exclusive server commands, 24/7 lossless music radio, and supporter roles by joining our official Discord or buying a coffee!
+              <p className="text-[11px] text-zinc-400">
+                Back server operating costs directly on Buy Me a Coffee to unlock VIP Discord roles and priority queues.
               </p>
             </div>
           </div>
-
-          <div className="flex items-center gap-3 shrink-0 z-10 w-full sm:w-auto flex-wrap sm:flex-nowrap">
-            <a
-              href="https://www.discord.gg/R6ZrqpWEcc"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="py-2.5 px-4 rounded-xl bg-white/10 hover:bg-white/15 border border-white/10 text-white font-semibold text-xs transition flex items-center justify-center gap-2"
-            >
-              <span>Join VePlexity Point</span>
-              <ExternalLink className="w-3.5 h-3.5" />
-            </a>
-
+          <div className="flex items-center gap-2 shrink-0">
             <a
               href="https://www.buymeacoffee.com/veplexity1"
               target="_blank"
               rel="noopener noreferrer"
-              className="py-2.5 px-5 rounded-xl bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-400 hover:to-yellow-400 text-black font-bold text-xs transition flex items-center justify-center gap-2 shadow-lg shadow-amber-500/20"
+              className="px-3 py-1.5 rounded-md bg-amber-400 hover:bg-amber-300 text-black font-semibold text-xs transition-colors flex items-center gap-1.5"
             >
-              <span>☕ Support on BMC</span>
-              <ExternalLink className="w-3.5 h-3.5" />
+              <Coffee className="w-3.5 h-3.5" />
+              <span>Support on BMC</span>
             </a>
           </div>
         </div>
 
         {/* Loading State */}
         {loading && (
-          <div className="py-24 flex flex-col items-center justify-center space-y-3">
-            <div className="w-10 h-10 border-2 border-fuchsia-500/20 border-t-fuchsia-500 rounded-full animate-spin" />
-            <p className="text-xs font-mono text-gray-400 uppercase tracking-widest">
-              Scanning your Discord servers...
+          <div className="py-20 flex flex-col items-center justify-center space-y-3">
+            <div className="w-8 h-8 border-2 border-zinc-800 border-t-white rounded-full animate-spin" />
+            <p className="text-xs font-mono text-zinc-500 uppercase tracking-widest">
+              Scanning Discord servers...
             </p>
           </div>
         )}
 
         {/* Error State */}
         {!loading && error && (
-          <div className="p-6 rounded-2xl bg-red-500/10 border border-red-500/20 text-red-300 flex items-center justify-between gap-4">
+          <div className="p-4 rounded-lg bg-red-950/20 border border-red-500/30 text-red-300 flex items-center justify-between gap-4">
             <div>
-              <p className="font-semibold text-sm">Failed to retrieve servers</p>
-              <p className="text-xs text-red-300/80 mt-0.5">{error}</p>
+              <p className="font-semibold text-xs">Failed to retrieve servers</p>
+              <p className="text-[11px] text-red-300/80 mt-0.5">{error}</p>
             </div>
             <button
               onClick={() => fetchGuilds()}
-              className="px-4 py-2 rounded-xl bg-red-500/20 hover:bg-red-500/30 text-xs font-medium transition-colors shrink-0"
+              className="px-3 py-1.5 rounded-md bg-red-500/20 hover:bg-red-500/30 text-xs font-medium transition-colors"
             >
-              Try Again
+              Retry
             </button>
           </div>
         )}
@@ -312,25 +302,23 @@ export default function DashboardPage() {
         {!loading && !error && (
           <>
             {filteredGuilds.length === 0 ? (
-              <div className="py-20 text-center rounded-3xl bg-white/[0.02] border border-white/5 p-8 space-y-4">
-                <Server className="w-12 h-12 text-gray-600 mx-auto" />
-                <div className="space-y-1">
-                  <h3 className="text-base font-semibold text-gray-300">No servers found</h3>
-                  <p className="text-xs text-gray-500 max-w-sm mx-auto">
-                    {search ? "No servers match your search filter." : "You do not currently own or manage any Discord servers with Administrator privileges."}
-                  </p>
-                </div>
+              <div className="py-16 text-center rounded-lg bg-[#0d0d11] border border-zinc-800 p-8 space-y-3">
+                <Server className="w-8 h-8 text-zinc-600 mx-auto" />
+                <h3 className="text-sm font-semibold text-zinc-300">No servers found</h3>
+                <p className="text-xs text-zinc-500 max-w-sm mx-auto">
+                  {search ? "No servers match your filter." : "You do not currently manage any servers with Administrator permissions."}
+                </p>
               </div>
             ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 {filteredGuilds.map((guild) => (
                   <div
                     key={guild.id}
-                    className="group relative rounded-2xl bg-white/[0.02] hover:bg-white/[0.04] border border-white/10 hover:border-fuchsia-500/30 transition-all p-5 flex flex-col justify-between gap-5 shadow-lg shadow-black/20"
+                    className="rounded-lg bg-[#0d0d11] border border-zinc-800 hover:border-zinc-700 transition-colors p-4 flex flex-col justify-between gap-4"
                   >
                     {/* Server Info */}
-                    <div className="flex items-start gap-4">
-                      <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-fuchsia-600/20 via-white/5 to-purple-800/20 border border-white/10 overflow-hidden shrink-0 flex items-center justify-center font-bold text-base text-fuchsia-400 shadow-inner">
+                    <div className="flex items-start gap-3">
+                      <div className="w-11 h-11 rounded-lg bg-zinc-900 border border-zinc-800 overflow-hidden shrink-0 flex items-center justify-center font-bold text-xs text-zinc-300">
                         {guild.iconUrl ? (
                           <img
                             src={guild.iconUrl}
@@ -343,31 +331,27 @@ export default function DashboardPage() {
                         )}
                       </div>
 
-                      <div className="space-y-1.5 flex-1 min-w-0">
-                        <div className="flex items-center gap-2">
-                          <h3 className="font-bold text-base text-white truncate" title={guild.name}>
-                            {guild.name}
-                          </h3>
-                        </div>
+                      <div className="space-y-1 flex-1 min-w-0">
+                        <h3 className="font-semibold text-sm text-white truncate" title={guild.name}>
+                          {guild.name}
+                        </h3>
 
-                        <div className="flex items-center gap-2 flex-wrap text-xs">
+                        <div className="flex items-center gap-2 text-[11px]">
                           {guild.owner ? (
-                            <span className="px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20 text-[10px] font-medium">
-                              👑 Owner
-                            </span>
+                            <span className="font-mono text-zinc-400">Owner</span>
                           ) : (
-                            <span className="px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-400 border border-blue-500/20 text-[10px] font-medium">
-                              🛡️ Admin
-                            </span>
+                            <span className="font-mono text-zinc-400">Admin</span>
                           )}
 
+                          <span>•</span>
+
                           {guild.botJoined ? (
-                            <span className="flex items-center gap-1 text-[11px] text-emerald-400 font-medium">
-                              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                            <span className="flex items-center gap-1 text-emerald-400 font-mono">
+                              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
                               Active
                             </span>
                           ) : (
-                            <span className="text-[11px] text-gray-500">
+                            <span className="text-zinc-500 font-mono">
                               Not Joined
                             </span>
                           )}
@@ -375,15 +359,15 @@ export default function DashboardPage() {
                       </div>
                     </div>
 
-                    {/* Action Button */}
+                    {/* Action */}
                     <div>
                       {guild.botJoined ? (
                         <Link
                           href={`/dashboard/${guild.id}`}
-                          className="w-full py-2.5 px-4 rounded-xl bg-gradient-to-r from-fuchsia-600 to-purple-600 hover:from-fuchsia-500 hover:to-purple-500 text-white font-semibold text-xs transition-all flex items-center justify-center gap-2 shadow-md shadow-fuchsia-600/20 group-hover:scale-[1.01]"
+                          className="w-full py-2 px-3 rounded-md bg-white hover:bg-zinc-200 text-black font-medium text-xs transition-colors flex items-center justify-center gap-1.5"
                         >
                           <span>Manage Server</span>
-                          <ChevronRight className="w-4 h-4" />
+                          <ChevronRight className="w-3.5 h-3.5" />
                         </Link>
                       ) : (
                         <a
@@ -391,22 +375,21 @@ export default function DashboardPage() {
                           target="_blank"
                           rel="noopener noreferrer"
                           onClick={() => handleInviteClick(guild.id, guild.name)}
-                          className={`w-full py-2.5 px-4 rounded-xl border text-xs font-medium transition-all flex items-center justify-center gap-2 ${
+                          className={`w-full py-2 px-3 rounded-md border text-xs font-medium transition-colors flex items-center justify-center gap-1.5 ${
                             pendingGuildId === guild.id
-                              ? "bg-fuchsia-600/20 border-fuchsia-500/50 text-fuchsia-300 animate-pulse"
-                              : "bg-white/5 hover:bg-white/10 border-white/10 hover:border-white/20 text-gray-200 hover:text-white"
+                              ? "bg-zinc-800 border-zinc-700 text-zinc-300"
+                              : "bg-zinc-900 hover:bg-zinc-800 border-zinc-800 text-zinc-200"
                           }`}
                         >
                           {pendingGuildId === guild.id ? (
                             <>
-                              <RefreshCw className="w-3.5 h-3.5 text-fuchsia-400 animate-spin" />
-                              <span>Detecting bot connection...</span>
+                              <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                              <span>Detecting bot...</span>
                             </>
                           ) : (
                             <>
-                              <Plus className="w-4 h-4 text-fuchsia-400" />
+                              <Plus className="w-3.5 h-3.5" />
                               <span>Add to Discord</span>
-                              <ExternalLink className="w-3 h-3 text-gray-500" />
                             </>
                           )}
                         </a>
