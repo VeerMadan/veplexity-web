@@ -13,6 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 import Providers from "./Providers";
+import GtaHud from "./components/GtaHud";
 
 export const metadata: Metadata = {
   title: "VePlexity Network — Media, Software Labs & Digital Infrastructure",
@@ -30,7 +31,10 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-[#000000] text-[#ffffff] selection:bg-pink-600 selection:text-white">
-        <Providers>{children}</Providers>
+        <Providers>
+          {children}
+          <GtaHud />
+        </Providers>
       </body>
     </html>
   );
