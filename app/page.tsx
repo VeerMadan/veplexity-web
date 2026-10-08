@@ -1,391 +1,354 @@
+"use client";
+
+import { motion } from "framer-motion";
 import Link from "next/link";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import { 
-  Bot, ArrowRight, Play, ExternalLink, 
-  Cpu, Radio, Sliders, Shield, Terminal, ArrowUpRight
+  MonitorPlay, MessageSquare, Terminal, Play, Radio, 
+  Gamepad2, Database, Code2, ArrowRight, Shield, Zap, Music,
+  Bot, ExternalLink 
 } from "lucide-react";
-import { 
-  MotionReveal, 
-  MotionStaggerContainer, 
-  MotionStaggerItem 
-} from "./components/MotionReveal";
 
 export default function Home() {
-  const capabilities = [
+  const labProjects = [
     {
-      id: "01",
-      icon: Cpu,
-      category: "Low-Level Systems & Reverse Engineering",
-      title: "C++ Game Engine Hooks & Memory Injection",
-      description: "Direct runtime memory manipulation, dynamic pattern scanning, x64 assembly detours, and custom DirectX 11/12 ImGui overlay pipelines targeting Grand Theft Auto and open-world simulation engines.",
-      tags: ["C++20", "Assembly x64", "DirectX 11/12", "Pattern Scanning"],
-      accentColor: "from-purple-500/20 to-blue-500/20",
+      title: "Game Engine Architecture",
+      desc: "Deep-level C++ memory injection and render state modifications for open-world runtimes and GTA modding concepts.",
+      icon: <Gamepad2 className="w-8 h-8 text-fuchsia-500" />,
+      color: "hover:border-fuchsia-500/50",
       href: "/labs",
     },
     {
-      id: "02",
-      icon: Bot,
-      category: "Cloud Platforms & Distributed Services",
-      title: "VePlexity Commercial Discord Bot V2",
-      description: "Enterprise multi-server Discord bot architecture running 24/7 on dedicated Render cloud nodes. Built with 101 modular slash commands, lossless audio DSP, Gemini AI integration, and MongoDB Atlas persistence.",
-      tags: ["Node.js 20", "Discord.js v14", "MongoDB Atlas", "Render Daemon"],
-      accentColor: "from-blue-500/20 to-indigo-500/20",
-      href: "/bot",
-    },
-    {
-      id: "03",
-      icon: Radio,
-      category: "Hardware Video & Studio Broadcasting",
-      title: "Hardware Camera Matrix & OBS Automation",
-      description: "Multi-angle 1080p60 hardware HDMI matrix synchronized with an automated Python/OBS-WebSocket daemon that dynamically switches camera scenes based on audio thresholds and application telemetry.",
-      tags: ["Hardware Matrix", "OBS-WebSocket", "Python Daemon", "1080p60"],
-      accentColor: "from-indigo-500/20 to-pink-500/20",
+      title: "Performance Operations",
+      desc: "Architecting high-conversion pipelines using localized WhatsApp CTAs and aggressively optimized CPL marketing systems.",
+      icon: <Database className="w-8 h-8 text-orange-500" />,
+      color: "hover:border-orange-500/50",
       href: "/labs",
     },
     {
-      id: "04",
-      icon: Sliders,
-      category: "Digital Signal Processing & Studio Acoustics",
-      title: "Audio Mastering & Harmonic Processing",
-      description: "Audio processing algorithms delivering broadcast-ready sound. Features multi-band dynamic compression, vintage harmonic modeling, and ITU-R BS.1770-4 -14 LUFS loudness mastering compliance.",
-      tags: ["48kHz DSP", "-14 LUFS", "Dynamic Limiter", "Acoustics"],
-      accentColor: "from-pink-500/20 to-purple-500/20",
+      title: "Audio Engineering Hub",
+      desc: "Professional DAW sequencing, VST integrations, and mastering workflows utilized for commercial releases like Tera Asar and Aisi Tu.",
+      icon: <Code2 className="w-8 h-8 text-purple-500" />,
+      color: "hover:border-purple-500/50",
       href: "/labs",
-    },
-  ];
-
-  const newswireArticles = [
-    {
-      tag: "Flagship Release",
-      date: "October 7, 2026",
-      title: "VePlexity Commercial Bot V2 Deployed in Production",
-      excerpt: "Full rollout on Render cloud nodes with lossless music audio, context-aware Gemini AI, web dashboard integration, and MongoDB Atlas sync.",
-      href: "/bot",
-    },
-    {
-      tag: "Studio Broadcast",
-      date: "October 6, 2026",
-      title: "VePlexity Studio: Comeback Broadcast & Camera Matrix Tested",
-      excerpt: "Multi-angle camera switching rig and automated OBS macros demonstrated live on YouTube during the official network comeback stream.",
-      href: "https://www.youtube.com/watch?v=dZvvx4SIkbM",
-      isExternal: true,
-    },
-    {
-      tag: "Engineering Lab",
-      date: "Fall 2026",
-      title: "DirectX Overlay Injection & Memory Pointer Research Milestone",
-      excerpt: "Phase 1 completion of lightweight DLL hooking without external frameworks, enabling zero-frame-drop telemetry overlays in open-world sandbox runtimes.",
-      href: "/labs",
-    },
+    }
   ];
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#05070a] text-[#e5e7eb] relative selection:bg-purple-500/30">
+    <div className="min-h-screen bg-[#070308] text-white selection:bg-fuchsia-500/30 overflow-hidden flex flex-col font-sans">
       <Navbar />
 
-      <main className="flex-1 w-full relative z-10">
+      <main className="flex-1 w-full">
         
-        {/* HERO SECTION */}
-        <section className="relative w-full pt-20 pb-24 md:pt-32 md:pb-36 px-5 sm:px-8 lg:px-12 overflow-hidden border-b border-white/[0.06]">
-          <div className="max-w-7xl mx-auto">
+        {/* ─── HERO SECTION (COMMIT 60be601 REBORN) ─────────────────────────── */}
+        <section className="relative min-h-[92vh] flex items-center justify-center px-5 pt-12 pb-24 overflow-hidden">
+          
+          {/* Ambient Glows */}
+          <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-fuchsia-600/15 blur-[150px] rounded-full pointer-events-none" />
+          <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-orange-600/15 blur-[150px] rounded-full pointer-events-none" />
+
+          <div className="max-w-5xl mx-auto w-full flex flex-col items-center text-center relative z-10 mt-6">
             
-            <MotionReveal delay={0.05} yOffset={20}>
-              {/* Status Badge */}
-              <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full neo-card mb-8 shadow-sm">
-                <span className="relative flex h-2 w-2">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-400"></span>
-                </span>
-                <span className="text-xs font-medium text-zinc-300">
-                  VePlexity Network <span className="text-zinc-500">•</span> System Operational
-                </span>
-              </div>
-            </MotionReveal>
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="mb-8 flex items-center gap-2 px-4 py-2 border border-orange-500 text-orange-500 rounded-xl font-mono text-xs font-black uppercase tracking-widest bg-orange-500/10 shadow-[0_0_20px_rgba(249,115,22,0.2)]"
+            >
+              <Terminal className="w-4 h-4" /> System Initialized
+            </motion.div>
 
-            {/* Headline with refined subtle brand gradient */}
-            <div className="max-w-4xl space-y-6">
-              <MotionReveal delay={0.15} yOffset={25}>
-                <h1 className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-black tracking-tight text-white leading-[1.05]">
-                  Systems. Media. <br />
-                  <span className="veer-gradient-text drop-shadow-[0_2px_15px_rgba(124,58,237,0.18)]">
-                    Engineering.
-                  </span>
-                </h1>
-              </MotionReveal>
+            <motion.h1 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1 }}
+              className="text-6xl md:text-8xl lg:text-[7rem] font-black text-white tracking-tighter leading-[1] mb-8 drop-shadow-[0_0_15px_rgba(217,70,239,0.3)]"
+            >
+              Welcome to <br />
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-500 to-fuchsia-500">
+                VePlexity.
+              </span>
+            </motion.h1>
 
-              <MotionReveal delay={0.25} yOffset={25}>
-                <p className="text-base sm:text-xl text-zinc-400 font-normal leading-relaxed max-w-2xl">
-                  The software portfolio and engineering infrastructure of <strong className="text-white font-semibold">Veer Madan</strong>. Spanning enterprise 24/7 cloud Discord bots, low-level C++ game runtime hooks, and automated studio broadcasts.
-                </p>
-              </MotionReveal>
+            <motion.p 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+              className="text-lg md:text-2xl text-gray-400 max-w-3xl mb-12 leading-relaxed"
+            >
+              The central infrastructure for advanced software engineering, C++ game engine modifications, and high-performance digital network ecosystems. 
+            </motion.p>
 
-              {/* Action Buttons with Neo-Glass depth */}
-              <MotionReveal delay={0.35} yOffset={25}>
-                <div className="pt-4 flex flex-wrap items-center gap-4">
-                  <Link
-                    href="/bot"
-                    className="px-7 py-3.5 neo-btn-primary text-sm flex items-center gap-2"
-                  >
-                    <span>Explore Bot V2</span>
-                    <ArrowRight className="w-4 h-4" />
-                  </Link>
-
-                  <Link
-                    href="/news-wire"
-                    className="px-7 py-3.5 neo-btn-glass text-sm flex items-center gap-2"
-                  >
-                    <span>Technical Newswire</span>
-                  </Link>
-
-                  <a
-                    href="https://www.youtube.com/watch?v=dZvvx4SIkbM"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="px-6 py-3.5 text-zinc-400 hover:text-white transition-colors text-sm font-medium flex items-center gap-2"
-                  >
-                    <Play className="w-4 h-4 text-purple-400" />
-                    <span>Watch Stream</span>
-                  </a>
-                </div>
-              </MotionReveal>
-            </div>
-
-          </div>
-        </section>
-
-        {/* METRICS & TELEMETRY STRIP */}
-        <section className="border-b border-white/[0.06] bg-[#070b12]/50">
-          <div className="max-w-7xl mx-auto px-5 sm:px-8 lg:px-12 py-10">
-            <MotionStaggerContainer className="grid grid-cols-2 md:grid-cols-4 gap-6">
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 }}
+              className="flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto"
+            >
+              <a 
+                href="https://youtube.com/@VePlexity" 
+                target="_blank"
+                rel="noreferrer"
+                className="w-full sm:w-auto px-10 py-5 bg-gradient-to-br from-orange-500 to-fuchsia-600 text-white font-black uppercase tracking-widest rounded-2xl flex items-center justify-center gap-3 transition-transform hover:scale-105 shadow-[0_0_30px_rgba(217,70,239,0.4)]"
+              >
+                <MonitorPlay className="w-6 h-6" /> Watch Content
+              </a>
               
-              <MotionStaggerItem>
-                <div className="p-6 rounded-2xl neo-card">
-                  <div className="text-xs font-semibold text-purple-400/90 uppercase tracking-wider">Bot Handlers</div>
-                  <div className="text-3xl font-black text-white mt-1">101 Slash</div>
-                  <div className="text-xs text-zinc-400 mt-1">Node.js 20 & Discord.js v14</div>
-                </div>
-              </MotionStaggerItem>
+              <Link 
+                href="/bot" 
+                className="w-full sm:w-auto px-10 py-5 bg-[#0c0512] text-fuchsia-400 border-[3px] border-fuchsia-500/30 hover:bg-fuchsia-500/10 font-black uppercase tracking-widest rounded-2xl flex items-center justify-center gap-3 transition-all hover:border-fuchsia-500/60"
+              >
+                <Bot className="w-6 h-6" /> Explore Bot V2
+              </Link>
+            </motion.div>
 
-              <MotionStaggerItem>
-                <div className="p-6 rounded-2xl neo-card">
-                  <div className="text-xs font-semibold text-blue-400/90 uppercase tracking-wider">Cloud Database</div>
-                  <div className="text-3xl font-black text-white mt-1">Atlas M0</div>
-                  <div className="text-xs text-zinc-400 mt-1">Sub-15ms replica sync</div>
-                </div>
-              </MotionStaggerItem>
-
-              <MotionStaggerItem>
-                <div className="p-6 rounded-2xl neo-card">
-                  <div className="text-xs font-semibold text-pink-400/90 uppercase tracking-wider">Studio Broadcast</div>
-                  <div className="text-3xl font-black text-white mt-1">1080p60</div>
-                  <div className="text-xs text-zinc-400 mt-1">Automated OBS-WebSocket</div>
-                </div>
-              </MotionStaggerItem>
-
-              <MotionStaggerItem>
-                <div className="p-6 rounded-2xl neo-card">
-                  <div className="text-xs font-semibold text-indigo-400/90 uppercase tracking-wider">Runtime Hooks</div>
-                  <div className="text-3xl font-black text-white mt-1">C++20 x64</div>
-                  <div className="text-xs text-zinc-400 mt-1">DirectX overlay pipelines</div>
-                </div>
-              </MotionStaggerItem>
-
-            </MotionStaggerContainer>
           </div>
         </section>
 
-        {/* ENGINEERING DISCIPLINES // BENTO GRID */}
-        <section className="py-24 px-5 sm:px-8 lg:px-12 max-w-7xl mx-auto">
-          <MotionReveal yOffset={30}>
-            <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-14 pb-6 border-b border-white/[0.06]">
+        {/* ─── YOUTUBE FEED SECTION (COMMIT 60be601 REBORN) ────────────────── */}
+        <section className="relative py-32 px-5 z-10 bg-[#070308] border-t border-white/5" id="content">
+          <div className="max-w-7xl mx-auto relative z-10">
+            
+            <div className="flex flex-col md:flex-row justify-between md:items-end mb-16 gap-6">
               <div>
-                <span className="text-xs font-bold text-purple-400 uppercase tracking-wider">
-                  Technical Disciplines
-                </span>
-                <h2 className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight text-white mt-1">
-                  Engineering Capabilities
+                <h2 className="text-5xl md:text-6xl font-black bg-gradient-to-r from-orange-500 to-fuchsia-500 bg-clip-text text-transparent mb-6 tracking-tighter">
+                  VePlexity Network
                 </h2>
-              </div>
-              <p className="text-sm text-zinc-400 max-w-md font-normal leading-relaxed">
-                Cross-disciplinary software development bridging low-level memory manipulation, cloud platform architecture, and real-time audio/video broadcasting.
-              </p>
-            </div>
-          </MotionReveal>
-
-          <MotionStaggerContainer className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {capabilities.map((item) => {
-              const IconComponent = item.icon;
-              return (
-                <MotionStaggerItem key={item.id}>
-                  <div className="p-8 md:p-10 rounded-2xl neo-glass flex flex-col justify-between group h-full">
-                    <div>
-                      <div className="flex items-center justify-between mb-6">
-                        <div className="w-12 h-12 rounded-xl bg-white/[0.04] border border-white/10 flex items-center justify-center text-white group-hover:scale-105 transition-transform shadow-[inset_0_1px_1px_rgba(255,255,255,0.2)]">
-                          <IconComponent className="w-6 h-6 text-zinc-200" />
-                        </div>
-                        <span className="text-xs font-mono text-zinc-500 font-bold">
-                          {item.id}
-                        </span>
-                      </div>
-
-                      <span className="text-xs font-semibold text-purple-400 uppercase tracking-wider block mb-2">
-                        {item.category}
-                      </span>
-
-                      <h3 className="text-2xl font-bold tracking-tight text-white mb-3 group-hover:text-zinc-100 transition-colors">
-                        {item.title}
-                      </h3>
-
-                      <p className="text-sm text-zinc-400 leading-relaxed mb-8 font-normal">
-                        {item.description}
-                      </p>
-                    </div>
-
-                    <div>
-                      <div className="flex flex-wrap gap-2 pt-6 border-t border-white/[0.06]">
-                        {item.tags.map((tag) => (
-                          <span
-                            key={tag}
-                            className="px-3 py-1 text-xs font-medium rounded-lg bg-white/[0.03] border border-white/[0.08] text-zinc-300"
-                          >
-                            {tag}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                </MotionStaggerItem>
-              );
-            })}
-          </MotionStaggerContainer>
-        </section>
-
-        {/* TECHNICAL NEWSWIRE */}
-        <section className="py-24 px-5 sm:px-8 lg:px-12 max-w-7xl mx-auto border-t border-white/[0.06]">
-          <MotionReveal yOffset={30}>
-            <div className="flex items-center justify-between mb-12 pb-6 border-b border-white/[0.06]">
-              <div>
-                <span className="text-xs font-bold text-blue-400 uppercase tracking-wider">
-                  Official Press & Dispatches
-                </span>
-                <h2 className="text-3xl sm:text-4xl font-black tracking-tight text-white mt-1">
-                  The Technical Newswire
-                </h2>
+                <p className="text-gray-400 text-xl max-w-2xl leading-relaxed">
+                  Live API feeds pulling the latest uploads, active broadcasts, and community updates directly from the channel infrastructure.
+                </p>
               </div>
               <Link
                 href="/news-wire"
-                className="text-xs font-bold uppercase tracking-wider text-zinc-300 hover:text-white flex items-center gap-1.5 transition-colors"
+                className="inline-flex items-center gap-2 text-xs font-black uppercase tracking-widest text-orange-400 hover:text-orange-300 transition-colors"
               >
-                <span>View All</span>
-                <ArrowRight className="w-3.5 h-3.5 text-purple-400" />
+                <span>Read Technical Newswire</span>
+                <ArrowRight className="w-4 h-4" />
               </Link>
             </div>
-          </MotionReveal>
 
-          <MotionStaggerContainer className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {newswireArticles.map((item, idx) => (
-              <MotionStaggerItem key={idx}>
-                <div className="p-7 rounded-2xl neo-glass flex flex-col justify-between h-full">
-                  <div>
-                    <div className="flex items-center justify-between mb-4 text-xs">
-                      <span className="px-3 py-1 rounded-full text-[11px] font-semibold bg-white/[0.04] border border-white/10 text-purple-300">
-                        {item.tag}
-                      </span>
-                      <span className="text-zinc-500 text-[11px]">{item.date}</span>
-                    </div>
-
-                    <h3 className="text-lg font-bold tracking-tight text-white mb-2 leading-snug">
-                      {item.title}
-                    </h3>
-
-                    <p className="text-xs text-zinc-400 leading-relaxed mb-6 font-normal">
-                      {item.excerpt}
-                    </p>
-                  </div>
-
-                  <div className="pt-4 border-t border-white/[0.06]">
-                    {item.isExternal ? (
-                      <a
-                        href={item.href}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center gap-1.5 text-xs font-semibold text-zinc-300 hover:text-white transition-colors"
-                      >
-                        <span>Watch Archive</span>
-                        <ArrowUpRight className="w-3.5 h-3.5 text-purple-400" />
-                      </a>
-                    ) : (
-                      <Link
-                        href={item.href}
-                        className="inline-flex items-center gap-1.5 text-xs font-semibold text-zinc-300 hover:text-white transition-colors"
-                      >
-                        <span>Read Dispatch</span>
-                        <ArrowRight className="w-3.5 h-3.5 text-purple-400" />
-                      </Link>
-                    )}
-                  </div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              
+              {/* THE REAL LIVE VIDEO DATA */}
+              <motion.a 
+                href="https://www.youtube.com/watch?v=dZvvx4SIkbM"
+                target="_blank"
+                rel="noreferrer"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                className="bg-[#0c0512] border-[4px] border-zinc-900 hover:border-orange-500/50 transition-colors duration-300 rounded-[2rem] p-6 group cursor-pointer relative overflow-hidden flex flex-col shadow-[0_0_40px_rgba(249,115,22,0.05)] block"
+              >
+                {/* Real YouTube Thumbnail */}
+                <div 
+                  className="w-full h-48 bg-zinc-900 rounded-xl mb-6 relative overflow-hidden border border-zinc-800 bg-cover bg-center"
+                  style={{ backgroundImage: `url('https://img.youtube.com/vi/dZvvx4SIkbM/maxresdefault.jpg')` }}
+                >
+                   <div className="absolute inset-0 bg-gradient-to-tr from-orange-900/60 to-transparent z-10" />
+                   <div className="absolute inset-0 flex items-center justify-center z-20">
+                     <div className="w-16 h-16 rounded-full bg-orange-500/30 flex items-center justify-center backdrop-blur-md group-hover:scale-110 transition-transform border border-orange-500/50 shadow-[0_0_20px_rgba(249,115,22,0.6)]">
+                       <Play className="w-7 h-7 text-white ml-1 fill-white" />
+                     </div>
+                   </div>
                 </div>
-              </MotionStaggerItem>
-            ))}
-          </MotionStaggerContainer>
+                
+                <div className="flex gap-2 items-center mb-4">
+                  <span className="px-3 py-1 border border-orange-500 text-orange-500 rounded-lg text-[10px] font-black uppercase tracking-widest bg-orange-500/10">
+                    Latest Broadcast
+                  </span>
+                  <span className="text-xs text-zinc-500 font-mono font-bold">2H 30M</span>
+                </div>
+                
+                <h3 className="text-2xl font-black text-white group-hover:text-orange-400 transition-colors leading-tight">
+                  🔴Comeback Day! - Welcome Back!
+                </h3>
+              </motion.a>
+
+              {/* Archive / Logs Placeholders */}
+              <motion.div 
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.1 }}
+                className="bg-[#0c0512] border-[4px] border-zinc-900 hover:border-zinc-700 transition-colors duration-300 rounded-[2rem] p-6 group relative overflow-hidden flex flex-col shadow-[0_0_40px_rgba(255,255,255,0.02)]"
+              >
+                <div className="w-full h-48 bg-black rounded-xl mb-6 relative overflow-hidden border border-zinc-800 flex items-center justify-center">
+                   <Radio className="w-10 h-10 text-fuchsia-500/50" />
+                </div>
+                
+                <div className="flex gap-2 items-center mb-4">
+                  <span className="px-3 py-1 border border-fuchsia-500/50 text-fuchsia-400 rounded-lg text-[10px] font-black uppercase tracking-widest bg-fuchsia-500/10">
+                    Live Stream Rig
+                  </span>
+                </div>
+                
+                <h3 className="text-2xl font-black text-white leading-tight">
+                  OBS Multi-Cam 1080p60 Hardware Rig Tested
+                </h3>
+              </motion.div>
+
+              <motion.div 
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.2 }}
+                className="bg-[#0c0512] border-[4px] border-zinc-900 hover:border-zinc-700 transition-colors duration-300 rounded-[2rem] p-6 group relative overflow-hidden flex flex-col shadow-[0_0_40px_rgba(255,255,255,0.02)]"
+              >
+                <div className="w-full h-48 bg-black rounded-xl mb-6 relative overflow-hidden border border-zinc-800 flex items-center justify-center">
+                   <Terminal className="w-10 h-10 text-orange-500/50" />
+                </div>
+                
+                <div className="flex gap-2 items-center mb-4">
+                  <span className="px-3 py-1 border border-orange-500/50 text-orange-400 rounded-lg text-[10px] font-black uppercase tracking-widest bg-orange-500/10">
+                    Cloud Infrastructure
+                  </span>
+                </div>
+                
+                <h3 className="text-2xl font-black text-white leading-tight">
+                  Commercial Bot V2 Loaded on Render 24/7
+                </h3>
+              </motion.div>
+
+            </div>
+          </div>
         </section>
 
-        {/* STUDIO BROADCAST & HARDWARE DEMO */}
-        <section className="py-24 px-5 sm:px-8 lg:px-12 max-w-7xl mx-auto border-t border-white/[0.06]">
-          <MotionReveal yOffset={30}>
-            <div className="p-8 md:p-12 rounded-3xl neo-glass">
-              <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
-                
-                <div className="lg:col-span-5 space-y-4">
-                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/[0.04] border border-white/10 text-xs font-semibold text-zinc-300">
-                    <Play className="w-3 h-3 fill-purple-400 text-purple-400" />
-                    <span>Broadcast Recording</span>
+        {/* ─── LABS SECTION (COMMIT 60be601 REBORN) ────────────────────────── */}
+        <section className="relative py-32 px-5 z-10 bg-[#070308] border-t border-white/5" id="labs">
+          <div className="max-w-7xl mx-auto">
+            <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-16">
+              <h2 className="text-5xl md:text-6xl font-black text-white tracking-tighter">
+                Engineering <span className="bg-gradient-to-r from-orange-500 to-fuchsia-500 bg-clip-text text-transparent">Labs.</span>
+              </h2>
+              <Link
+                href="/labs"
+                className="inline-flex items-center gap-2 text-xs font-black uppercase tracking-widest text-fuchsia-400 hover:text-fuchsia-300 transition-colors"
+              >
+                <span>View Full Laboratory Specs</span>
+                <ArrowRight className="w-4 h-4" />
+              </Link>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+              {labProjects.map((proj, i) => (
+                <motion.div 
+                  key={i}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.1 }}
+                  className={`bg-[#0c0512] border-[4px] border-zinc-900 rounded-[2rem] p-10 ${proj.color} transition-colors duration-300 group flex flex-col justify-between`}
+                >
+                  <div>
+                    <div className="w-16 h-16 rounded-2xl bg-zinc-900 border border-zinc-800 flex items-center justify-center mb-8 group-hover:scale-110 transition-transform">
+                      {proj.icon}
+                    </div>
+                    <h3 className="text-2xl font-black text-white mb-4">{proj.title}</h3>
+                    <p className="text-gray-400 text-lg leading-relaxed mb-6">{proj.desc}</p>
                   </div>
-
-                  <h3 className="text-2xl sm:text-3xl font-bold tracking-tight text-white leading-tight">
-                    VePlexity Studio Broadcast
-                  </h3>
-
-                  <p className="text-sm text-zinc-400 leading-relaxed font-normal">
-                    Live multi-angle broadcast demonstrating low-latency HDMI switching, dynamic voice triggers, and community interaction during the network comeback stream.
-                  </p>
-
-                  <div className="pt-2 flex items-center gap-3">
-                    <a
-                      href="https://www.youtube.com/watch?v=dZvvx4SIkbM"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="px-5 py-2.5 neo-btn-primary text-xs flex items-center gap-2"
-                    >
-                      <span>Watch on YouTube</span>
-                      <ExternalLink className="w-3.5 h-3.5" />
-                    </a>
-
+                  <div>
                     <Link
-                      href="/labs"
-                      className="px-5 py-2.5 neo-btn-glass text-xs"
+                      href={proj.href}
+                      className="text-xs font-black uppercase tracking-widest text-white group-hover:text-fuchsia-400 flex items-center gap-2 transition-colors"
                     >
-                      <span>Rig Specs</span>
+                      <span>Explore Spec</span>
+                      <ArrowRight className="w-3.5 h-3.5" />
                     </Link>
                   </div>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* ─── ECOSYSTEM SECTION (COMMIT 60be601 REBORN) ───────────────────── */}
+        <section className="relative py-32 px-5 z-10 bg-[#070308] border-t border-white/5" id="ecosystem">
+          <div className="max-w-7xl mx-auto">
+            
+            <div className="text-center mb-20">
+              <h2 className="text-5xl md:text-6xl font-black text-white mb-6 drop-shadow-[0_0_10px_rgba(217,70,239,0.3)]">
+                Community <span className="bg-gradient-to-r from-fuchsia-500 to-purple-500 bg-clip-text text-transparent">Infrastructure.</span>
+              </h2>
+              <p className="text-gray-400 text-xl max-w-3xl mx-auto leading-relaxed">
+                VePlexity is powered by a heavily engineered custom Node.js and Discord.js architecture designed to seamlessly bridge content creation, community engagement, and automated server management.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+              
+              <motion.div 
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                className="lg:col-span-7 bg-[#0c0512] border-[4px] border-zinc-900 rounded-[2rem] p-10 relative overflow-hidden group hover:border-fuchsia-500/50 transition-colors shadow-[0_0_40px_rgba(217,70,239,0.1)]"
+              >
+                <div className="absolute -right-20 -bottom-20 w-80 h-80 bg-fuchsia-600/20 blur-[80px] rounded-full pointer-events-none transition-opacity group-hover:opacity-100 opacity-50" />
+                
+                <div className="relative z-10 h-full flex flex-col">
+                  <div className="w-16 h-16 rounded-2xl bg-fuchsia-500/10 flex items-center justify-center mb-8 border border-fuchsia-500/30">
+                    <MessageSquare className="w-8 h-8 text-fuchsia-500" />
+                  </div>
+                  
+                  <h3 className="text-3xl font-black text-white mb-4">VePlexity Discord HQ</h3>
+                  <p className="text-gray-400 text-lg mb-10 leading-relaxed flex-1">
+                    The central nervous system of the audience. A fully optimized server featuring dynamic voice channels, automated role assignments, and a highly active community of developers.
+                  </p>
+
+                  <a 
+                    href="https://www.discord.gg/R6ZrqpWEcc" 
+                    target="_blank"
+                    rel="noreferrer"
+                    className="inline-flex items-center justify-center gap-3 bg-gradient-to-r from-fuchsia-600 to-purple-600 hover:scale-105 text-white font-black uppercase tracking-widest px-8 py-5 rounded-2xl transition-all w-fit shadow-[0_0_20px_rgba(217,70,239,0.4)]"
+                  >
+                    Join the Server <ArrowRight className="w-5 h-5" />
+                  </a>
+                </div>
+              </motion.div>
+
+              <motion.div 
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.1 }}
+                className="lg:col-span-5 bg-[#0c0512] border-[4px] border-zinc-900 rounded-[2rem] p-10 relative overflow-hidden flex flex-col justify-between group hover:border-orange-500/50 transition-colors"
+              >
+                <div className="relative z-10">
+                  <div className="flex items-center justify-between mb-8">
+                    <div className="w-16 h-16 rounded-2xl bg-orange-500/10 flex items-center justify-center border border-orange-500/30">
+                      <Terminal className="w-8 h-8 text-orange-400" />
+                    </div>
+                    <span className="px-4 py-2 border border-orange-500 text-orange-500 rounded-xl text-xs font-black uppercase tracking-widest bg-orange-500/10">
+                      Node.js Bot
+                    </span>
+                  </div>
+                  
+                  <h3 className="text-2xl font-black text-white mb-3">Custom Architecture</h3>
+                  <p className="text-base text-gray-400 mb-8 leading-relaxed">
+                    Engineered from scratch using modern APIs to handle real-time event webhooks, heavy-duty moderation, and high-fidelity music playback logic.
+                  </p>
                 </div>
 
-                <div className="lg:col-span-7">
-                  <div className="relative aspect-video w-full rounded-2xl overflow-hidden border border-white/10 bg-black shadow-[0_15px_40px_rgba(0,0,0,0.7)]">
-                    <iframe
-                      className="w-full h-full"
-                      src="https://www.youtube-nocookie.com/embed/dZvvx4SIkbM"
-                      title="VePlexity Studio Broadcast"
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                      allowFullScreen
-                    />
+                <div className="grid grid-cols-2 gap-4 relative z-10">
+                  <div className="bg-black border border-zinc-800 p-4 rounded-xl flex items-center gap-3">
+                    <Shield className="w-5 h-5 text-orange-400" />
+                    <span className="text-sm font-bold text-gray-300 uppercase">Auto-Mod</span>
+                  </div>
+                  <div className="bg-black border border-zinc-800 p-4 rounded-xl flex items-center gap-3">
+                    <Zap className="w-5 h-5 text-fuchsia-400" />
+                    <span className="text-sm font-bold text-gray-300 uppercase">Webhooks</span>
+                  </div>
+                  <div className="col-span-2 bg-black border border-zinc-800 p-4 rounded-xl flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <Music className="w-5 h-5 text-white" />
+                      <span className="text-sm font-bold text-gray-300 uppercase">Audio Engine</span>
+                    </div>
+                    <span className="text-sm font-black text-green-500">Active</span>
                   </div>
                 </div>
+              </motion.div>
 
-              </div>
             </div>
-          </MotionReveal>
+          </div>
         </section>
 
       </main>

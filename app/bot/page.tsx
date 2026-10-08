@@ -1,57 +1,56 @@
+"use client";
+
+import { motion } from "framer-motion";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import Link from "next/link";
 import { 
   Bot, Music, Shield, Sparkles, Sliders, Database, Gamepad2, 
-  ExternalLink, Heart, ArrowRight
+  ExternalLink, Heart, Terminal, ArrowRight, Zap 
 } from "lucide-react";
-import { 
-  MotionReveal, 
-  MotionStaggerContainer, 
-  MotionStaggerItem 
-} from "../components/MotionReveal";
-
-export const metadata = {
-  title: "VePlexity Commercial Bot V2 — Production Discord Platform",
-  description: "24/7 cloud Discord bot with 101 commands, lossless audio, Gemini AI assistant, and live web management dashboard.",
-};
 
 export default function BotPage() {
   const features = [
     {
-      icon: Music,
+      icon: <Music className="w-8 h-8 text-fuchsia-500" />,
       title: "Lossless Audio DSP Engine",
       badge: "48kHz VOIP",
-      description: "Low-latency voice streaming with queue looping, dynamic bass boost filters, volume calibration, and 24/7 voice stay in dedicated channels.",
+      borderColor: "hover:border-fuchsia-500/50",
+      description: "Low-latency streaming architecture with queue looping, dynamic bass boost filters, volume calibration, and 24/7 voice stay in dedicated channels.",
     },
     {
-      icon: Sparkles,
+      icon: <Sparkles className="w-8 h-8 text-orange-500" />,
       title: "Google Gemini AI Assistant",
       badge: "Multi-Modal",
-      description: "Direct conversational AI module powered by Gemini. Supports custom server personas, contextual conversation memory, and image prompt generation.",
+      borderColor: "hover:border-orange-500/50",
+      description: "Direct conversational AI module powered by Gemini. Supports custom server personas, contextual conversational memory, and image prompt generation.",
     },
     {
-      icon: Shield,
+      icon: <Shield className="w-8 h-8 text-red-500" />,
       title: "Enterprise Moderation Suite",
       badge: "Automated",
+      borderColor: "hover:border-red-500/50",
       description: "Rule enforcement system with automated warning escalation, timed suspensions, channel lockdowns, and case-indexed audit logs.",
     },
     {
-      icon: Sliders,
+      icon: <Sliders className="w-8 h-8 text-purple-500" />,
       title: "Real-Time Cloud Dashboard",
       badge: "Next.js 16",
+      borderColor: "hover:border-purple-500/50",
       description: "Configure prefixes, notification channels, reaction roles, and automated welcome dispatches in real-time from veplexity.dev/dashboard.",
     },
     {
-      icon: Gamepad2,
+      icon: <Gamepad2 className="w-8 h-8 text-cyan-500" />,
       title: "Multiplayer Discord Games",
       badge: "Component UI",
+      borderColor: "hover:border-cyan-500/50",
       description: "Native Discord component mini-games including TicTacToe, Connect4, Rock-Paper-Scissors duels, and Trivia competitions directly in text channels.",
     },
     {
-      icon: Database,
+      icon: <Database className="w-8 h-8 text-orange-400" />,
       title: "MongoDB Atlas Persistence",
       badge: "Sub-15ms Sync",
+      borderColor: "hover:border-orange-400/50",
       description: "Enterprise cloud cluster storing user XP, server configurations, moderation records, and reaction role mappings with zero data loss.",
     },
   ];
@@ -80,206 +79,195 @@ export default function BotPage() {
   ];
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#05070a] text-[#e5e7eb] relative selection:bg-purple-500/30">
+    <div className="min-h-screen bg-[#070308] text-white selection:bg-fuchsia-500/30 overflow-hidden flex flex-col font-sans">
       <Navbar />
 
       <main className="flex-1 max-w-7xl w-full mx-auto px-5 sm:px-8 lg:px-12 py-16 relative z-10">
         
         {/* HERO SECTION */}
-        <div className="border-b border-white/[0.06] pb-16 mb-16">
-          <MotionReveal delay={0.05} yOffset={20}>
-            <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full neo-card mb-6">
-              <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-400"></span>
-              </span>
-              <span className="text-xs font-medium text-zinc-300">
-                Render Node 24/7 • 101 Production Commands
-              </span>
-            </div>
-          </MotionReveal>
+        <div className="border-b border-white/5 pb-16 mb-16 relative">
+          <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-fuchsia-600/10 blur-[150px] rounded-full pointer-events-none" />
 
-          <MotionReveal delay={0.15} yOffset={25}>
-            <h1 className="text-4xl sm:text-6xl md:text-7xl font-black tracking-tight text-white max-w-4xl leading-[1.05]">
-              VePlexity Commercial <br />
-              <span className="veer-gradient-text drop-shadow-[0_2px_15px_rgba(124,58,237,0.18)]">
-                Discord Bot V2.
-              </span>
-            </h1>
-          </MotionReveal>
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="mb-8 flex items-center gap-2 px-4 py-2 border border-orange-500 text-orange-500 rounded-xl font-mono text-xs font-black uppercase tracking-widest bg-orange-500/10 shadow-[0_0_20px_rgba(249,115,22,0.2)] w-fit"
+          >
+            <Terminal className="w-4 h-4" /> Render Node 24/7 • 101 Production Commands
+          </motion.div>
 
-          <MotionReveal delay={0.25} yOffset={25}>
-            <p className="text-base sm:text-lg text-zinc-400 mt-6 max-w-2xl leading-relaxed font-normal">
-              Production-grade Discord cloud infrastructure engineered by Veer Madan. Featuring lossless audio streaming, context-aware Gemini AI, full enterprise moderation, and live web management.
-            </p>
-          </MotionReveal>
+          <motion.h1 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+            className="text-5xl sm:text-7xl lg:text-[5.5rem] font-black text-white tracking-tighter leading-[1] mb-6 drop-shadow-[0_0_15px_rgba(217,70,239,0.3)] max-w-4xl"
+          >
+            VePlexity Commercial <br />
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-500 to-fuchsia-500">
+              Discord Bot V2.
+            </span>
+          </motion.h1>
 
-          <MotionReveal delay={0.35} yOffset={25}>
-            <div className="pt-8 flex flex-wrap items-center gap-4">
-              <Link
-                href="/invite"
-                className="px-7 py-3.5 neo-btn-primary text-sm flex items-center gap-2"
-              >
-                <Bot className="w-4 h-4" />
-                <span>Add to Server</span>
-              </Link>
+          <motion.p 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            className="text-lg md:text-2xl text-gray-400 max-w-3xl mb-10 leading-relaxed"
+          >
+            Production-grade Discord cloud infrastructure engineered by Veer Madan. Featuring lossless audio streaming, context-aware Gemini AI, full enterprise moderation, and live web management.
+          </motion.p>
 
-              <Link
-                href="/dashboard"
-                className="px-7 py-3.5 neo-btn-glass text-sm"
-              >
-                <span>Launch Dashboard</span>
-              </Link>
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3 }}
+            className="flex flex-wrap items-center gap-4"
+          >
+            <Link
+              href="/invite"
+              className="px-8 py-4 bg-gradient-to-br from-orange-500 to-fuchsia-600 text-white font-black uppercase tracking-widest rounded-2xl flex items-center gap-3 transition-transform hover:scale-105 shadow-[0_0_30px_rgba(217,70,239,0.4)]"
+            >
+              <Bot className="w-5 h-5" />
+              <span>Add to Server</span>
+            </Link>
 
-              <a
-                href="https://www.buymeacoffee.com/veplexity1"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="px-6 py-3.5 text-zinc-400 hover:text-white transition-colors text-sm font-medium flex items-center gap-2"
-              >
-                <Heart className="w-4 h-4 text-purple-400" />
-                <span>Support on BMC</span>
-              </a>
-            </div>
-          </MotionReveal>
+            <Link
+              href="/dashboard"
+              className="px-8 py-4 bg-[#0c0512] text-fuchsia-400 border-[3px] border-fuchsia-500/30 hover:bg-fuchsia-500/10 font-black uppercase tracking-widest rounded-2xl transition-all hover:border-fuchsia-500/60"
+            >
+              <span>Launch Dashboard</span>
+            </Link>
+
+            <a
+              href="https://www.buymeacoffee.com/veplexity1"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="px-6 py-4 bg-black/50 text-zinc-300 hover:text-white border border-white/10 rounded-2xl font-bold uppercase tracking-wider text-xs flex items-center gap-2 transition-colors"
+            >
+              <Heart className="w-4 h-4 text-orange-400" />
+              <span>Support Perks</span>
+            </a>
+          </motion.div>
         </div>
 
         {/* METRICS STRIP */}
-        <MotionStaggerContainer className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-16">
-          <MotionStaggerItem>
-            <div className="p-6 rounded-2xl neo-card">
-              <div className="text-xs font-semibold text-purple-400/90 uppercase tracking-wider">Commands Active</div>
-              <div className="text-3xl font-black text-white mt-1">101 Handlers</div>
-              <div className="text-xs text-zinc-400 mt-1">Node.js 20 & Discord.js v14</div>
-            </div>
-          </MotionStaggerItem>
-
-          <MotionStaggerItem>
-            <div className="p-6 rounded-2xl neo-card">
-              <div className="text-xs font-semibold text-blue-400/90 uppercase tracking-wider">Cloud Host</div>
-              <div className="text-3xl font-black text-white mt-1">Render PaaS</div>
-              <div className="text-xs text-zinc-400 mt-1">24/7 dedicated container</div>
-            </div>
-          </MotionStaggerItem>
-
-          <MotionStaggerItem>
-            <div className="p-6 rounded-2xl neo-card">
-              <div className="text-xs font-semibold text-pink-400/90 uppercase tracking-wider">Database</div>
-              <div className="text-3xl font-black text-white mt-1">Atlas M0</div>
-              <div className="text-xs text-zinc-400 mt-1">Sub-15ms sync latency</div>
-            </div>
-          </MotionStaggerItem>
-
-          <MotionStaggerItem>
-            <div className="p-6 rounded-2xl neo-card">
-              <div className="text-xs font-semibold text-indigo-400/90 uppercase tracking-wider">Gateway</div>
-              <div className="text-3xl font-black text-white mt-1">Discord v10</div>
-              <div className="text-xs text-zinc-400 mt-1">WebSocket real-time</div>
-            </div>
-          </MotionStaggerItem>
-        </MotionStaggerContainer>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 p-8 md:p-10 rounded-[2rem] bg-[#0c0512] border-[4px] border-zinc-900 mb-20 shadow-[0_0_40px_rgba(249,115,22,0.05)]">
+          <div>
+            <div className="text-xs text-orange-500 font-black uppercase tracking-widest">COMMAND MATRIX</div>
+            <div className="text-4xl font-black text-white mt-1">101 PROD</div>
+            <div className="text-xs text-zinc-400 font-mono mt-1">Slash Handlers Ready</div>
+          </div>
+          <div>
+            <div className="text-xs text-fuchsia-500 font-black uppercase tracking-widest">CLOUD DAEMON</div>
+            <div className="text-4xl font-black text-white mt-1">RENDER</div>
+            <div className="text-xs text-zinc-400 font-mono mt-1">24/7 Dedicated Daemon</div>
+          </div>
+          <div>
+            <div className="text-xs text-purple-400 font-black uppercase tracking-widest">PERSISTENCE</div>
+            <div className="text-4xl font-black text-white mt-1">ATLAS DB</div>
+            <div className="text-xs text-zinc-400 font-mono mt-1">Sub-15ms Replica Set</div>
+          </div>
+          <div>
+            <div className="text-xs text-green-400 font-black uppercase tracking-widest">API GATEWAY</div>
+            <div className="text-4xl font-black text-white mt-1">DISCORD V10</div>
+            <div className="text-xs text-zinc-400 font-mono mt-1">WebSocket Gateway</div>
+          </div>
+        </div>
 
         {/* ARCHITECTURE FEATURES */}
-        <div className="mb-20">
-          <MotionReveal yOffset={30}>
-            <div className="mb-10">
-              <span className="text-xs font-bold text-purple-400 uppercase tracking-wider">
-                Core Subsystems
-              </span>
-              <h2 className="text-3xl sm:text-4xl font-black tracking-tight text-white mt-1">
-                Production Architecture
-              </h2>
-            </div>
-          </MotionReveal>
+        <div className="mb-24">
+          <div className="mb-12">
+            <h2 className="text-4xl sm:text-5xl font-black text-white tracking-tighter">
+              Production <span className="bg-gradient-to-r from-orange-500 to-fuchsia-500 bg-clip-text text-transparent">Architecture.</span>
+            </h2>
+          </div>
 
-          <MotionStaggerContainer className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {features.map((feat, idx) => {
-              const Icon = feat.icon;
-              return (
-                <MotionStaggerItem key={idx}>
-                  <div className="p-8 rounded-2xl neo-glass flex flex-col justify-between h-full">
-                    <div>
-                      <div className="flex items-center justify-between mb-6">
-                        <div className="w-12 h-12 rounded-xl bg-white/[0.04] border border-white/10 flex items-center justify-center text-white shadow-[inset_0_1px_1px_rgba(255,255,255,0.2)]">
-                          <Icon className="w-5 h-5 text-purple-300" />
-                        </div>
-                        <span className="text-[11px] font-medium px-3 py-1 rounded-full bg-white/[0.04] border border-white/10 text-zinc-300">
-                          {feat.badge}
-                        </span>
-                      </div>
-
-                      <h3 className="text-lg font-bold tracking-tight text-white mb-2">
-                        {feat.title}
-                      </h3>
-                      <p className="text-sm text-zinc-400 leading-relaxed font-normal">
-                        {feat.description}
-                      </p>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {features.map((feat, idx) => (
+              <motion.div
+                key={idx}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: idx * 0.08 }}
+                className={`p-8 rounded-[2rem] bg-[#0c0512] border-[4px] border-zinc-900 ${feat.borderColor} transition-colors duration-300 flex flex-col justify-between`}
+              >
+                <div>
+                  <div className="flex items-center justify-between mb-6">
+                    <div className="w-16 h-16 rounded-2xl bg-zinc-900 border border-zinc-800 flex items-center justify-center">
+                      {feat.icon}
                     </div>
+                    <span className="px-3 py-1 border border-zinc-700 text-zinc-300 rounded-lg text-[10px] font-black uppercase tracking-widest bg-black">
+                      {feat.badge}
+                    </span>
                   </div>
-                </MotionStaggerItem>
-              );
-            })}
-          </MotionStaggerContainer>
+
+                  <h3 className="text-2xl font-black text-white mb-3 leading-snug">
+                    {feat.title}
+                  </h3>
+                  <p className="text-base text-gray-400 leading-relaxed font-normal">
+                    {feat.description}
+                  </p>
+                </div>
+              </motion.div>
+            ))}
+          </div>
         </div>
 
         {/* 101 COMMAND MATRIX */}
-        <MotionReveal yOffset={30}>
-          <div className="p-8 sm:p-12 rounded-2xl neo-glass mb-16">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8 pb-6 border-b border-white/[0.06]">
-              <div>
-                <span className="text-xs font-bold text-purple-400 uppercase tracking-wider">Command Index</span>
-                <h2 className="text-2xl sm:text-3xl font-black tracking-tight text-white mt-1">101 Slash Handlers</h2>
-              </div>
-              <div className="text-xs text-zinc-400">
-                Type <code className="text-purple-300 bg-white/[0.05] border border-white/10 px-2.5 py-1 rounded-lg">/help</code> in Discord for interactive documentation
-              </div>
+        <div className="p-8 sm:p-12 rounded-[2rem] bg-[#0c0512] border-[4px] border-zinc-900 mb-20">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-10 pb-6 border-b border-white/5">
+            <div>
+              <span className="font-mono text-xs font-black text-orange-500 uppercase tracking-widest">COMMAND INDEX</span>
+              <h2 className="text-3xl font-black text-white mt-1 tracking-tight">101 Slash Handlers</h2>
             </div>
-
-            <div className="space-y-8">
-              {commandCategories.map((cat, idx) => (
-                <div key={idx} className="space-y-3">
-                  <div className="text-xs font-bold text-zinc-300 uppercase tracking-wider">
-                    {cat.category}
-                  </div>
-                  <div className="flex flex-wrap gap-2">
-                    {cat.commands.map((cmd) => (
-                      <span
-                        key={cmd}
-                        className="px-3 py-1.5 rounded-lg bg-white/[0.03] border border-white/[0.06] text-xs font-mono text-zinc-300 hover:bg-white/[0.08] hover:border-purple-500/30 transition-all cursor-default"
-                      >
-                        {cmd}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              ))}
+            <div className="text-xs text-zinc-400 font-mono">
+              Type <code className="text-orange-400 bg-black px-2 py-1 rounded border border-zinc-800">/help</code> in Discord for interactive documentation
             </div>
           </div>
-        </MotionReveal>
+
+          <div className="space-y-8">
+            {commandCategories.map((cat, idx) => (
+              <div key={idx} className="space-y-3">
+                <div className="text-xs font-black uppercase tracking-widest text-fuchsia-400">
+                  {cat.category}
+                </div>
+                <div className="flex flex-wrap gap-2.5">
+                  {cat.commands.map((cmd) => (
+                    <span
+                      key={cmd}
+                      className="px-3.5 py-1.5 rounded-xl bg-black border border-zinc-800 text-xs font-mono font-bold text-zinc-300 hover:border-orange-500/50 hover:text-white transition-colors cursor-default"
+                    >
+                      {cmd}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
 
         {/* CTA BANNER */}
-        <MotionReveal yOffset={30}>
-          <div className="flex flex-col sm:flex-row items-center justify-between p-10 rounded-2xl neo-glass gap-6">
-            <div>
-              <h3 className="text-2xl font-bold tracking-tight text-white">Deploy to your Discord server</h3>
-              <p className="text-sm text-zinc-400 mt-1 font-normal">Instant authorization. Zero configuration required to start.</p>
-            </div>
-            <div className="flex items-center gap-3">
-              <Link
-                href="/invite"
-                className="px-6 py-3 neo-btn-primary text-xs"
-              >
-                Authorize Bot
-              </Link>
-              <Link
-                href="/dashboard"
-                className="px-6 py-3 neo-btn-glass text-xs"
-              >
-                Dashboard
-              </Link>
-            </div>
+        <div className="flex flex-col sm:flex-row items-center justify-between p-10 rounded-[2rem] bg-[#0c0512] border-[4px] border-zinc-900 gap-6 shadow-[0_0_40px_rgba(217,70,239,0.1)]">
+          <div>
+            <h3 className="text-2xl font-black uppercase tracking-tight text-white">Deploy to your Discord server</h3>
+            <p className="text-sm text-gray-400 mt-1 font-normal">Instant authorization. Zero configuration required to start.</p>
           </div>
-        </MotionReveal>
+          <div className="flex items-center gap-4">
+            <Link
+              href="/invite"
+              className="px-8 py-4 bg-gradient-to-br from-orange-500 to-fuchsia-600 text-white font-black uppercase tracking-widest rounded-2xl text-xs hover:scale-105 transition-transform shadow-[0_0_20px_rgba(217,70,239,0.4)]"
+            >
+              Authorize Bot
+            </Link>
+            <Link
+              href="/dashboard"
+              className="px-6 py-4 bg-black text-fuchsia-400 border border-fuchsia-500/30 rounded-2xl font-bold uppercase tracking-wider text-xs hover:bg-fuchsia-500/10 transition-colors"
+            >
+              Dashboard
+            </Link>
+          </div>
+        </div>
 
       </main>
 

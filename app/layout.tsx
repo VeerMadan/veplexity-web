@@ -15,8 +15,8 @@ const geistMono = Geist_Mono({
 import Providers from "./Providers";
 
 export const metadata: Metadata = {
-  title: "VePlexity Network — Media, Software Labs & Digital Infrastructure",
-  description: "The central brand portfolio of Veer Madan. Live broadcasts, engineering labs, C++ game modifications, audio mastering, and the VePlexity Bot V2 commercial ecosystem.",
+  title: "VePlexity — Software Engineering, C++ Game Engine Mods & Digital Labs",
+  description: "The central infrastructure for advanced software engineering, C++ game engine modifications, and high-performance digital network ecosystems by Veer Madan.",
 };
 
 export default function RootLayout({
@@ -29,12 +29,7 @@ export default function RootLayout({
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col bg-[#05070a] text-[#e5e7eb] selection:bg-purple-500/20 selection:text-white relative">
-        {/* Ambient Color Shifting Mesh Glow */}
-        <div className="ambient-aurora" aria-hidden="true">
-          <div className="ambient-mesh" />
-        </div>
-
+      <body className="min-h-full flex flex-col bg-[#070308] text-white selection:bg-fuchsia-500/30 selection:text-white font-sans">
         <Providers>
           {children}
         </Providers>

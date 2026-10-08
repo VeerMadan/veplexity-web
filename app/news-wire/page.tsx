@@ -1,12 +1,10 @@
+"use client";
+
+import { motion } from "framer-motion";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import Link from "next/link";
 import { Radio, ArrowUpRight, ExternalLink } from "lucide-react";
-import { 
-  MotionReveal, 
-  MotionStaggerContainer, 
-  MotionStaggerItem 
-} from "../components/MotionReveal";
 
 interface Dispatch {
   id: string;
@@ -22,11 +20,6 @@ interface Dispatch {
     isExternal?: boolean;
   };
 }
-
-export const metadata = {
-  title: "The Newswire — VePlexity Official Dispatches",
-  description: "Official releases, technical changelogs, live broadcast alerts, and developer dispatches from VePlexity Studios.",
-};
 
 export default function NewsWirePage() {
   const dispatches: Dispatch[] = [
@@ -107,95 +100,100 @@ export default function NewsWirePage() {
   ];
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#05070a] text-[#e5e7eb] relative selection:bg-purple-500/30">
+    <div className="min-h-screen bg-[#070308] text-white selection:bg-fuchsia-500/30 overflow-hidden flex flex-col font-sans">
       <Navbar />
 
       <main className="flex-1 max-w-4xl w-full mx-auto px-5 sm:px-8 py-16 relative z-10">
         
         {/* Header */}
-        <MotionReveal delay={0.05} yOffset={20}>
-          <div className="border-b border-white/[0.06] pb-10 mb-14">
-            <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-purple-400 mb-3">
-              <Radio className="w-4 h-4 text-purple-400" />
-              <span>Editorial Dispatches • Official Press</span>
-            </div>
-            <h1 className="text-3xl sm:text-5xl font-black tracking-tight text-white">
-              The Technical <span className="veer-gradient-text">Newswire</span>
-            </h1>
-            <p className="text-zinc-400 mt-3 max-w-2xl text-sm md:text-base leading-relaxed font-normal">
-              The chronologically verified publication channel for VePlexity releases, software changelogs, broadcasts, and network infrastructure.
-            </p>
+        <div className="border-b border-white/5 pb-10 mb-14 relative">
+          <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-orange-600/10 blur-[150px] rounded-full pointer-events-none" />
+
+          <div className="flex items-center gap-2 font-mono text-xs text-orange-500 uppercase tracking-widest mb-3 font-black">
+            <Radio className="w-4 h-4 text-orange-400" />
+            <span>EDITORIAL DISPATCHES • OFFICIAL PRESS</span>
           </div>
-        </MotionReveal>
+          <h1 className="text-4xl sm:text-6xl font-black tracking-tighter text-white">
+            The Technical <span className="bg-gradient-to-r from-orange-500 to-fuchsia-500 bg-clip-text text-transparent">Newswire.</span>
+          </h1>
+          <p className="text-gray-400 mt-4 max-w-2xl text-lg leading-relaxed font-normal">
+            The chronologically verified publication channel for VePlexity releases, software changelogs, broadcasts, and network infrastructure.
+          </p>
+        </div>
 
         {/* Feed List */}
-        <MotionStaggerContainer className="space-y-8">
-          {dispatches.map((item) => (
-            <MotionStaggerItem key={item.id}>
-              <article className="p-8 sm:p-10 rounded-2xl neo-glass">
-                {/* Meta row */}
-                <div className="flex flex-wrap items-center justify-between gap-3 mb-6 text-xs text-zinc-400 pb-4 border-b border-white/[0.06]">
-                  <div className="flex items-center gap-2.5">
-                    <span className="px-3 py-1 rounded-full text-xs font-medium bg-white/[0.04] border border-white/10 text-purple-300">
-                      {item.category}
-                    </span>
-                    <span className="text-zinc-500 font-mono text-xs">{item.id}</span>
-                  </div>
-                  <div className="text-zinc-400 font-medium">
-                    {item.date} • {item.time}
-                  </div>
+        <div className="space-y-10">
+          {dispatches.map((item, idx) => (
+            <motion.article
+              key={item.id}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: idx * 0.08 }}
+              className="p-8 sm:p-10 rounded-[2rem] bg-[#0c0512] border-[4px] border-zinc-900 hover:border-orange-500/50 transition-colors duration-300"
+            >
+              {/* Meta row */}
+              <div className="flex flex-wrap items-center justify-between gap-3 mb-6 text-xs text-zinc-400 pb-4 border-b border-white/5">
+                <div className="flex items-center gap-3">
+                  <span className="px-3.5 py-1 rounded-xl text-[10px] font-black uppercase tracking-widest bg-orange-500/10 border border-orange-500 text-orange-400">
+                    {item.category}
+                  </span>
+                  <span className="text-zinc-500 font-mono text-xs font-bold">{item.id}</span>
                 </div>
-
-                {/* Title & Summary */}
-                <h2 className="text-2xl font-bold tracking-tight text-white mb-3 leading-snug">
-                  {item.title}
-                </h2>
-                <p className="text-zinc-400 text-sm leading-relaxed mb-6 font-normal">
-                  {item.summary}
-                </p>
-
-                {/* Bullet points */}
-                <div className="space-y-2.5 mb-8 bg-black/40 p-5 rounded-xl border border-white/[0.06]">
-                  <div className="text-xs font-semibold uppercase text-purple-300 tracking-wider mb-2">
-                    Technical Highlights
-                  </div>
-                  <ul className="space-y-2 text-xs text-zinc-400 list-disc list-inside leading-relaxed font-normal">
-                    {item.details.map((detail, idx) => (
-                      <li key={idx} className="marker:text-purple-400">
-                        {detail}
-                      </li>
-                    ))}
-                  </ul>
+                <div className="text-zinc-400 font-bold font-mono">
+                  {item.date} • {item.time}
                 </div>
+              </div>
 
-                {/* Action */}
-                {item.link && (
-                  <div className="pt-2">
-                    {item.link.isExternal ? (
-                      <a
-                        href={item.link.href}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="inline-flex items-center gap-2 text-xs font-bold neo-btn-primary px-5 py-2.5"
-                      >
-                        <span>{item.link.label}</span>
-                        <ExternalLink className="w-3.5 h-3.5" />
-                      </a>
-                    ) : (
-                      <Link
-                        href={item.link.href}
-                        className="inline-flex items-center gap-2 text-xs font-bold neo-btn-primary px-5 py-2.5"
-                      >
-                        <span>{item.link.label}</span>
-                        <ArrowUpRight className="w-3.5 h-3.5" />
-                      </Link>
-                    )}
-                  </div>
-                )}
-              </article>
-            </MotionStaggerItem>
+              {/* Title & Summary */}
+              <h2 className="text-2xl sm:text-3xl font-black tracking-tight text-white mb-4 leading-tight">
+                {item.title}
+              </h2>
+              <p className="text-gray-400 text-base leading-relaxed mb-6 font-normal">
+                {item.summary}
+              </p>
+
+              {/* Bullet points */}
+              <div className="space-y-2.5 mb-8 bg-black/60 p-6 rounded-2xl border border-zinc-800">
+                <div className="text-xs font-black uppercase tracking-widest text-orange-400 mb-3">
+                  Technical Highlights:
+                </div>
+                <ul className="space-y-2 text-sm text-gray-300 list-disc list-inside leading-relaxed font-normal">
+                  {item.details.map((detail, dIdx) => (
+                    <li key={dIdx} className="marker:text-fuchsia-500">
+                      {detail}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              {/* Action */}
+              {item.link && (
+                <div className="pt-2">
+                  {item.link.isExternal ? (
+                    <a
+                      href={item.link.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-2 text-xs font-black uppercase tracking-widest text-white bg-gradient-to-r from-orange-500 to-fuchsia-600 px-6 py-3.5 rounded-xl shadow-[0_0_20px_rgba(217,70,239,0.35)] hover:scale-105 transition-transform"
+                    >
+                      <span>{item.link.label}</span>
+                      <ExternalLink className="w-3.5 h-3.5" />
+                    </a>
+                  ) : (
+                    <Link
+                      href={item.link.href}
+                      className="inline-flex items-center gap-2 text-xs font-black uppercase tracking-widest text-white bg-gradient-to-r from-orange-500 to-fuchsia-600 px-6 py-3.5 rounded-xl shadow-[0_0_20px_rgba(217,70,239,0.35)] hover:scale-105 transition-transform"
+                    >
+                      <span>{item.link.label}</span>
+                      <ArrowUpRight className="w-3.5 h-3.5" />
+                    </Link>
+                  )}
+                </div>
+              )}
+            </motion.article>
           ))}
-        </MotionStaggerContainer>
+        </div>
 
       </main>
 
