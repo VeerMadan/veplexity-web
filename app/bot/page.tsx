@@ -5,6 +5,11 @@ import {
   Bot, Music, Shield, Sparkles, Sliders, Database, Gamepad2, 
   ExternalLink, Heart, ArrowRight
 } from "lucide-react";
+import { 
+  MotionReveal, 
+  MotionStaggerContainer, 
+  MotionStaggerItem 
+} from "../components/MotionReveal";
 
 export const metadata = {
   title: "VePlexity Commercial Bot V2 — Production Discord Platform",
@@ -75,182 +80,206 @@ export default function BotPage() {
   ];
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#05070a] text-[#e5e7eb]">
+    <div className="min-h-screen flex flex-col bg-[#05070a] text-[#e5e7eb] relative selection:bg-purple-500/30">
       <Navbar />
 
-      <main className="flex-1 max-w-7xl w-full mx-auto px-5 sm:px-8 lg:px-12 py-16">
+      <main className="flex-1 max-w-7xl w-full mx-auto px-5 sm:px-8 lg:px-12 py-16 relative z-10">
         
         {/* HERO SECTION */}
-        <div className="border-b border-white/5 pb-16 mb-16">
-          <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-white/5 border border-white/10 backdrop-blur-md mb-6">
-            <span className="relative flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-400"></span>
-            </span>
-            <span className="text-xs font-medium text-zinc-300">
-              Render Node 24/7 • 101 Production Commands
-            </span>
-          </div>
+        <div className="border-b border-white/[0.06] pb-16 mb-16">
+          <MotionReveal delay={0.05} yOffset={20}>
+            <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full neo-card mb-6">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-400"></span>
+              </span>
+              <span className="text-xs font-medium text-zinc-300">
+                Render Node 24/7 • 101 Production Commands
+              </span>
+            </div>
+          </MotionReveal>
 
-          <h1 className="text-4xl sm:text-6xl md:text-7xl font-black tracking-tight text-white max-w-4xl leading-[1.05]">
-            VePlexity Commercial <br />
-            <span className="bg-gradient-to-r from-white via-zinc-200 to-zinc-400 bg-clip-text text-transparent">
-              Discord Bot V2.
-            </span>
-          </h1>
+          <MotionReveal delay={0.15} yOffset={25}>
+            <h1 className="text-4xl sm:text-6xl md:text-7xl font-black tracking-tight text-white max-w-4xl leading-[1.05]">
+              VePlexity Commercial <br />
+              <span className="veer-gradient-text drop-shadow-[0_2px_15px_rgba(124,58,237,0.18)]">
+                Discord Bot V2.
+              </span>
+            </h1>
+          </MotionReveal>
 
-          <p className="text-base sm:text-lg text-zinc-400 mt-6 max-w-2xl leading-relaxed font-normal">
-            Production-grade Discord cloud infrastructure engineered by Veer Madan. Featuring lossless audio streaming, context-aware Gemini AI, full enterprise moderation, and live web management.
-          </p>
+          <MotionReveal delay={0.25} yOffset={25}>
+            <p className="text-base sm:text-lg text-zinc-400 mt-6 max-w-2xl leading-relaxed font-normal">
+              Production-grade Discord cloud infrastructure engineered by Veer Madan. Featuring lossless audio streaming, context-aware Gemini AI, full enterprise moderation, and live web management.
+            </p>
+          </MotionReveal>
 
-          <div className="pt-8 flex flex-wrap items-center gap-4">
-            <Link
-              href="/invite"
-              className="px-6 py-3.5 bg-white text-black rounded-xl font-bold text-sm hover:bg-zinc-200 transition-all flex items-center gap-2 shadow-sm"
-            >
-              <Bot className="w-4 h-4" />
-              <span>Add to Server</span>
-            </Link>
+          <MotionReveal delay={0.35} yOffset={25}>
+            <div className="pt-8 flex flex-wrap items-center gap-4">
+              <Link
+                href="/invite"
+                className="px-7 py-3.5 neo-btn-primary text-sm flex items-center gap-2"
+              >
+                <Bot className="w-4 h-4" />
+                <span>Add to Server</span>
+              </Link>
 
-            <Link
-              href="/dashboard"
-              className="px-6 py-3.5 bg-white/5 text-white border border-white/10 rounded-xl font-medium text-sm hover:bg-white/10 transition-all"
-            >
-              <span>Launch Dashboard</span>
-            </Link>
+              <Link
+                href="/dashboard"
+                className="px-7 py-3.5 neo-btn-glass text-sm"
+              >
+                <span>Launch Dashboard</span>
+              </Link>
 
-            <a
-              href="https://www.buymeacoffee.com/veplexity1"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="px-6 py-3.5 text-zinc-400 hover:text-white transition-colors text-sm font-medium flex items-center gap-2"
-            >
-              <Heart className="w-4 h-4" />
-              <span>Support on BMC</span>
-            </a>
-          </div>
+              <a
+                href="https://www.buymeacoffee.com/veplexity1"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="px-6 py-3.5 text-zinc-400 hover:text-white transition-colors text-sm font-medium flex items-center gap-2"
+              >
+                <Heart className="w-4 h-4 text-purple-400" />
+                <span>Support on BMC</span>
+              </a>
+            </div>
+          </MotionReveal>
         </div>
 
         {/* METRICS STRIP */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 p-8 rounded-2xl bg-white/[0.02] border border-white/5 mb-16">
-          <div className="space-y-1">
-            <div className="text-xs font-semibold text-zinc-500 uppercase tracking-wider">Commands Active</div>
-            <div className="text-3xl font-black text-white">101 Handlers</div>
-            <div className="text-xs text-zinc-400">Node.js 20 & Discord.js v14</div>
-          </div>
-          <div className="space-y-1">
-            <div className="text-xs font-semibold text-zinc-500 uppercase tracking-wider">Cloud Host</div>
-            <div className="text-3xl font-black text-white">Render PaaS</div>
-            <div className="text-xs text-zinc-400">24/7 dedicated container</div>
-          </div>
-          <div className="space-y-1">
-            <div className="text-xs font-semibold text-zinc-500 uppercase tracking-wider">Database</div>
-            <div className="text-3xl font-black text-white">Atlas M0</div>
-            <div className="text-xs text-zinc-400">Sub-15ms sync latency</div>
-          </div>
-          <div className="space-y-1">
-            <div className="text-xs font-semibold text-zinc-500 uppercase tracking-wider">Gateway</div>
-            <div className="text-3xl font-black text-white">Discord v10</div>
-            <div className="text-xs text-zinc-400">WebSocket real-time</div>
-          </div>
-        </div>
+        <MotionStaggerContainer className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-16">
+          <MotionStaggerItem>
+            <div className="p-6 rounded-2xl neo-card">
+              <div className="text-xs font-semibold text-purple-400/90 uppercase tracking-wider">Commands Active</div>
+              <div className="text-3xl font-black text-white mt-1">101 Handlers</div>
+              <div className="text-xs text-zinc-400 mt-1">Node.js 20 & Discord.js v14</div>
+            </div>
+          </MotionStaggerItem>
+
+          <MotionStaggerItem>
+            <div className="p-6 rounded-2xl neo-card">
+              <div className="text-xs font-semibold text-blue-400/90 uppercase tracking-wider">Cloud Host</div>
+              <div className="text-3xl font-black text-white mt-1">Render PaaS</div>
+              <div className="text-xs text-zinc-400 mt-1">24/7 dedicated container</div>
+            </div>
+          </MotionStaggerItem>
+
+          <MotionStaggerItem>
+            <div className="p-6 rounded-2xl neo-card">
+              <div className="text-xs font-semibold text-pink-400/90 uppercase tracking-wider">Database</div>
+              <div className="text-3xl font-black text-white mt-1">Atlas M0</div>
+              <div className="text-xs text-zinc-400 mt-1">Sub-15ms sync latency</div>
+            </div>
+          </MotionStaggerItem>
+
+          <MotionStaggerItem>
+            <div className="p-6 rounded-2xl neo-card">
+              <div className="text-xs font-semibold text-indigo-400/90 uppercase tracking-wider">Gateway</div>
+              <div className="text-3xl font-black text-white mt-1">Discord v10</div>
+              <div className="text-xs text-zinc-400 mt-1">WebSocket real-time</div>
+            </div>
+          </MotionStaggerItem>
+        </MotionStaggerContainer>
 
         {/* ARCHITECTURE FEATURES */}
         <div className="mb-20">
-          <div className="mb-10">
-            <span className="text-xs font-bold text-zinc-500 uppercase tracking-wider">
-              Core Subsystems
-            </span>
-            <h2 className="text-3xl sm:text-4xl font-black tracking-tight text-white mt-1">
-              Production Architecture
-            </h2>
-          </div>
+          <MotionReveal yOffset={30}>
+            <div className="mb-10">
+              <span className="text-xs font-bold text-purple-400 uppercase tracking-wider">
+                Core Subsystems
+              </span>
+              <h2 className="text-3xl sm:text-4xl font-black tracking-tight text-white mt-1">
+                Production Architecture
+              </h2>
+            </div>
+          </MotionReveal>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <MotionStaggerContainer className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {features.map((feat, idx) => {
               const Icon = feat.icon;
               return (
-                <div
-                  key={idx}
-                  className="p-8 rounded-2xl bg-white/[0.02] border border-white/5 hover:bg-white/[0.04] hover:border-white/10 transition-all flex flex-col justify-between"
-                >
-                  <div>
-                    <div className="flex items-center justify-between mb-6">
-                      <div className="w-12 h-12 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-white">
-                        <Icon className="w-5 h-5 text-zinc-300" />
+                <MotionStaggerItem key={idx}>
+                  <div className="p-8 rounded-2xl neo-glass flex flex-col justify-between h-full">
+                    <div>
+                      <div className="flex items-center justify-between mb-6">
+                        <div className="w-12 h-12 rounded-xl bg-white/[0.04] border border-white/10 flex items-center justify-center text-white shadow-[inset_0_1px_1px_rgba(255,255,255,0.2)]">
+                          <Icon className="w-5 h-5 text-purple-300" />
+                        </div>
+                        <span className="text-[11px] font-medium px-3 py-1 rounded-full bg-white/[0.04] border border-white/10 text-zinc-300">
+                          {feat.badge}
+                        </span>
                       </div>
-                      <span className="text-[11px] font-medium px-3 py-1 rounded-full bg-white/5 border border-white/10 text-zinc-300">
-                        {feat.badge}
-                      </span>
-                    </div>
 
-                    <h3 className="text-lg font-bold tracking-tight text-white mb-2">
-                      {feat.title}
-                    </h3>
-                    <p className="text-sm text-zinc-400 leading-relaxed font-normal">
-                      {feat.description}
-                    </p>
+                      <h3 className="text-lg font-bold tracking-tight text-white mb-2">
+                        {feat.title}
+                      </h3>
+                      <p className="text-sm text-zinc-400 leading-relaxed font-normal">
+                        {feat.description}
+                      </p>
+                    </div>
                   </div>
-                </div>
+                </MotionStaggerItem>
               );
             })}
-          </div>
+          </MotionStaggerContainer>
         </div>
 
         {/* 101 COMMAND MATRIX */}
-        <div className="p-8 sm:p-12 rounded-2xl bg-white/[0.02] border border-white/5 mb-16">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8 pb-6 border-b border-white/5">
-            <div>
-              <span className="text-xs font-bold text-zinc-500 uppercase tracking-wider">Command Index</span>
-              <h2 className="text-2xl sm:text-3xl font-black tracking-tight text-white mt-1">101 Slash Handlers</h2>
-            </div>
-            <div className="text-xs text-zinc-400">
-              Type <code className="text-zinc-200 bg-white/5 px-2 py-1 rounded">/help</code> in Discord for interactive documentation
-            </div>
-          </div>
-
-          <div className="space-y-8">
-            {commandCategories.map((cat, idx) => (
-              <div key={idx} className="space-y-3">
-                <div className="text-xs font-bold text-zinc-300 uppercase tracking-wider">
-                  {cat.category}
-                </div>
-                <div className="flex flex-wrap gap-2">
-                  {cat.commands.map((cmd) => (
-                    <span
-                      key={cmd}
-                      className="px-3 py-1.5 rounded-lg bg-white/5 border border-white/5 text-xs font-mono text-zinc-300 hover:bg-white/10 transition-colors cursor-default"
-                    >
-                      {cmd}
-                    </span>
-                  ))}
-                </div>
+        <MotionReveal yOffset={30}>
+          <div className="p-8 sm:p-12 rounded-2xl neo-glass mb-16">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8 pb-6 border-b border-white/[0.06]">
+              <div>
+                <span className="text-xs font-bold text-purple-400 uppercase tracking-wider">Command Index</span>
+                <h2 className="text-2xl sm:text-3xl font-black tracking-tight text-white mt-1">101 Slash Handlers</h2>
               </div>
-            ))}
+              <div className="text-xs text-zinc-400">
+                Type <code className="text-purple-300 bg-white/[0.05] border border-white/10 px-2.5 py-1 rounded-lg">/help</code> in Discord for interactive documentation
+              </div>
+            </div>
+
+            <div className="space-y-8">
+              {commandCategories.map((cat, idx) => (
+                <div key={idx} className="space-y-3">
+                  <div className="text-xs font-bold text-zinc-300 uppercase tracking-wider">
+                    {cat.category}
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    {cat.commands.map((cmd) => (
+                      <span
+                        key={cmd}
+                        className="px-3 py-1.5 rounded-lg bg-white/[0.03] border border-white/[0.06] text-xs font-mono text-zinc-300 hover:bg-white/[0.08] hover:border-purple-500/30 transition-all cursor-default"
+                      >
+                        {cmd}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
-        </div>
+        </MotionReveal>
 
         {/* CTA BANNER */}
-        <div className="flex flex-col sm:flex-row items-center justify-between p-10 rounded-2xl bg-white/[0.02] border border-white/5 gap-6">
-          <div>
-            <h3 className="text-2xl font-bold tracking-tight text-white">Deploy to your Discord server</h3>
-            <p className="text-sm text-zinc-400 mt-1 font-normal">Instant authorization. Zero configuration required to start.</p>
+        <MotionReveal yOffset={30}>
+          <div className="flex flex-col sm:flex-row items-center justify-between p-10 rounded-2xl neo-glass gap-6">
+            <div>
+              <h3 className="text-2xl font-bold tracking-tight text-white">Deploy to your Discord server</h3>
+              <p className="text-sm text-zinc-400 mt-1 font-normal">Instant authorization. Zero configuration required to start.</p>
+            </div>
+            <div className="flex items-center gap-3">
+              <Link
+                href="/invite"
+                className="px-6 py-3 neo-btn-primary text-xs"
+              >
+                Authorize Bot
+              </Link>
+              <Link
+                href="/dashboard"
+                className="px-6 py-3 neo-btn-glass text-xs"
+              >
+                Dashboard
+              </Link>
+            </div>
           </div>
-          <div className="flex items-center gap-3">
-            <Link
-              href="/invite"
-              className="px-6 py-3 rounded-xl bg-white text-black font-bold text-xs hover:bg-zinc-200 transition-colors"
-            >
-              Authorize Bot
-            </Link>
-            <Link
-              href="/dashboard"
-              className="px-6 py-3 rounded-xl bg-white/5 hover:bg-white/10 text-white border border-white/10 font-medium text-xs transition-colors"
-            >
-              Dashboard
-            </Link>
-          </div>
-        </div>
+        </MotionReveal>
 
       </main>
 

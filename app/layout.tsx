@@ -29,7 +29,12 @@ export default function RootLayout({
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col bg-[#05070a] text-[#e5e7eb] selection:bg-white/20 selection:text-white">
+      <body className="min-h-full flex flex-col bg-[#05070a] text-[#e5e7eb] selection:bg-purple-500/20 selection:text-white relative">
+        {/* Ambient Color Shifting Mesh Glow */}
+        <div className="ambient-aurora" aria-hidden="true">
+          <div className="ambient-mesh" />
+        </div>
+
         <Providers>
           {children}
         </Providers>
