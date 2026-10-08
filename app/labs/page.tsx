@@ -11,9 +11,9 @@ export default function LabsPage() {
   const labProjects = [
     {
       id: "LAB-01",
-      title: "VEPLEXITY CAM & BROADCAST STUDIO RIG",
-      domain: "HARDWARE VIDEO & BROADCAST AUTOMATION",
-      status: "OPERATIONAL",
+      title: "Hardware Video Matrix & Studio Broadcast Automation",
+      domain: "Hardware Video & OBS Automation",
+      status: "Operational",
       description: "A customized multi-angle hardware camera capture rig paired with dynamic OBS automation. Switches camera scenes based on audio thresholds, game telemetry hooks, and real-time controller triggers for YouTube broadcasts.",
       specs: [
         { label: "Pipeline", value: "Low-latency 1080p60 HDMI Matrix" },
@@ -27,9 +27,9 @@ export default function LabsPage() {
     },
     {
       id: "LAB-02",
-      title: "GAME ENGINE RUNTIME & C++ INJECTION",
-      domain: "REVERSE ENGINEERING & LOW-LEVEL SYSTEMS",
-      status: "ACTIVE RESEARCH",
+      title: "Game Engine Runtime & C++ Injection Architecture",
+      domain: "Reverse Engineering & Low-Level Systems",
+      status: "Active Research",
       description: "Custom runtime memory hooking and dynamic render interception targeting Grand Theft Auto and open-world sandbox engines. Manipulates internal entity coordinates, free-cam matrix offsets, and renders diagnostic HUD overlays directly via DirectX.",
       specs: [
         { label: "Architecture", value: "C++20 / Assembly x64 Hooking" },
@@ -41,9 +41,9 @@ export default function LabsPage() {
     },
     {
       id: "LAB-03",
-      title: "AUDIO MASTERING & DSP SIGNAL CHAINS",
-      domain: "DIGITAL SIGNAL PROCESSING & STUDIO ACOUSTICS",
-      status: "DEPLOYED IN BOT & MEDIA",
+      title: "Audio Mastering & Digital Signal Processing Chains",
+      domain: "Digital Signal Processing & Studio Acoustics",
+      status: "Deployed in Production",
       description: "Custom digital signal processing chains delivering studio-grade broadcast sound. Features multi-band dynamic compression, vintage tube harmonic saturation, and automatic ITU-R BS.1770-4 LUFS loudness normalization for Discord voice nodes and YouTube mastering.",
       specs: [
         { label: "Standard", value: "-14 LUFS integrated / -1.0 dB True Peak" },
@@ -56,83 +56,83 @@ export default function LabsPage() {
   ];
 
   return (
-    <div className="min-h-screen flex flex-col bg-black text-white">
+    <div className="min-h-screen flex flex-col bg-[#05070a] text-[#e5e7eb]">
       <Navbar />
 
-      <main className="flex-1 max-w-5xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-16">
+      <main className="flex-1 max-w-4xl w-full mx-auto px-5 sm:px-8 py-16">
         
         {/* Header */}
-        <div className="border-b border-white/10 pb-10 mb-14">
-          <div className="flex items-center gap-2 font-mono text-xs text-pink-400 uppercase tracking-widest mb-3 font-bold">
-            <Terminal className="w-4 h-4" />
-            <span>RESEARCH & DEVELOPMENT // DIVISION</span>
+        <div className="border-b border-white/5 pb-10 mb-14">
+          <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-zinc-400 mb-3">
+            <Terminal className="w-4 h-4 text-zinc-300" />
+            <span>Research & Development • Division</span>
           </div>
-          <h1 className="text-4xl sm:text-6xl font-black uppercase tracking-tighter text-white">
-            SOFTWARE & MEDIA LABS
+          <h1 className="text-3xl sm:text-5xl font-black tracking-tight text-white">
+            Software & Media Labs
           </h1>
-          <p className="text-zinc-400 mt-3 max-w-2xl text-sm leading-relaxed font-medium">
+          <p className="text-zinc-400 mt-3 max-w-2xl text-sm md:text-base leading-relaxed font-normal">
             Technical laboratory specifications covering studio video hardware, low-level C++ game runtime engineering, and digital signal processing.
           </p>
         </div>
 
         {/* Lab Modules */}
-        <div className="space-y-12">
+        <div className="space-y-10">
           {labProjects.map((lab) => (
             <section
               key={lab.id}
-              className="p-8 sm:p-10 rounded-lg bg-[#0c0c0c] border border-white/10 transition-all hover:border-pink-500/50"
+              className="p-8 sm:p-10 rounded-2xl bg-white/[0.02] border border-white/5 hover:bg-white/[0.04] hover:border-white/10 transition-all"
             >
               {/* Meta row */}
-              <div className="flex flex-wrap items-center justify-between gap-3 mb-6 font-mono text-xs text-zinc-400 pb-4 border-b border-white/10">
+              <div className="flex flex-wrap items-center justify-between gap-3 mb-6 text-xs text-zinc-400 pb-4 border-b border-white/5">
                 <div className="flex items-center gap-3">
-                  <span className="font-black text-white bg-zinc-900 border border-white/20 px-3 py-1 rounded">
+                  <span className="font-mono text-xs font-bold text-zinc-200 bg-white/5 border border-white/10 px-2.5 py-1 rounded-md">
                     {lab.id}
                   </span>
-                  <span className="text-zinc-300 font-bold uppercase">{lab.domain}</span>
+                  <span className="text-zinc-400 font-medium">{lab.domain}</span>
                 </div>
-                <div className="flex items-center gap-1.5 text-emerald-400 font-bold">
+                <div className="flex items-center gap-2 text-emerald-400 font-medium">
                   <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
                   <span>{lab.status}</span>
                 </div>
               </div>
 
               {/* Title & Desc */}
-              <h2 className="text-2xl sm:text-3xl font-black uppercase tracking-tight text-white mb-4">
+              <h2 className="text-2xl font-bold tracking-tight text-white mb-3 leading-snug">
                 {lab.title}
               </h2>
-              <p className="text-zinc-300 text-sm leading-relaxed mb-8 font-normal">
+              <p className="text-zinc-400 text-sm leading-relaxed mb-8 font-normal">
                 {lab.description}
               </p>
 
               {/* Specs Grid */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8 bg-black p-6 rounded border border-white/10">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8 bg-black/40 p-6 rounded-xl border border-white/5">
                 {lab.specs.map((spec, idx) => (
-                  <div key={idx} className="font-mono text-xs">
-                    <span className="text-zinc-500 block mb-1 font-bold uppercase tracking-wider">{spec.label}:</span>
-                    <span className="text-white font-medium">{spec.value}</span>
+                  <div key={idx} className="text-xs">
+                    <span className="text-zinc-500 block mb-1 font-semibold uppercase tracking-wider">{spec.label}</span>
+                    <span className="text-zinc-200 font-medium">{spec.value}</span>
                   </div>
                 ))}
               </div>
 
               {/* Optional Video Embed */}
               {lab.showVideo && lab.videoId && (
-                <div className="space-y-4 pt-2">
-                  <div className="flex items-center justify-between text-xs font-mono text-zinc-400">
-                    <span className="flex items-center gap-2 font-bold uppercase">
-                      <Play className="w-3.5 h-3.5 fill-red-500 text-red-500" />
+                <div className="space-y-3 pt-2">
+                  <div className="flex items-center justify-between text-xs text-zinc-400">
+                    <span className="flex items-center gap-2 font-medium">
+                      <Play className="w-3.5 h-3.5 fill-zinc-300 text-zinc-300" />
                       Live Laboratory Broadcast:
                     </span>
                     <a
                       href={lab.videoUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-zinc-300 hover:text-white flex items-center gap-1 font-bold uppercase transition-colors"
+                      className="text-zinc-300 hover:text-white flex items-center gap-1 font-semibold transition-colors"
                     >
-                      <span>OPEN ON YOUTUBE</span>
-                      <ExternalLink className="w-3 h-3 text-pink-400" />
+                      <span>Open on YouTube</span>
+                      <ExternalLink className="w-3 h-3 text-zinc-400" />
                     </a>
                   </div>
-                  <div className="relative aspect-video w-full rounded-lg overflow-hidden border border-white/20 bg-black shadow-2xl">
+                  <div className="relative aspect-video w-full rounded-xl overflow-hidden border border-white/10 bg-black shadow-xl">
                     <iframe
                       className="w-full h-full"
                       src={`https://www.youtube-nocookie.com/embed/${lab.videoId}`}
