@@ -28,8 +28,8 @@ export default function NewsWirePage() {
       category: "Flagship Release",
       date: "October 7, 2026",
       time: "11:30 IST",
-      title: "Commercial Discord Bot V2 Enters Production Across 101 Commands",
-      summary: "VePlexity Bot V2 is officially live as a multi-server commercial platform hosted 24/7 on Render cloud nodes with full MongoDB Atlas state persistence.",
+      title: "Commercial VePlexity Bot Enters Production Across 101 Commands",
+      summary: "VePlexity Bot is officially live as a multi-server commercial platform hosted 24/7 on Render cloud nodes with full MongoDB Atlas state persistence.",
       details: [
         "101 modular slash commands loaded across Music, AI, Moderation, Utility, and Fun categories.",
         "Lossless music streaming engine with 24/7 channel retention and dynamic queue control.",

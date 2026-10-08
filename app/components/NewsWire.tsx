@@ -23,10 +23,10 @@ export default function NewsWire() {
       tag: "FLAGSHIP RELEASE",
       tagColor: "bg-fuchsia-500/10 text-fuchsia-400 border-fuchsia-500/30",
       date: "OCTOBER 2026 // LIVE",
-      title: "VePlexity Commercial Discord Bot V2 Enters Production",
-      summary: "Massive overhaul deployed across 24/7 cloud nodes with 97+ slash commands, lossless audio, Gemini AI smart chatbot, and a web dashboard.",
+      title: "VePlexity Commercial Discord Bot Enters Production",
+      summary: "Massive overhaul deployed across 24/7 cloud nodes with 101 slash commands, lossless audio, Gemini AI smart chatbot, and a web dashboard.",
       linkText: "Explore Commercial Bot",
-      linkHref: "#commercial-bot",
+      linkHref: "/bot",
       isExternal: false,
     },
     {
@@ -48,7 +48,7 @@ export default function NewsWire() {
       title: "Game Engine Architecture & C++ Memory Injection",
       summary: "Deep-level runtime memory hooking and custom render pipelines targeting Grand Theft Auto sandbox engines and next-generation interactive modding.",
       linkText: "Inspect Lab Specs",
-      linkHref: "#labs",
+      linkHref: "/labs",
       isExternal: false,
     },
     {
@@ -65,7 +65,7 @@ export default function NewsWire() {
   ];
 
   const tickerItems = [
-    "🔴 [BREAKING] VePlexity Commercial Bot V2 running on Render with 97+ slash commands",
+    "🔴 [BREAKING] VePlexity Commercial Bot running on Render with 101 slash commands",
     "⚡ [STUDIO] VePlexity Cam multi-angle switcher integrated with zero-latency HDMI capture",
     "🍃 [DATABASE] MongoDB Atlas cloud cluster fully synchronized with <15ms latency",
     "🎵 [AUDIO] Studio master tracks (Tera Asar, Aisi Tu) archived in Audio Engineering Lab",

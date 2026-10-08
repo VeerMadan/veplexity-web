@@ -2,8 +2,9 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { Menu, X, Terminal, ArrowUpRight, Bot } from "lucide-react";
+import { Menu, X, ArrowUpRight, Bot } from "lucide-react";
 
 export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -11,7 +12,7 @@ export default function Navbar() {
 
   const navLinks = [
     { name: "Overview", href: "/" },
-    { name: "Bot V2", href: "/bot" },
+    { name: "VePlexity Bot", href: "/bot" },
     { name: "Newswire", href: "/news-wire" },
     { name: "Labs & R&D", href: "/labs" },
     { name: "Support", href: "/support" },
@@ -20,17 +21,27 @@ export default function Navbar() {
 
   return (
     <header className="sticky top-0 z-50 w-full bg-[#070308]/90 backdrop-blur-xl border-b border-white/5">
-      <div className="max-w-7xl mx-auto px-5 sm:px-8 h-18 flex items-center justify-between">
+      <div className="max-w-7xl mx-auto px-5 sm:px-8 h-20 flex items-center justify-between">
         
         {/* Brand Lockup */}
         <div className="flex items-center gap-8">
-          <Link href="/" className="flex items-center gap-3 group">
-            <div className="w-10 h-10 rounded-xl bg-orange-500/10 flex items-center justify-center border border-orange-500/30 transition-transform group-hover:scale-105 shadow-[0_0_20px_rgba(249,115,22,0.2)]">
-              <Terminal className="w-5 h-5 text-orange-400" />
+          <Link href="/" className="flex items-center gap-3.5 group">
+            <div className="relative w-12 h-12 flex items-center justify-center rounded-2xl bg-gradient-to-br from-orange-500/20 via-pink-500/10 to-fuchsia-500/20 p-1 border border-orange-500/30 transition-transform group-hover:scale-105 shadow-[0_0_20px_rgba(249,115,22,0.25)]">
+              <Image
+                src="/vp-no-bg.png"
+                alt="VePlexity Brand Logo"
+                width={48}
+                height={48}
+                priority
+                className="w-full h-full object-contain filter drop-shadow-[0_0_8px_rgba(249,115,22,0.6)]"
+              />
             </div>
             <div className="flex flex-col">
-              <span className="text-xl font-black tracking-tighter text-white group-hover:text-orange-400 transition-colors">
+              <span className="text-2xl font-black tracking-tighter text-white group-hover:text-orange-400 transition-colors">
                 VePlexity<span className="text-fuchsia-500">.</span>
+              </span>
+              <span className="text-[10px] font-mono tracking-widest text-zinc-500 uppercase -mt-1 font-bold">
+                Network Labs
               </span>
             </div>
           </Link>

@@ -1,7 +1,6 @@
-"use client";
-
-import { Terminal, MonitorPlay, MessageSquare, ExternalLink, ArrowUpRight } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
+import { MonitorPlay, MessageSquare, ExternalLink } from "lucide-react";
 
 export default function Footer() {
   return (
@@ -13,19 +12,30 @@ export default function Footer() {
       <div className="max-w-7xl mx-auto flex flex-col items-center">
         
         {/* Brand */}
-        <div className="flex items-center gap-3 mb-8">
-          <div className="w-10 h-10 rounded-xl bg-orange-500/10 flex items-center justify-center border border-orange-500/30 shadow-[0_0_20px_rgba(249,115,22,0.2)]">
-            <Terminal className="w-5 h-5 text-orange-400" />
+        <div className="flex items-center gap-4 mb-8">
+          <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-orange-500/20 via-pink-500/10 to-fuchsia-500/20 flex items-center justify-center border border-orange-500/30 p-2 shadow-[0_0_25px_rgba(249,115,22,0.3)]">
+            <Image
+              src="/vp-no-bg.png"
+              alt="VePlexity Logo"
+              width={56}
+              height={56}
+              className="w-full h-full object-contain filter drop-shadow-[0_0_10px_rgba(249,115,22,0.6)]"
+            />
           </div>
-          <span className="text-3xl font-black tracking-tighter text-white">
-            VePlexity<span className="text-fuchsia-500">.</span>
-          </span>
+          <div className="flex flex-col text-left">
+            <span className="text-3xl font-black tracking-tighter text-white">
+              VePlexity<span className="text-fuchsia-500">.</span>
+            </span>
+            <span className="text-[11px] font-mono tracking-widest text-zinc-500 uppercase -mt-1 font-bold">
+              Engineering Network
+            </span>
+          </div>
         </div>
 
         {/* Links */}
         <div className="flex flex-wrap justify-center gap-6 sm:gap-8 mb-12">
           <Link href="/bot" className="text-sm font-bold uppercase tracking-widest text-zinc-400 hover:text-orange-400 transition-colors">
-            Commercial Bot
+            VePlexity Bot
           </Link>
           <Link href="/news-wire" className="text-sm font-bold uppercase tracking-widest text-zinc-400 hover:text-fuchsia-400 transition-colors">
             Newswire

@@ -29,8 +29,8 @@ export default function YouTubeFeed() {
     },
     {
       id: "upcoming-1",
-      title: "VePlexity Bot V2 Production Deep-Dive & Architecture",
-      description: "Live breakdown of the 97+ command Discord engine, MongoDB Atlas cluster pipelines, and Next.js cloud dashboard.",
+      title: "VePlexity Bot Production Deep-Dive & Architecture",
+      description: "Live breakdown of the 101 command Discord engine, MongoDB Atlas cluster pipelines, and Next.js cloud dashboard.",
       status: "SCHEDULED BROADCAST",
       badgeColor: "bg-fuchsia-500/10 text-fuchsia-400 border-fuchsia-500/30",
       duration: "Live Stream",

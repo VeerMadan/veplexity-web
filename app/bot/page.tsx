@@ -104,7 +104,7 @@ export default function BotPage() {
           >
             VePlexity Commercial <br />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-500 to-fuchsia-500">
-              Discord Bot V2.
+              VePlexity Bot.
             </span>
           </motion.h1>
 

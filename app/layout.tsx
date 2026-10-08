@@ -15,8 +15,13 @@ const geistMono = Geist_Mono({
 import Providers from "./Providers";
 
 export const metadata: Metadata = {
-  title: "VePlexity — Software Engineering, C++ Game Engine Mods & Digital Labs",
-  description: "The central infrastructure for advanced software engineering, C++ game engine modifications, and high-performance digital network ecosystems by Veer Madan.",
+  title: "VePlexity — Software Engineering, Digital Ecosystems & Labs",
+  description: "The central infrastructure for advanced software engineering, standalone desktop apps, and high-performance digital ecosystems by Veer Madan.",
+  icons: {
+    icon: "/favicon.ico",
+    shortcut: "/favicon.ico",
+    apple: "/favicon.ico",
+  },
 };
 
 export default function RootLayout({

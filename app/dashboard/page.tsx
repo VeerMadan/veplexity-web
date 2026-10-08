@@ -176,7 +176,7 @@ export default function DashboardPage() {
 
           <div className="flex items-center gap-5">
             <Link href="/bot" className="text-xs font-black uppercase tracking-wider text-zinc-400 hover:text-white transition-colors hidden sm:inline">
-              BOT V2
+              VEPLEXITY BOT
             </Link>
             <Link href="/support" className="text-xs font-black uppercase tracking-wider text-pink-400 hover:text-pink-300 transition-colors hidden sm:inline flex items-center gap-1.5">
               <Heart className="w-3.5 h-3.5 fill-pink-500" />

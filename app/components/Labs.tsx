@@ -20,10 +20,10 @@ export default function Labs() {
       badge: "ACTIVE IN STUDIO",
     },
     {
-      id: "bot-v2",
-      title: "VePlexity Commercial Bot V2",
+      id: "veplexity-bot",
+      title: "VePlexity Commercial Bot",
       category: "AUTOMATION & CLOUD ENGINE",
-      desc: "Full-scale commercial Discord application loaded with 97+ production slash commands, lossless FFmpeg music engine, Gemini AI intelligence, and a live web dashboard.",
+      desc: "Full-scale commercial Discord application loaded with 101 production slash commands, lossless FFmpeg music engine, Gemini AI intelligence, and a live web dashboard.",
       icon: Bot,
       gradient: "from-fuchsia-500 to-pink-500",
       borderColor: "border-fuchsia-500/30 hover:border-fuchsia-500/60",
