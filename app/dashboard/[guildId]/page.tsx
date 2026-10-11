@@ -37,6 +37,34 @@ interface LoggingChannelsConfig {
   roleUpdate?: string | null;
 }
 
+interface VoiceRewardMilestone {
+  id: string;
+  minutes: number;
+  roleId: string;
+  message?: string;
+}
+
+interface TextRewardMilestone {
+  id: string;
+  messagesCount: number;
+  roleId: string;
+  message?: string;
+}
+
+interface ActivityRewardsConfig {
+  enabled: boolean;
+  voiceRewardsEnabled: boolean;
+  voiceMilestones: VoiceRewardMilestone[];
+  voiceMinMembers: number;
+  ignoreDeafMute: boolean;
+  textRewardsEnabled: boolean;
+  textMilestones: TextRewardMilestone[];
+  textCooldownSeconds: number;
+  minMessageLength: number;
+  notificationType: "silent" | "dm" | "channel";
+  channelId: string | null;
+}
+
 interface LevelingConfig {
   enabled: boolean;
   channelId: string | null;
@@ -80,6 +108,7 @@ interface GuildConfig {
   loggingChannels?: LoggingChannelsConfig;
   suggestionsChannel?: string | null;
   leveling?: LevelingConfig;
+  activityRewards?: ActivityRewardsConfig;
   boosters?: BoostersConfig;
   reactionRoles?: ReactionRolesConfig;
   autoResponders?: AutoResponderItem[];
@@ -150,6 +179,7 @@ type TabType =
   | "automod" 
   | "welcome" 
   | "leveling"
+  | "rewards"
   | "boosters"
   | "reactionroles"
   | "autoresponders"
@@ -187,6 +217,75 @@ export default function GuildDashboard({ params }: { params: Promise<{ guildId: 
   const [levelingChannel, setLevelingChannel] = useState<string>("");
   const [levelingMessage, setLevelingMessage] = useState("GG {user}, you leveled up to Level {level}! 🎉");
   const [xpRate, setXpRate] = useState<number>(1);
+
+  // Activity Rewards State (Custom Voice Time & Text Sent Rewards)
+  const [rewardsEnabled, setRewardsEnabled] = useState(true);
+  const [voiceRewardsEnabled, setVoiceRewardsEnabled] = useState(true);
+  const [voiceMilestones, setVoiceMilestones] = useState<VoiceRewardMilestone[]>([
+    { id: "vr-1", minutes: 60, roleId: "", message: "🎉 {user} spent 1 Hour in Voice Channels and unlocked {role}!" },
+    { id: "vr-2", minutes: 300, roleId: "", message: "🔥 {user} spent 5 Hours in Voice Channels and unlocked {role}!" },
+    { id: "vr-3", minutes: 1200, roleId: "", message: "👑 {user} achieved 20 Hours in Voice Channels and unlocked {role}!" },
+  ]);
+  const [voiceMinMembers, setVoiceMinMembers] = useState(1);
+  const [ignoreDeafMute, setIgnoreDeafMute] = useState(true);
+
+  const [textRewardsEnabled, setTextRewardsEnabled] = useState(true);
+  const [textMilestones, setTextMilestones] = useState<TextRewardMilestone[]>([
+    { id: "tr-1", messagesCount: 100, roleId: "", message: "💬 {user} reached 100 chat messages and unlocked {role}!" },
+    { id: "tr-2", messagesCount: 500, roleId: "", message: "⚡ {user} reached 500 chat messages and unlocked {role}!" },
+    { id: "tr-3", messagesCount: 2000, roleId: "", message: "🏆 {user} reached 2,000 chat messages and unlocked {role}!" },
+  ]);
+  const [textCooldownSeconds, setTextCooldownSeconds] = useState(10);
+  const [minMessageLength, setMinMessageLength] = useState(3);
+  const [rewardsNotificationType, setRewardsNotificationType] = useState<"silent" | "dm" | "channel">("channel");
+  const [rewardsChannel, setRewardsChannel] = useState("");
+  const [rewardsPreviewMode, setRewardsPreviewMode] = useState<"voice" | "text">("voice");
+
+  const addVoiceMilestone = () => {
+    const newId = `vr-${Date.now()}`;
+    const highestMinutes = voiceMilestones.length > 0 ? Math.max(...voiceMilestones.map(m => m.minutes)) : 0;
+    const newMinutes = highestMinutes > 0 ? highestMinutes + 120 : 60;
+    setVoiceMilestones([
+      ...voiceMilestones,
+      {
+        id: newId,
+        minutes: newMinutes,
+        roleId: "",
+        message: `🎉 {user} reached ${newMinutes >= 60 ? Math.round(newMinutes / 60) + " Hours" : newMinutes + " Minutes"} in Voice and unlocked {role}!`
+      }
+    ]);
+  };
+
+  const removeVoiceMilestone = (id: string) => {
+    setVoiceMilestones(voiceMilestones.filter(m => m.id !== id));
+  };
+
+  const updateVoiceMilestone = (id: string, patch: Partial<VoiceRewardMilestone>) => {
+    setVoiceMilestones(voiceMilestones.map(m => m.id === id ? { ...m, ...patch } : m));
+  };
+
+  const addTextMilestone = () => {
+    const newId = `tr-${Date.now()}`;
+    const highestCount = textMilestones.length > 0 ? Math.max(...textMilestones.map(m => m.messagesCount)) : 0;
+    const newCount = highestCount > 0 ? highestCount + 500 : 100;
+    setTextMilestones([
+      ...textMilestones,
+      {
+        id: newId,
+        messagesCount: newCount,
+        roleId: "",
+        message: `💬 {user} reached ${newCount.toLocaleString()} chat messages and unlocked {role}!`
+      }
+    ]);
+  };
+
+  const removeTextMilestone = (id: string) => {
+    setTextMilestones(textMilestones.filter(m => m.id !== id));
+  };
+
+  const updateTextMilestone = (id: string, patch: Partial<TextRewardMilestone>) => {
+    setTextMilestones(textMilestones.map(m => m.id === id ? { ...m, ...patch } : m));
+  };
 
   // Boosters State (Free VIP Feature)
   const [boostersEnabled, setBoostersEnabled] = useState(false);
@@ -403,6 +502,45 @@ export default function GuildDashboard({ params }: { params: Promise<{ guildId: 
     setRrItems(rIts);
     setAutoResponders(arList);
 
+    const actCfg = cfg.activityRewards;
+    const rEn = actCfg ? !!actCfg.enabled : true;
+    const vrEn = actCfg ? !!actCfg.voiceRewardsEnabled : true;
+    const vrMiles: VoiceRewardMilestone[] = Array.isArray(actCfg?.voiceMilestones) && actCfg.voiceMilestones.length > 0 
+      ? actCfg.voiceMilestones 
+      : [
+          { id: "vr-1", minutes: 60, roleId: "", message: "🎉 {user} spent 1 Hour in Voice Channels and unlocked {role}!" },
+          { id: "vr-2", minutes: 300, roleId: "", message: "🔥 {user} spent 5 Hours in Voice Channels and unlocked {role}!" },
+          { id: "vr-3", minutes: 1200, roleId: "", message: "👑 {user} achieved 20 Hours in Voice Channels and unlocked {role}!" },
+        ];
+    const vrMinMem = actCfg?.voiceMinMembers ?? 1;
+    const vrIgDeaf = actCfg?.ignoreDeafMute ?? true;
+
+    const trEn = actCfg ? !!actCfg.textRewardsEnabled : true;
+    const trMiles: TextRewardMilestone[] = Array.isArray(actCfg?.textMilestones) && actCfg.textMilestones.length > 0 
+      ? actCfg.textMilestones 
+      : [
+          { id: "tr-1", messagesCount: 100, roleId: "", message: "💬 {user} reached 100 chat messages and unlocked {role}!" },
+          { id: "tr-2", messagesCount: 500, roleId: "", message: "⚡ {user} reached 500 chat messages and unlocked {role}!" },
+          { id: "tr-3", messagesCount: 2000, roleId: "", message: "🏆 {user} reached 2,000 chat messages and unlocked {role}!" },
+        ];
+    const trCd = actCfg?.textCooldownSeconds ?? 10;
+    const trMinLen = actCfg?.minMessageLength ?? 3;
+    const rNotifType = actCfg?.notificationType ?? "channel";
+    const rNotifCh = actCfg?.channelId || "";
+
+    setRewardsEnabled(rEn);
+    setVoiceRewardsEnabled(vrEn);
+    setVoiceMilestones(vrMiles);
+    setVoiceMinMembers(vrMinMem);
+    setIgnoreDeafMute(vrIgDeaf);
+
+    setTextRewardsEnabled(trEn);
+    setTextMilestones(trMiles);
+    setTextCooldownSeconds(trCd);
+    setMinMessageLength(trMinLen);
+    setRewardsNotificationType(rNotifType);
+    setRewardsChannel(rNotifCh);
+
     const snap = JSON.stringify({
       mRoles, mLog, logChans, suggChan,
       levEn, levCh, levMsg, levXp,
@@ -415,7 +553,18 @@ export default function GuildDashboard({ params }: { params: Promise<{ guildId: 
       amInv, amSpam, amBw, amLinks, amCaps,
       cntCh, bdayCh,
       rCh, rTit, rDesc, rCol, rSty, rIts,
-      arList
+      arList,
+      actEn: rEn,
+      vrEn,
+      vrMiles,
+      vrMinMem,
+      vrIgDeaf,
+      trEn,
+      trMiles,
+      trCd,
+      trMinLen,
+      rNotifType,
+      rNotifCh
     });
     setInitialSnapshot(snap);
   };
@@ -463,7 +612,18 @@ export default function GuildDashboard({ params }: { params: Promise<{ guildId: 
       rCol: rrColor,
       rSty: rrStyle,
       rIts: rrItems,
-      arList: autoResponders
+      arList: autoResponders,
+      actEn: rewardsEnabled,
+      vrEn: voiceRewardsEnabled,
+      vrMiles: voiceMilestones,
+      vrMinMem: voiceMinMembers,
+      vrIgDeaf: ignoreDeafMute,
+      trEn: textRewardsEnabled,
+      trMiles: textMilestones,
+      trCd: textCooldownSeconds,
+      trMinLen: minMessageLength,
+      rNotifType: rewardsNotificationType,
+      rNotifCh: rewardsChannel
     });
   }, [
     modRoles, modLogChannel, loggingChannels, suggestionsChannel,
@@ -477,7 +637,10 @@ export default function GuildDashboard({ params }: { params: Promise<{ guildId: 
     antiInvite, antiSpam, antiBadWords, antiLinks, antiCaps,
     countingChannel, birthdayChannel,
     rrChannel, rrTitle, rrDescription, rrColor, rrStyle, rrItems,
-    autoResponders
+    autoResponders,
+    rewardsEnabled, voiceRewardsEnabled, voiceMilestones, voiceMinMembers, ignoreDeafMute,
+    textRewardsEnabled, textMilestones, textCooldownSeconds, minMessageLength,
+    rewardsNotificationType, rewardsChannel
   ]);
 
   const hasUnsavedChanges = useMemo(() => {
@@ -534,6 +697,19 @@ export default function GuildDashboard({ params }: { params: Promise<{ guildId: 
           channelId: levelingChannel || null,
           message: levelingMessage,
           xpRate
+        },
+        activityRewards: {
+          enabled: rewardsEnabled,
+          voiceRewardsEnabled,
+          voiceMilestones,
+          voiceMinMembers,
+          ignoreDeafMute,
+          textRewardsEnabled,
+          textMilestones,
+          textCooldownSeconds,
+          minMessageLength,
+          notificationType: rewardsNotificationType,
+          channelId: rewardsChannel || null,
         },
         boosters: {
           enabled: boostersEnabled,
@@ -699,6 +875,7 @@ export default function GuildDashboard({ params }: { params: Promise<{ guildId: 
     automod: "Auto-Mod Security Shield",
     welcome: "Welcome & Goodbye Messages",
     leveling: "Leveling & XP Rank System",
+    rewards: "Voice & Text Activity Rewards",
     boosters: "Server Boosters Appreciation",
     reactionroles: "Reaction Roles & Self-Assign Menus",
     autoresponders: "Custom Auto-Responders & Triggers",
@@ -833,6 +1010,7 @@ export default function GuildDashboard({ params }: { params: Promise<{ guildId: 
                   { id: "automod", label: "Auto-Mod Security", icon: Lock },
                   { id: "welcome", label: "Welcome & Goodbye", icon: Bell },
                   { id: "leveling", label: "Leveling & XP System", icon: Award, tag: "Free VIP" },
+                  { id: "rewards", label: "Voice & Text Rewards", icon: Gift, tag: "New" },
                   { id: "boosters", label: "Server Boosters", icon: Zap, tag: "Free VIP" },
                   { id: "reactionroles", label: "Reaction Roles", icon: Users, tag: "Free VIP" },
                   { id: "autoresponders", label: "Auto-Responders", icon: MessageCircle, tag: "Free VIP" },
@@ -1079,6 +1257,25 @@ export default function GuildDashboard({ params }: { params: Promise<{ guildId: 
                     <div>
                       <h4 className="font-bold text-sm text-white group-hover:text-amber-300 transition">Leveling & XP System</h4>
                       <p className="text-xs text-gray-400 mt-0.5">XP cards, level-up channel & role rewards</p>
+                    </div>
+                  </div>
+
+                  {/* Voice & Text Activity Rewards */}
+                  <div
+                    onClick={() => setActiveTab("rewards")}
+                    className="p-5 rounded-2xl bg-[#15161c] hover:bg-[#1a1b23] border border-white/5 hover:border-fuchsia-500/30 transition cursor-pointer flex flex-col justify-between group h-36 relative overflow-hidden"
+                  >
+                    <div className="flex items-start justify-between">
+                      <div className="w-10 h-10 rounded-xl bg-fuchsia-500/10 border border-fuchsia-500/20 flex items-center justify-center text-fuchsia-400">
+                        <Gift className="w-5 h-5" />
+                      </div>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-fuchsia-500/10 text-fuchsia-300 border border-fuchsia-500/20 font-bold">
+                        VC & Text
+                      </span>
+                    </div>
+                    <div>
+                      <h4 className="font-bold text-sm text-white group-hover:text-fuchsia-300 transition">Voice & Text Rewards</h4>
+                      <p className="text-xs text-gray-400 mt-0.5">Time in VC & message milestones to roles</p>
                     </div>
                   </div>
 
@@ -1753,6 +1950,577 @@ export default function GuildDashboard({ params }: { params: Promise<{ guildId: 
 
                 <p className="text-[11px] text-gray-500 px-1">
                   Illustrates the level-up card dispatched to members when earning XP.
+                </p>
+              </div>
+            </div>
+          )}
+
+          {/* ═══════════════════════════════════════════════════════════════════
+              4B. VOICE & TEXT ACTIVITY REWARDS (CUSTOMIZABLE VC & TEXT TIERS)
+          ═══════════════════════════════════════════════════════════════════ */}
+          {activeTab === "rewards" && (
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start w-full">
+              <div className="lg:col-span-7 space-y-6">
+                
+                {/* Master Rewards Toggle Card */}
+                <div className="p-6 sm:p-7 rounded-2xl bg-[#15161c] border border-white/5 space-y-5">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <h3 className="text-base font-bold text-white flex items-center gap-2">
+                          <Gift className="w-5 h-5 text-fuchsia-400" />
+                          <span>Voice & Text Activity Rewards</span>
+                        </h3>
+                        <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-fuchsia-500/20 text-fuchsia-300 font-bold border border-fuchsia-500/30">
+                          100% Customizable
+                        </span>
+                      </div>
+                      <p className="text-xs text-gray-400 mt-1">
+                        Automatically award custom server roles and recognition to members who spend time in voice channels or actively chat in text channels.
+                      </p>
+                    </div>
+
+                    <input
+                      type="checkbox"
+                      checked={rewardsEnabled}
+                      onChange={(e) => setRewardsEnabled(e.target.checked)}
+                      className="w-5 h-5 accent-fuchsia-500 cursor-pointer"
+                    />
+                  </div>
+                </div>
+
+                {rewardsEnabled && (
+                  <>
+                    {/* SECTION 1: VOICE CHANNEL TIME REWARDS */}
+                    <div className="p-6 sm:p-7 rounded-2xl bg-[#15161c] border border-white/5 space-y-6">
+                      <div className="flex items-center justify-between pb-4 border-b border-white/5">
+                        <div className="flex items-center gap-3">
+                          <div className="w-9 h-9 rounded-xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center text-purple-400">
+                            <Mic className="w-4 h-4" />
+                          </div>
+                          <div>
+                            <h4 className="text-sm font-bold text-white flex items-center gap-2">
+                              <span>Voice Channel Time Rewards</span>
+                              <span className="text-[10px] font-mono px-2 py-0.2 rounded bg-purple-500/20 text-purple-300">
+                                VC Milestones
+                              </span>
+                            </h4>
+                            <p className="text-xs text-gray-400 mt-0.5">
+                              Reward members with roles based on cumulative minutes or hours spent in voice channels.
+                            </p>
+                          </div>
+                        </div>
+
+                        <input
+                          type="checkbox"
+                          checked={voiceRewardsEnabled}
+                          onChange={(e) => setVoiceRewardsEnabled(e.target.checked)}
+                          className="w-4 h-4 accent-purple-500 cursor-pointer"
+                        />
+                      </div>
+
+                      {voiceRewardsEnabled && (
+                        <div className="space-y-4">
+                          {/* Voice Milestones List */}
+                          <div className="space-y-3">
+                            <div className="flex items-center justify-between">
+                              <label className="text-xs font-semibold uppercase text-gray-400 tracking-wider">
+                                Configured Voice Time Milestones ({voiceMilestones.length})
+                              </label>
+                              <button
+                                type="button"
+                                onClick={addVoiceMilestone}
+                                className="px-3 py-1.5 rounded-lg bg-purple-600 hover:bg-purple-500 text-white text-xs font-bold transition flex items-center gap-1.5 shadow-md shadow-purple-900/30"
+                              >
+                                <Plus className="w-3.5 h-3.5" />
+                                <span>Add Time Milestone</span>
+                              </button>
+                            </div>
+
+                            {voiceMilestones.length === 0 ? (
+                              <div className="p-6 rounded-xl bg-[#1c1d24] border border-dashed border-white/10 text-center text-xs text-gray-400">
+                                No voice milestones configured yet. Click above to add your first time reward!
+                              </div>
+                            ) : (
+                              <div className="space-y-3">
+                                {voiceMilestones.map((m, idx) => {
+                                  const hours = m.minutes >= 60 ? (m.minutes / 60).toFixed(1).replace(/\.0$/, "") : null;
+                                  return (
+                                    <div
+                                      key={m.id}
+                                      className="p-4 rounded-xl bg-[#1c1d24] border border-white/5 space-y-3 hover:border-purple-500/30 transition group"
+                                    >
+                                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                                        <div className="flex items-center gap-3">
+                                          <span className="w-6 h-6 rounded-lg bg-black/40 border border-white/10 flex items-center justify-center font-mono text-[11px] font-bold text-purple-400">
+                                            #{idx + 1}
+                                          </span>
+                                          <div className="flex items-center gap-2">
+                                            <span className="text-xs text-gray-400">Time Threshold:</span>
+                                            <input
+                                              type="number"
+                                              min={1}
+                                              value={m.minutes}
+                                              onChange={(e) => updateVoiceMilestone(m.id, { minutes: Math.max(1, Number(e.target.value) || 1) })}
+                                              className="w-20 bg-black/50 border border-white/10 rounded-lg px-2.5 py-1 text-xs text-white font-mono outline-none focus:border-purple-500/50"
+                                            />
+                                            <span className="text-xs font-mono text-purple-300 font-semibold">
+                                              Minutes {hours && `(${hours}h)`}
+                                            </span>
+                                          </div>
+                                        </div>
+
+                                        <div className="flex items-center gap-2">
+                                          <span className="text-xs text-gray-400">Award Role:</span>
+                                          <select
+                                            value={m.roleId}
+                                            onChange={(e) => updateVoiceMilestone(m.id, { roleId: e.target.value })}
+                                            className="bg-black/50 border border-white/10 rounded-lg px-3 py-1.5 text-xs text-white outline-none focus:border-purple-500/50 max-w-[180px]"
+                                          >
+                                            <option value="">Choose Server Role...</option>
+                                            {guild?.roles?.filter(r => !r.managed).map((role) => (
+                                              <option key={role.id} value={role.id}>
+                                                @{role.name}
+                                              </option>
+                                            ))}
+                                          </select>
+
+                                          <button
+                                            type="button"
+                                            onClick={() => removeVoiceMilestone(m.id)}
+                                            className="p-1.5 rounded-lg text-gray-500 hover:text-red-400 hover:bg-red-500/10 transition"
+                                            title="Delete Milestone"
+                                          >
+                                            <Trash2 className="w-4 h-4" />
+                                          </button>
+                                        </div>
+                                      </div>
+
+                                      {/* Custom Notification Message */}
+                                      <div>
+                                        <input
+                                          type="text"
+                                          value={m.message || ""}
+                                          onChange={(e) => updateVoiceMilestone(m.id, { message: e.target.value })}
+                                          placeholder="🎉 {user} spent {time} in voice channels and unlocked {role}!"
+                                          className="w-full bg-black/40 border border-white/5 rounded-lg px-3 py-1.5 text-xs text-gray-200 outline-none focus:border-purple-500/50"
+                                        />
+                                      </div>
+                                    </div>
+                                  );
+                                })}
+                              </div>
+                            )}
+                          </div>
+
+                          {/* Anti-AFK & Quality Filters */}
+                          <div className="pt-4 border-t border-white/5 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                              <label className="text-xs font-semibold uppercase text-gray-400 tracking-wider mb-1.5 block">
+                                Minimum Voice Members
+                              </label>
+                              <select
+                                value={voiceMinMembers}
+                                onChange={(e) => setVoiceMinMembers(Number(e.target.value))}
+                                className="w-full bg-[#1c1d24] border border-white/10 rounded-xl px-4 py-2 text-xs text-white outline-none focus:border-purple-500/50"
+                              >
+                                <option value={1}>1+ Member (Solo voice time counts)</option>
+                                <option value={2}>2+ Members (Must talk with someone - Anti AFK)</option>
+                                <option value={3}>3+ Members (Group sessions only)</option>
+                              </select>
+                              <p className="text-[11px] text-gray-500 mt-1">
+                                Requiring 2+ members stops users from farming time alone in empty channels.
+                              </p>
+                            </div>
+
+                            <div>
+                              <label className="text-xs font-semibold uppercase text-gray-400 tracking-wider mb-1.5 block">
+                                Muted / Deafened Filter
+                              </label>
+                              <label className="flex items-center gap-2.5 p-2 rounded-xl bg-[#1c1d24] border border-white/10 cursor-pointer hover:border-white/20 transition">
+                                <input
+                                  type="checkbox"
+                                  checked={ignoreDeafMute}
+                                  onChange={(e) => setIgnoreDeafMute(e.target.checked)}
+                                  className="w-4 h-4 accent-purple-500 cursor-pointer"
+                                />
+                                <span className="text-xs text-gray-300">
+                                  Pause tracking if user is Self-Deafened or Server-Muted
+                                </span>
+                              </label>
+                              <p className="text-[11px] text-gray-500 mt-1">
+                                Prevents overnight AFK sleep-farming while deafened.
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* SECTION 2: TEXT MESSAGE ACTIVITY REWARDS */}
+                    <div className="p-6 sm:p-7 rounded-2xl bg-[#15161c] border border-white/5 space-y-6">
+                      <div className="flex items-center justify-between pb-4 border-b border-white/5">
+                        <div className="flex items-center gap-3">
+                          <div className="w-9 h-9 rounded-xl bg-fuchsia-500/10 border border-fuchsia-500/20 flex items-center justify-center text-fuchsia-400">
+                            <MessageCircle className="w-4 h-4" />
+                          </div>
+                          <div>
+                            <h4 className="text-sm font-bold text-white flex items-center gap-2">
+                              <span>Text Message Activity Rewards</span>
+                              <span className="text-[10px] font-mono px-2 py-0.2 rounded bg-fuchsia-500/20 text-fuchsia-300">
+                                Chat Milestones
+                              </span>
+                            </h4>
+                            <p className="text-xs text-gray-400 mt-0.5">
+                              Reward active chatters with server roles as they reach total messages-sent milestones.
+                            </p>
+                          </div>
+                        </div>
+
+                        <input
+                          type="checkbox"
+                          checked={textRewardsEnabled}
+                          onChange={(e) => setTextRewardsEnabled(e.target.checked)}
+                          className="w-4 h-4 accent-fuchsia-500 cursor-pointer"
+                        />
+                      </div>
+
+                      {textRewardsEnabled && (
+                        <div className="space-y-4">
+                          {/* Text Milestones List */}
+                          <div className="space-y-3">
+                            <div className="flex items-center justify-between">
+                              <label className="text-xs font-semibold uppercase text-gray-400 tracking-wider">
+                                Configured Message Milestones ({textMilestones.length})
+                              </label>
+                              <button
+                                type="button"
+                                onClick={addTextMilestone}
+                                className="px-3 py-1.5 rounded-lg bg-fuchsia-600 hover:bg-fuchsia-500 text-white text-xs font-bold transition flex items-center gap-1.5 shadow-md shadow-fuchsia-900/30"
+                              >
+                                <Plus className="w-3.5 h-3.5" />
+                                <span>Add Message Milestone</span>
+                              </button>
+                            </div>
+
+                            {textMilestones.length === 0 ? (
+                              <div className="p-6 rounded-xl bg-[#1c1d24] border border-dashed border-white/10 text-center text-xs text-gray-400">
+                                No message milestones configured yet. Click above to add your first chat reward!
+                              </div>
+                            ) : (
+                              <div className="space-y-3">
+                                {textMilestones.map((m, idx) => (
+                                  <div
+                                    key={m.id}
+                                    className="p-4 rounded-xl bg-[#1c1d24] border border-white/5 space-y-3 hover:border-fuchsia-500/30 transition group"
+                                  >
+                                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                                      <div className="flex items-center gap-3">
+                                        <span className="w-6 h-6 rounded-lg bg-black/40 border border-white/10 flex items-center justify-center font-mono text-[11px] font-bold text-fuchsia-400">
+                                          #{idx + 1}
+                                        </span>
+                                        <div className="flex items-center gap-2">
+                                          <span className="text-xs text-gray-400">Messages Required:</span>
+                                          <input
+                                            type="number"
+                                            min={1}
+                                            value={m.messagesCount}
+                                            onChange={(e) => updateTextMilestone(m.id, { messagesCount: Math.max(1, Number(e.target.value) || 1) })}
+                                            className="w-24 bg-black/50 border border-white/10 rounded-lg px-2.5 py-1 text-xs text-white font-mono outline-none focus:border-fuchsia-500/50"
+                                          />
+                                          <span className="text-xs font-mono text-fuchsia-300 font-semibold">
+                                            Msgs
+                                          </span>
+                                        </div>
+                                      </div>
+
+                                      <div className="flex items-center gap-2">
+                                        <span className="text-xs text-gray-400">Award Role:</span>
+                                        <select
+                                          value={m.roleId}
+                                          onChange={(e) => updateTextMilestone(m.id, { roleId: e.target.value })}
+                                          className="bg-black/50 border border-white/10 rounded-lg px-3 py-1.5 text-xs text-white outline-none focus:border-fuchsia-500/50 max-w-[180px]"
+                                        >
+                                          <option value="">Choose Server Role...</option>
+                                          {guild?.roles?.filter(r => !r.managed).map((role) => (
+                                            <option key={role.id} value={role.id}>
+                                              @{role.name}
+                                            </option>
+                                          ))}
+                                        </select>
+
+                                        <button
+                                          type="button"
+                                          onClick={() => removeTextMilestone(m.id)}
+                                          className="p-1.5 rounded-lg text-gray-500 hover:text-red-400 hover:bg-red-500/10 transition"
+                                          title="Delete Milestone"
+                                        >
+                                          <Trash2 className="w-4 h-4" />
+                                        </button>
+                                      </div>
+                                    </div>
+
+                                    {/* Custom Notification Message */}
+                                    <div>
+                                      <input
+                                        type="text"
+                                        value={m.message || ""}
+                                        onChange={(e) => updateTextMilestone(m.id, { message: e.target.value })}
+                                        placeholder="💬 {user} reached {count} messages and unlocked {role}!"
+                                        className="w-full bg-black/40 border border-white/5 rounded-lg px-3 py-1.5 text-xs text-gray-200 outline-none focus:border-fuchsia-500/50"
+                                      />
+                                    </div>
+                                  </div>
+                                ))}
+                              </div>
+                            )}
+                          </div>
+
+                          {/* Anti-Spam & Chat Quality Filters */}
+                          <div className="pt-4 border-t border-white/5 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                              <label className="text-xs font-semibold uppercase text-gray-400 tracking-wider mb-1.5 block">
+                                Message Anti-Spam Cooldown
+                              </label>
+                              <select
+                                value={textCooldownSeconds}
+                                onChange={(e) => setTextCooldownSeconds(Number(e.target.value))}
+                                className="w-full bg-[#1c1d24] border border-white/10 rounded-xl px-4 py-2 text-xs text-white outline-none focus:border-fuchsia-500/50"
+                              >
+                                <option value={5}>5 Seconds (Fast Chat)</option>
+                                <option value={10}>10 Seconds (Standard - Recommended)</option>
+                                <option value={30}>30 Seconds (Strict Quality)</option>
+                                <option value={60}>60 Seconds (Slow Chat Only)</option>
+                              </select>
+                              <p className="text-[11px] text-gray-500 mt-1">
+                                Prevents rapid copypasta spamming from counting multiple times.
+                              </p>
+                            </div>
+
+                            <div>
+                              <label className="text-xs font-semibold uppercase text-gray-400 tracking-wider mb-1.5 block">
+                                Minimum Message Length
+                              </label>
+                              <select
+                                value={minMessageLength}
+                                onChange={(e) => setMinMessageLength(Number(e.target.value))}
+                                className="w-full bg-[#1c1d24] border border-white/10 rounded-xl px-4 py-2 text-xs text-white outline-none focus:border-fuchsia-500/50"
+                              >
+                                <option value={1}>1 Character (All messages count)</option>
+                                <option value={3}>3 Characters (Recommended - Ignores 'k', 'hi')</option>
+                                <option value={10}>10 Characters (Meaningful sentences only)</option>
+                              </select>
+                              <p className="text-[11px] text-gray-500 mt-1">
+                                Filters out low-effort single character spammers.
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* SECTION 3: NOTIFICATION & DELIVERY MODE */}
+                    <div className="p-6 sm:p-7 rounded-2xl bg-[#15161c] border border-white/5 space-y-5">
+                      <div className="flex items-center gap-3">
+                        <div className="w-9 h-9 rounded-xl bg-orange-500/10 border border-orange-500/20 flex items-center justify-center text-orange-400">
+                          <Bell className="w-4 h-4" />
+                        </div>
+                        <div>
+                          <h4 className="text-sm font-bold text-white">
+                            Achievement Notification & Delivery
+                          </h4>
+                          <p className="text-xs text-gray-400 mt-0.5">
+                            Control where and how members are celebrated when they earn reward roles.
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                        <button
+                          type="button"
+                          onClick={() => setRewardsNotificationType("channel")}
+                          className={`p-3.5 rounded-xl border text-left transition ${
+                            rewardsNotificationType === "channel"
+                              ? "bg-orange-500/20 border-orange-500/50 text-white"
+                              : "bg-[#1c1d24] border-white/5 text-gray-400 hover:text-white"
+                          }`}
+                        >
+                          <span className="font-bold text-xs block mb-1">📢 Channel Broadcast</span>
+                          <span className="text-[11px] text-gray-400">Post congratulations embed in a designated server channel.</span>
+                        </button>
+
+                        <button
+                          type="button"
+                          onClick={() => setRewardsNotificationType("dm")}
+                          className={`p-3.5 rounded-xl border text-left transition ${
+                            rewardsNotificationType === "dm"
+                              ? "bg-orange-500/20 border-orange-500/50 text-white"
+                              : "bg-[#1c1d24] border-white/5 text-gray-400 hover:text-white"
+                          }`}
+                        >
+                          <span className="font-bold text-xs block mb-1">📩 Direct Message (DM)</span>
+                          <span className="text-[11px] text-gray-400">Privately message the member with their unlocked role info.</span>
+                        </button>
+
+                        <button
+                          type="button"
+                          onClick={() => setRewardsNotificationType("silent")}
+                          className={`p-3.5 rounded-xl border text-left transition ${
+                            rewardsNotificationType === "silent"
+                              ? "bg-orange-500/20 border-orange-500/50 text-white"
+                              : "bg-[#1c1d24] border-white/5 text-gray-400 hover:text-white"
+                          }`}
+                        >
+                          <span className="font-bold text-xs block mb-1">🤫 Silent Assignment</span>
+                          <span className="text-[11px] text-gray-400">Award role quietly with zero chat pings or spam notifications.</span>
+                        </button>
+                      </div>
+
+                      {rewardsNotificationType === "channel" && (
+                        <div className="pt-3">
+                          <label className="text-xs font-semibold uppercase text-gray-400 tracking-wider mb-1.5 block">
+                            Announcement Channel
+                          </label>
+                          <select
+                            value={rewardsChannel}
+                            onChange={(e) => setRewardsChannel(e.target.value)}
+                            className="w-full bg-[#1c1d24] border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white outline-none focus:border-orange-500/50"
+                          >
+                            <option value="">Default General / Chat Channel</option>
+                            {guild?.channels?.text?.map((c) => (
+                              <option key={c.id} value={c.id}>
+                                #{c.name}
+                              </option>
+                            ))}
+                          </select>
+                        </div>
+                      )}
+                    </div>
+                  </>
+                )}
+              </div>
+
+              {/* Right Output Visualizer: Discord Milestone Achievement Card */}
+              <div className="lg:col-span-5 space-y-3 sticky top-20">
+                <div className="flex items-center justify-between text-xs text-gray-400 px-1">
+                  <span className="font-semibold uppercase text-[10px] tracking-wider">Discord Output Visualizer</span>
+                  <div className="flex items-center gap-1.5 bg-black/40 p-1 rounded-lg border border-white/5">
+                    <button
+                      type="button"
+                      onClick={() => setRewardsPreviewMode("voice")}
+                      className={`px-2 py-0.5 rounded text-[10px] font-mono font-bold transition ${
+                        rewardsPreviewMode === "voice"
+                          ? "bg-purple-600 text-white"
+                          : "text-gray-400 hover:text-white"
+                      }`}
+                    >
+                      VC Card
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setRewardsPreviewMode("text")}
+                      className={`px-2 py-0.5 rounded text-[10px] font-mono font-bold transition ${
+                        rewardsPreviewMode === "text"
+                          ? "bg-fuchsia-600 text-white"
+                          : "text-gray-400 hover:text-white"
+                      }`}
+                    >
+                      Chat Card
+                    </button>
+                  </div>
+                </div>
+
+                <div className="rounded-2xl bg-[#313338] border border-black/30 p-5 font-sans text-xs shadow-2xl space-y-3">
+                  <div className="flex items-start gap-3">
+                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-fuchsia-500 to-purple-600 flex items-center justify-center font-bold text-white text-xs shrink-0 overflow-hidden shadow-lg">
+                      <img src="/vp-logo-icon.png" alt="VP" className="w-full h-full object-cover" />
+                    </div>
+                    <div className="flex-1 space-y-2">
+                      <div className="flex items-center gap-2">
+                        <span className="font-bold text-white text-sm">VePlexity Rewards</span>
+                        <span className="px-1.5 py-0.2 rounded bg-[#5865F2] text-white text-[9px] font-extrabold">BOT</span>
+                        <span className="text-[10px] text-gray-400">Today at 5:12 PM</span>
+                      </div>
+
+                      {rewardsPreviewMode === "voice" ? (
+                        <div className="rounded-xl bg-[#2b2d31] border-l-4 border-purple-400 p-4 space-y-3">
+                          <div className="flex items-center justify-between">
+                            <span className="font-bold text-white text-sm flex items-center gap-1.5">
+                              <span>🎙️ VOICE MILESTONE UNLOCKED!</span>
+                            </span>
+                            <span className="text-xs font-mono px-2 py-0.5 rounded-full bg-purple-500/20 text-purple-300 font-bold">
+                              5 HOURS
+                            </span>
+                          </div>
+
+                          <p className="text-xs text-gray-200">
+                            {voiceMilestones[1]?.message
+                              ?.replace(/{user}/g, "@Alex")
+                              ?.replace(/{role}/g, "@VC Night Owl")
+                              ?.replace(/{time}/g, "5 Hours") ||
+                              "🔥 @Alex spent 5 Hours in Voice Channels and unlocked the @VC Night Owl role!"}
+                          </p>
+
+                          <div className="space-y-1">
+                            <div className="flex items-center justify-between text-[10px] text-gray-400 font-mono">
+                              <span>Total Voice Time: 300 Mins</span>
+                              <span>Next Tier: 20 Hours</span>
+                            </div>
+                            <div className="w-full h-2 rounded-full bg-black/50 overflow-hidden border border-white/5">
+                              <div className="h-full bg-gradient-to-r from-purple-500 to-fuchsia-400 rounded-full w-3/4" />
+                            </div>
+                          </div>
+
+                          <div className="pt-2 border-t border-white/5 flex items-center gap-2 text-[11px] text-gray-300">
+                            <span>Role Assigned:</span>
+                            <span className="px-2 py-0.5 rounded-full bg-purple-500/20 text-purple-300 font-semibold border border-purple-500/30 flex items-center gap-1">
+                              <span>🎙️ VC Night Owl</span>
+                            </span>
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="rounded-xl bg-[#2b2d31] border-l-4 border-fuchsia-400 p-4 space-y-3">
+                          <div className="flex items-center justify-between">
+                            <span className="font-bold text-white text-sm flex items-center gap-1.5">
+                              <span>💬 CHAT MILESTONE UNLOCKED!</span>
+                            </span>
+                            <span className="text-xs font-mono px-2 py-0.5 rounded-full bg-fuchsia-500/20 text-fuchsia-300 font-bold">
+                              500 MSGS
+                            </span>
+                          </div>
+
+                          <p className="text-xs text-gray-200">
+                            {textMilestones[1]?.message
+                              ?.replace(/{user}/g, "@Sarah")
+                              ?.replace(/{role}/g, "@Chat Legend")
+                              ?.replace(/{count}/g, "500") ||
+                              "⚡ @Sarah reached 500 chat messages and unlocked the @Chat Legend role!"}
+                          </p>
+
+                          <div className="space-y-1">
+                            <div className="flex items-center justify-between text-[10px] text-gray-400 font-mono">
+                              <span>Total Messages: 500</span>
+                              <span>Next Tier: 2,000 Msgs</span>
+                            </div>
+                            <div className="w-full h-2 rounded-full bg-black/50 overflow-hidden border border-white/5">
+                              <div className="h-full bg-gradient-to-r from-fuchsia-500 to-pink-400 rounded-full w-1/2" />
+                            </div>
+                          </div>
+
+                          <div className="pt-2 border-t border-white/5 flex items-center gap-2 text-[11px] text-gray-300">
+                            <span>Role Assigned:</span>
+                            <span className="px-2 py-0.5 rounded-full bg-fuchsia-500/20 text-fuchsia-300 font-semibold border border-fuchsia-500/30 flex items-center gap-1">
+                              <span>💬 Chat Legend</span>
+                            </span>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+
+                <p className="text-[11px] text-gray-500 px-1">
+                  Illustrates the achievement card dispatched to members when milestone thresholds are reached.
                 </p>
               </div>
             </div>
