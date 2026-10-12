@@ -14,9 +14,11 @@ import {
 } from "lucide-react";
 import { TactileToggle } from "./components/TactileToggle";
 import { AutoModDefenseSimulator } from "./components/AutoModDefenseSimulator";
-import { ServerTelemetryCenter } from "./components/ServerTelemetryCenter";
 import { MusicDjStudio } from "./components/MusicDjStudio";
 import { RankCardStudio } from "./components/RankCardStudio";
+import { ServerRevealTransition } from "@/app/components/ServerRevealTransition";
+import { SocialAlertsStudio, NotificationsConfig, SocialPlatformConfig } from "./components/SocialAlertsStudio";
+import { ServerOverviewTab, OverviewModuleItem } from "./components/ServerOverviewTab";
 import { dashboardAudio } from "@/lib/dashboardAudio";
 import { DiscordLogo, BmcCupIcon } from "@/app/components/BrandIcons";
 import { motion, AnimatePresence } from "framer-motion";
@@ -159,6 +161,7 @@ interface GuildConfig {
   birthday?: {
     channelId?: string | null;
   } | null;
+  notifications?: NotificationsConfig;
 }
 
 interface GuildDetails {
@@ -182,6 +185,7 @@ interface GuildDetails {
 
 type TabType = 
   | "overview" 
+  | "notifications"
   | "moderation" 
   | "logging" 
   | "automod" 
@@ -213,6 +217,41 @@ export default function GuildDashboard({ params }: { params: Promise<{ guildId: 
   const [saving, setSaving] = useState(false);
   const [toast, setToast] = useState<{ message: string; type: "success" | "error" } | null>(null);
   const [soundOn, setSoundOn] = useState(dashboardAudio.enabled);
+
+  // Smooth Reveal Pill Animation State
+  const [revealActive, setRevealActive] = useState(true);
+
+  // Social Media Alerts (Pingcord) State
+  const [notificationsConfig, setNotificationsConfig] = useState<NotificationsConfig>({
+    enabled: true,
+    channelId: null,
+    pingRole: "@everyone",
+    youtube: {
+      enabled: true,
+      target: "https://youtube.com/@VePlexity",
+      message: "🔴 **{author}** just uploaded a new video: **{title}**!\nWatch here: {url}",
+    },
+    twitch: {
+      enabled: true,
+      target: "veplexity_live",
+      message: "🟣 **{author}** is now LIVE on Twitch streaming **{game}**!\nWatch stream: {url}",
+    },
+    tiktok: {
+      enabled: false,
+      target: "@veplexity",
+      message: "🎵 New TikTok from **{author}**!\nCheck it out: {url}",
+    },
+    twitter: {
+      enabled: false,
+      target: "@VePlexityBot",
+      message: "🐦 **{author}** just posted on X:\n\n{title}\n{url}",
+    },
+    reddit: {
+      enabled: false,
+      target: "r/discordapp",
+      message: "🤖 New post in **{subreddit}** by **{author}**:\n**{title}**\n{url}",
+    },
+  });
 
   // Form State
   const [modRoles, setModRoles] = useState<string[]>([]);
@@ -550,6 +589,10 @@ export default function GuildDashboard({ params }: { params: Promise<{ guildId: 
     setRewardsNotificationType(rNotifType);
     setRewardsChannel(rNotifCh);
 
+    if (cfg.notifications) {
+      setNotificationsConfig(cfg.notifications);
+    }
+
     const snap = JSON.stringify({
       mRoles, mLog, logChans, suggChan,
       levEn, levCh, levMsg, levXp,
@@ -573,7 +616,8 @@ export default function GuildDashboard({ params }: { params: Promise<{ guildId: 
       trCd,
       trMinLen,
       rNotifType,
-      rNotifCh
+      rNotifCh,
+      notifCfg: cfg.notifications || notificationsConfig
     });
     setInitialSnapshot(snap);
   };
@@ -632,7 +676,8 @@ export default function GuildDashboard({ params }: { params: Promise<{ guildId: 
       trCd: textCooldownSeconds,
       trMinLen: minMessageLength,
       rNotifType: rewardsNotificationType,
-      rNotifCh: rewardsChannel
+      rNotifCh: rewardsChannel,
+      notifCfg: notificationsConfig
     });
   }, [
     modRoles, modLogChannel, loggingChannels, suggestionsChannel,
@@ -649,7 +694,8 @@ export default function GuildDashboard({ params }: { params: Promise<{ guildId: 
     autoResponders,
     rewardsEnabled, voiceRewardsEnabled, voiceMilestones, voiceMinMembers, ignoreDeafMute,
     textRewardsEnabled, textMilestones, textCooldownSeconds, minMessageLength,
-    rewardsNotificationType, rewardsChannel
+    rewardsNotificationType, rewardsChannel,
+    notificationsConfig
   ]);
 
   const hasUnsavedChanges = useMemo(() => {
@@ -668,6 +714,11 @@ export default function GuildDashboard({ params }: { params: Promise<{ guildId: 
       const data: GuildDetails = await res.json();
       setGuild(data);
       populateFromConfig(data);
+
+      // Smooth reveal expansion animation completes into the loaded dashboard!
+      setTimeout(() => {
+        setRevealActive(false);
+      }, 1200);
     } catch (err: any) {
       console.error("[GuildDashboard] Fetch error:", err);
       showToast(err.message || "Could not connect to bot backend", "error");
@@ -773,7 +824,8 @@ export default function GuildDashboard({ params }: { params: Promise<{ guildId: 
           style: rrStyle,
           items: rrItems.filter((i) => i.roleId)
         },
-        autoResponders: autoResponders
+        autoResponders: autoResponders,
+        notifications: notificationsConfig
       };
 
       const res = await fetch(`/api/bot/guilds/${guildId}`, {
@@ -793,6 +845,20 @@ export default function GuildDashboard({ params }: { params: Promise<{ guildId: 
       showToast(err.message || "Failed to save configuration", "error");
     } finally {
       setSaving(false);
+    }
+  };
+
+  const handleSendTestNotification = async (platform: string, channelId: string) => {
+    try {
+      const res = await fetch(`/api/bot/guilds/${guildId}/notifications/test`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ platform, channelId }),
+      });
+      const data = await res.json();
+      showToast(data.message || `Test alert dispatched to #${channelId}!`);
+    } catch (e: any) {
+      showToast(e.message || "Failed to dispatch test notification", "error");
     }
   };
 
@@ -865,13 +931,14 @@ export default function GuildDashboard({ params }: { params: Promise<{ guildId: 
     }
   };
 
-  if (loading) {
+  if (loading && !guild) {
     return (
-      <main className="min-h-screen bg-[#090a0f] text-white flex flex-col items-center justify-center font-sans space-y-4">
-        <div className="w-10 h-10 border-2 border-[#5865F2]/20 border-t-[#5865F2] rounded-full animate-spin" />
-        <p className="text-xs font-mono text-zinc-400 tracking-wider uppercase">
-          Loading server configuration...
-        </p>
+      <main className="min-h-screen bg-[#090a0f] text-white flex flex-col items-center justify-center font-sans">
+        <ServerRevealTransition
+          isVisible={true}
+          serverName="Connecting Server..."
+          serverInitials="VP"
+        />
       </main>
     );
   }
@@ -879,6 +946,7 @@ export default function GuildDashboard({ params }: { params: Promise<{ guildId: 
   // Active module labels mapping
   const MODULE_TITLES: Record<TabType, string> = {
     overview: "Server Overview",
+    notifications: "Social Media Alerts & Streams (Pingcord)",
     moderation: "Bot Masters & Moderator Roles",
     logging: "Audit & Logging Channels",
     automod: "Auto-Mod Security Shield",
@@ -898,8 +966,170 @@ export default function GuildDashboard({ params }: { params: Promise<{ guildId: 
     perks: "Community Perks & VIP Support"
   };
 
+  const overviewModules: OverviewModuleItem[] = [
+    {
+      id: "automod",
+      name: "Auto-Mod Security",
+      desc: "Instant spam shield, invite link blocker, toxic language filter, and anti-caps engine.",
+      icon: Lock,
+      bgColor: "bg-indigo-500/10 text-indigo-400 border-indigo-500/20",
+      active: Boolean(antiSpam || antiInvite || antiBadWords || antiLinks),
+      onToggle: (val: boolean) => {
+        setAntiSpam(val);
+        setAntiInvite(val);
+        setAntiBadWords(val);
+        setAntiLinks(val);
+      },
+    },
+    {
+      id: "notifications",
+      name: "Social Alerts (Pingcord)",
+      desc: "Automated live stream alerts & video notifications for YouTube, Twitch, TikTok, X, and Reddit.",
+      icon: Radio,
+      bgColor: "bg-purple-500/10 text-purple-400 border-purple-500/20",
+      active: notificationsConfig.enabled,
+      onToggle: (val: boolean) => {
+        setNotificationsConfig({ ...notificationsConfig, enabled: val });
+      },
+    },
+    {
+      id: "welcome",
+      name: "Welcome & Goodbye",
+      desc: "Custom welcome cards, join announcements, departure logs, and instant auto-roles.",
+      icon: Bell,
+      bgColor: "bg-emerald-500/10 text-emerald-400 border-emerald-500/20",
+      active: welcomeEnabled,
+      onToggle: (val: boolean) => setWelcomeEnabled(val),
+    },
+    {
+      id: "leveling",
+      name: "XP Leveling & Rank System",
+      desc: "Chat activity XP progression, automated level-up role rewards, and custom rank cards.",
+      icon: Award,
+      bgColor: "bg-amber-500/10 text-amber-400 border-amber-500/20",
+      active: levelingEnabled,
+      onToggle: (val: boolean) => setLevelingEnabled(val),
+    },
+    {
+      id: "rewards",
+      name: "Voice & Text Activity Rewards",
+      desc: "Earn server roles automatically by spending time in voice channels and active chatting.",
+      icon: Gift,
+      bgColor: "bg-cyan-500/10 text-cyan-400 border-cyan-500/20",
+      active: rewardsEnabled,
+      onToggle: (val: boolean) => setRewardsEnabled(val),
+    },
+    {
+      id: "music",
+      name: "Music & DJ Audio (24/7)",
+      desc: "Lossless 24/7 high-fidelity music streaming, DSP audio equalizers, and DJ role permissions.",
+      icon: Music,
+      bgColor: "bg-[#5865F2]/10 text-[#5865F2] border-[#5865F2]/20",
+      active: stay247,
+      onToggle: (val: boolean) => setStay247(val),
+    },
+    {
+      id: "moderation",
+      name: "Bot Masters & Roles",
+      desc: "Authorize moderator roles to execute administrative and moderation commands.",
+      icon: Shield,
+      bgColor: "bg-blue-500/10 text-blue-400 border-blue-500/20",
+      active: modRoles.length > 0,
+      onToggle: () => setActiveTab("moderation"),
+    },
+    {
+      id: "logging",
+      name: "Audit & Logging Channels",
+      desc: "Detailed server audit logs for message edits, deletions, member joins/leaves, and mod actions.",
+      icon: FileText,
+      bgColor: "bg-slate-500/10 text-slate-400 border-slate-500/20",
+      active: Boolean(modLogChannel || loggingChannels?.messageEdit),
+      onToggle: () => setActiveTab("logging"),
+    },
+    {
+      id: "reactionroles",
+      name: "Reaction Roles & Menus",
+      desc: "Interactive Discord button and menu role assignment so members can self-assign roles.",
+      icon: Users,
+      bgColor: "bg-pink-500/10 text-pink-400 border-pink-500/20",
+      active: Boolean(rrItems.length > 0 && rrChannel),
+      onToggle: () => setActiveTab("reactionroles"),
+    },
+    {
+      id: "ai",
+      name: "Gemini AI Chatbot",
+      desc: "Conversational Google Gemini AI companion channel with customizable bot personality.",
+      icon: Bot,
+      bgColor: "bg-teal-500/10 text-teal-400 border-teal-500/20",
+      active: aiEnabled,
+      onToggle: (val: boolean) => setAiEnabled(val),
+    },
+    {
+      id: "tempvc",
+      name: "Temporary Voice Hubs",
+      desc: "Dynamic join-to-create temporary voice channels that automatically delete when empty.",
+      icon: Mic,
+      bgColor: "bg-indigo-500/10 text-indigo-400 border-indigo-500/20",
+      active: Boolean(tempVcHub),
+      onToggle: () => setActiveTab("tempvc"),
+    },
+    {
+      id: "starboard",
+      name: "Starboard (Hall of Fame)",
+      desc: "Showcase community highlight messages in a dedicated hall of fame based on star reactions.",
+      icon: Star,
+      bgColor: "bg-yellow-500/10 text-yellow-400 border-yellow-500/20",
+      active: Boolean(starboardChannel),
+      onToggle: () => setActiveTab("starboard"),
+    },
+    {
+      id: "autoresponders",
+      name: "Custom Auto-Responders",
+      desc: "Automated keyword triggers and instant pre-configured replies in server channels.",
+      icon: MessageCircle,
+      bgColor: "bg-orange-500/10 text-orange-400 border-orange-500/20",
+      active: autoResponders.length > 0,
+      onToggle: () => setActiveTab("autoresponders"),
+    },
+    {
+      id: "community",
+      name: "Birthdays & Counting Games",
+      desc: "Interactive counting streak game channel and automated celebratory birthday shoutouts.",
+      icon: Gamepad2,
+      bgColor: "bg-green-500/10 text-green-400 border-green-500/20",
+      active: Boolean(countingChannel || birthdayChannel),
+      onToggle: () => setActiveTab("community"),
+    },
+    {
+      id: "announce",
+      name: "Message Builder & Embeds",
+      desc: "Craft and dispatch polished rich Discord announcements with mentions and embeds.",
+      icon: Megaphone,
+      bgColor: "bg-rose-500/10 text-rose-400 border-rose-500/20",
+      active: Boolean(annChannel),
+      onToggle: () => setActiveTab("announce"),
+    },
+    {
+      id: "boosters",
+      name: "Server Boosters Appreciation",
+      desc: "Automatic public booster shoutouts and custom thank-you perks for server boosters.",
+      icon: Zap,
+      bgColor: "bg-violet-500/10 text-violet-400 border-violet-500/20",
+      active: boostersEnabled,
+      onToggle: (val: boolean) => setBoostersEnabled(val),
+    },
+  ];
+
   return (
-    <div className="h-screen w-full flex flex-col bg-[#090a0f] text-[#f4f4f5] font-sans overflow-hidden">
+    <div className="h-screen w-full flex flex-col bg-[#090a0f] text-[#f4f4f5] font-sans overflow-hidden relative">
+      {/* Expanding Morphing Reveal Pill Overlay */}
+      <ServerRevealTransition
+        isVisible={revealActive}
+        serverName={guild?.name || "Server"}
+        serverIcon={guildIconUrl}
+        serverInitials={guildInitials}
+        onAnimationComplete={() => setRevealActive(false)}
+      />
       {/* Toast Alert */}
       {toast && (
         <div
@@ -929,7 +1159,7 @@ export default function GuildDashboard({ params }: { params: Promise<{ guildId: 
           <div className="h-5 w-px bg-zinc-800 hidden sm:block" />
 
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-lg bg-zinc-800 border border-zinc-700 overflow-hidden flex items-center justify-center font-bold text-xs text-zinc-300 shrink-0">
+            <div className="w-12 h-12 rounded-xl bg-zinc-800 border border-zinc-700 overflow-hidden flex items-center justify-center font-bold text-sm text-zinc-300 shrink-0">
               {guildIconUrl ? (
                 <img
                   src={guildIconUrl}
@@ -938,7 +1168,7 @@ export default function GuildDashboard({ params }: { params: Promise<{ guildId: 
                   onError={(e) => { (e.currentTarget.style.display = "none"); }}
                 />
               ) : (
-                <span>{guildInitials}</span>
+                <span className="font-mono text-base">{guildInitials}</span>
               )}
             </div>
             <div>
@@ -1036,6 +1266,7 @@ export default function GuildDashboard({ params }: { params: Promise<{ guildId: 
               </p>
               <nav className="space-y-0.5">
                 {[
+                  { id: "notifications", label: "Social Alerts (Pingcord)", icon: Radio, tag: "Live" },
                   { id: "moderation", label: "Bot Masters & Roles", icon: Shield },
                   { id: "logging", label: "Audit & Logging Channels", icon: FileText },
                   { id: "automod", label: "Auto-Mod Security", icon: Lock },
@@ -1135,413 +1366,27 @@ export default function GuildDashboard({ params }: { params: Promise<{ guildId: 
               1. OVERVIEW: MODULAR GRID
           ═══════════════════════════════════════════════════════════════════ */}
           {activeTab === "overview" && (
-            <div className="space-y-6 w-full">
-              {/* Interactive Telemetry & Shard Radar */}
-              <ServerTelemetryCenter
-                guildName={guild?.name || "Server"}
-                memberCount={guild?.memberCount || 0}
-                setActiveTab={setActiveTab}
-              />
+            <ServerOverviewTab
+              guild={guild}
+              guildIconUrl={guildIconUrl}
+              guildInitials={guildInitials}
+              setActiveTab={setActiveTab}
+              modules={overviewModules}
+            />
+          )}
 
-              {/* Server Banner Header */}
-              <div className="p-6 sm:p-7 rounded-xl pro-card flex flex-col md:flex-row items-start md:items-center justify-between gap-6 w-full">
-                <div className="flex items-center gap-5">
-                  <div className="w-16 h-16 sm:w-18 sm:h-18 rounded-xl bg-zinc-800 border border-zinc-700 overflow-hidden flex items-center justify-center font-bold text-xl text-zinc-200 shrink-0">
-                    {guildIconUrl ? (
-                      <img
-                        src={guildIconUrl}
-                        alt={guild?.name || "Server"}
-                        className="w-full h-full object-cover"
-                        onError={(e) => { (e.currentTarget.style.display = "none"); }}
-                      />
-                    ) : (
-                      <span>{guildInitials}</span>
-                    )}
-                  </div>
-                  <div className="space-y-1.5">
-                    <h1 className="text-xl sm:text-2xl font-bold text-white tracking-tight">{guild?.name}</h1>
-                    <p className="text-xs font-mono text-zinc-400">Server ID: {guild?.id}</p>
-                    <div className="flex items-center gap-2 pt-1 flex-wrap">
-                      <span className="text-xs px-2.5 py-0.5 rounded-md bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-medium flex items-center gap-1.5">
-                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
-                        Bot Connected
-                      </span>
-                      <span className="text-xs px-2.5 py-0.5 rounded-md bg-zinc-800 text-zinc-300 font-medium border border-zinc-700">
-                        {guild?.memberCount} Members
-                      </span>
-                      <span className="text-xs px-2.5 py-0.5 rounded-md bg-zinc-800 text-zinc-300 border border-zinc-700 font-medium">
-                        All VIP Features Free
-                      </span>
-                      <span className="text-xs px-2.5 py-0.5 rounded-md bg-zinc-800 text-zinc-300 border border-zinc-700 font-medium flex items-center gap-1.5">
-                        <Terminal className="w-3.5 h-3.5 text-zinc-400" />
-                        Dual-Engine: Slash &amp; Prefixes (. / ? / !)
-                      </span>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-2.5 self-stretch md:self-auto justify-end">
-                  <Link
-                    href="/dashboard"
-                    className="btn-secondary px-4 py-2 text-xs font-semibold"
-                  >
-                    Switch Server
-                  </Link>
-                </div>
-              </div>
-
-              {/* Modular Section: Administration */}
-              <div className="space-y-3 w-full">
-                <div className="flex items-center justify-between px-0.5">
-                  <p className="text-xs font-mono uppercase tracking-wider text-zinc-400 font-semibold">
-                    Customization &amp; Administration
-                  </p>
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-                  {/* Bot Masters */}
-                  <div
-                    onClick={() => {
-                      dashboardAudio.playClick();
-                      setActiveTab("moderation");
-                    }}
-                    className="pro-card p-4.5 flex flex-col justify-between group cursor-pointer h-32 relative overflow-hidden hover:border-zinc-700 transition"
-                  >
-                    <div className="flex items-start justify-between">
-                      <div className="w-9 h-9 rounded-lg bg-zinc-800 border border-zinc-700 flex items-center justify-center text-zinc-300 group-hover:text-white transition">
-                        <Shield className="w-4.5 h-4.5 text-[#5865F2]" />
-                      </div>
-                      <div className="w-6 h-6 rounded-md bg-zinc-800/60 flex items-center justify-center text-zinc-500 group-hover:text-zinc-300 group-hover:translate-x-0.5 transition">
-                        <ChevronRight className="w-3.5 h-3.5" />
-                      </div>
-                    </div>
-                    <div>
-                      <h4 className="font-bold text-sm text-white group-hover:text-[#5865F2] transition">Bot Masters &amp; Roles</h4>
-                      <p className="text-xs text-zinc-400 mt-0.5 line-clamp-1">Admin &amp; mod command authority</p>
-                    </div>
-                  </div>
-
-                  {/* Audit & Logging Channels */}
-                  <div
-                    onClick={() => {
-                      dashboardAudio.playClick();
-                      setActiveTab("logging");
-                    }}
-                    className="pro-card p-4.5 flex flex-col justify-between group cursor-pointer h-32 relative overflow-hidden hover:border-zinc-700 transition"
-                  >
-                    <div className="flex items-start justify-between">
-                      <div className="w-9 h-9 rounded-lg bg-zinc-800 border border-zinc-700 flex items-center justify-center text-zinc-300 group-hover:text-white transition">
-                        <FileText className="w-4.5 h-4.5 text-zinc-300" />
-                      </div>
-                      <div className="w-6 h-6 rounded-md bg-zinc-800/60 flex items-center justify-center text-zinc-500 group-hover:text-zinc-300 group-hover:translate-x-0.5 transition">
-                        <ChevronRight className="w-3.5 h-3.5" />
-                      </div>
-                    </div>
-                    <div>
-                      <h4 className="font-bold text-sm text-white group-hover:text-[#5865F2] transition">Audit &amp; Logging</h4>
-                      <p className="text-xs text-zinc-400 mt-0.5 line-clamp-1">Route edited, deleted &amp; mod event logs</p>
-                    </div>
-                  </div>
-
-                  {/* Message Builder */}
-                  <div
-                    onClick={() => {
-                      dashboardAudio.playClick();
-                      setActiveTab("announce");
-                    }}
-                    className="pro-card p-4.5 flex flex-col justify-between group cursor-pointer h-32 relative overflow-hidden hover:border-zinc-700 transition"
-                  >
-                    <div className="flex items-start justify-between">
-                      <div className="w-9 h-9 rounded-lg bg-zinc-800 border border-zinc-700 flex items-center justify-center text-zinc-300 group-hover:text-white transition">
-                        <Megaphone className="w-4.5 h-4.5 text-zinc-300" />
-                      </div>
-                      <div className="w-6 h-6 rounded-md bg-zinc-800/60 flex items-center justify-center text-zinc-500 group-hover:text-zinc-300 group-hover:translate-x-0.5 transition">
-                        <ChevronRight className="w-3.5 h-3.5" />
-                      </div>
-                    </div>
-                    <div>
-                      <h4 className="font-bold text-sm text-white group-hover:text-[#5865F2] transition">Message Builder</h4>
-                      <p className="text-xs text-zinc-400 mt-0.5 line-clamp-1">Send announcement embeds to chat</p>
-                    </div>
-                  </div>
-
-                  {/* Auto-Mod Security */}
-                  <div
-                    onClick={() => {
-                      dashboardAudio.playClick();
-                      setActiveTab("automod");
-                    }}
-                    className="pro-card p-4.5 flex flex-col justify-between group cursor-pointer h-32 relative overflow-hidden hover:border-zinc-700 transition"
-                  >
-                    <div className="flex items-start justify-between">
-                      <div className="w-9 h-9 rounded-lg bg-zinc-800 border border-zinc-700 flex items-center justify-center text-zinc-300 group-hover:text-white transition">
-                        <Lock className="w-4.5 h-4.5 text-[#5865F2]" />
-                      </div>
-                      <div className="w-6 h-6 rounded-md bg-zinc-800/60 flex items-center justify-center text-zinc-500 group-hover:text-zinc-300 group-hover:translate-x-0.5 transition">
-                        <ChevronRight className="w-3.5 h-3.5" />
-                      </div>
-                    </div>
-                    <div>
-                      <h4 className="font-bold text-sm text-white group-hover:text-[#5865F2] transition">Auto-Mod Security</h4>
-                      <p className="text-xs text-zinc-400 mt-0.5 line-clamp-1">Anti-Invite, Anti-Spam &amp; filter rules</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Modular Section: Community Engagement */}
-              <div className="space-y-3 w-full">
-                <div className="flex items-center justify-between px-0.5">
-                  <p className="text-xs font-mono uppercase tracking-wider text-zinc-400 font-semibold">
-                    Community &amp; Engagement Systems
-                  </p>
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-                  {/* Leveling & Rank System */}
-                  <div
-                    onClick={() => {
-                      dashboardAudio.playClick();
-                      setActiveTab("leveling");
-                    }}
-                    className="pro-card p-4.5 flex flex-col justify-between group cursor-pointer h-32 relative overflow-hidden hover:border-zinc-700 transition"
-                  >
-                    <div className="flex items-start justify-between">
-                      <div className="w-9 h-9 rounded-lg bg-zinc-800 border border-zinc-700 flex items-center justify-center text-zinc-300 group-hover:text-white transition">
-                        <Award className="w-4.5 h-4.5 text-zinc-300" />
-                      </div>
-                      <span className="text-[10px] font-mono px-2 py-0.5 rounded-md bg-zinc-800 text-zinc-400 border border-zinc-700 font-semibold">
-                        Free VIP
-                      </span>
-                    </div>
-                    <div>
-                      <h4 className="font-bold text-sm text-white group-hover:text-[#5865F2] transition">Leveling &amp; XP System</h4>
-                      <p className="text-xs text-zinc-400 mt-0.5 line-clamp-1">XP cards, announcements &amp; tiers</p>
-                    </div>
-                  </div>
-
-                  {/* Voice & Text Activity Rewards */}
-                  <div
-                    onClick={() => {
-                      dashboardAudio.playClick();
-                      setActiveTab("rewards");
-                    }}
-                    className="pro-card p-4.5 flex flex-col justify-between group cursor-pointer h-32 relative overflow-hidden hover:border-zinc-700 transition"
-                  >
-                    <div className="flex items-start justify-between">
-                      <div className="w-9 h-9 rounded-lg bg-zinc-800 border border-zinc-700 flex items-center justify-center text-zinc-300 group-hover:text-white transition">
-                        <Gift className="w-4.5 h-4.5 text-[#5865F2]" />
-                      </div>
-                      <span className="text-[10px] font-mono px-2 py-0.5 rounded-md bg-[#5865F2]/10 text-[#5865F2] border border-[#5865F2]/20 font-semibold">
-                        VC &amp; Text
-                      </span>
-                    </div>
-                    <div>
-                      <h4 className="font-bold text-sm text-white group-hover:text-[#5865F2] transition">Voice &amp; Text Rewards</h4>
-                      <p className="text-xs text-zinc-400 mt-0.5 line-clamp-1">Milestones based on VC time &amp; text</p>
-                    </div>
-                  </div>
-
-                  {/* Server Boosters */}
-                  <div
-                    onClick={() => {
-                      dashboardAudio.playClick();
-                      setActiveTab("boosters");
-                    }}
-                    className="pro-card p-4.5 flex flex-col justify-between group cursor-pointer h-32 relative overflow-hidden hover:border-zinc-700 transition"
-                  >
-                    <div className="flex items-start justify-between">
-                      <div className="w-9 h-9 rounded-lg bg-zinc-800 border border-zinc-700 flex items-center justify-center text-zinc-300 group-hover:text-white transition">
-                        <Zap className="w-4.5 h-4.5 text-zinc-300" />
-                      </div>
-                      <span className="text-[10px] font-mono px-2 py-0.5 rounded-md bg-zinc-800 text-zinc-400 border border-zinc-700 font-semibold">
-                        Free VIP
-                      </span>
-                    </div>
-                    <div>
-                      <h4 className="font-bold text-sm text-white group-hover:text-[#5865F2] transition">Server Boosters</h4>
-                      <p className="text-xs text-zinc-400 mt-0.5 line-clamp-1">Thank boosters &amp; assign VIP roles</p>
-                    </div>
-                  </div>
-
-                  {/* Reaction Roles */}
-                  <div
-                    onClick={() => {
-                      dashboardAudio.playClick();
-                      setActiveTab("reactionroles");
-                    }}
-                    className="pro-card p-4.5 flex flex-col justify-between group cursor-pointer h-32 relative overflow-hidden hover:border-zinc-700 transition"
-                  >
-                    <div className="flex items-start justify-between">
-                      <div className="w-9 h-9 rounded-lg bg-zinc-800 border border-zinc-700 flex items-center justify-center text-zinc-300 group-hover:text-white transition">
-                        <Users className="w-4.5 h-4.5 text-zinc-300" />
-                      </div>
-                      <span className="text-[10px] font-mono px-2 py-0.5 rounded-md bg-zinc-800 text-zinc-400 border border-zinc-700 font-semibold">
-                        Free VIP
-                      </span>
-                    </div>
-                    <div>
-                      <h4 className="font-bold text-sm text-white group-hover:text-[#5865F2] transition">Reaction Roles</h4>
-                      <p className="text-xs text-zinc-400 mt-0.5 line-clamp-1">Button &amp; menu role self-assignment</p>
-                    </div>
-                  </div>
-
-                  {/* Auto-Responders */}
-                  <div
-                    onClick={() => {
-                      dashboardAudio.playClick();
-                      setActiveTab("autoresponders");
-                    }}
-                    className="pro-card p-4.5 flex flex-col justify-between group cursor-pointer h-32 relative overflow-hidden hover:border-zinc-700 transition"
-                  >
-                    <div className="flex items-start justify-between">
-                      <div className="w-9 h-9 rounded-lg bg-zinc-800 border border-zinc-700 flex items-center justify-center text-zinc-300 group-hover:text-white transition">
-                        <MessageCircle className="w-4.5 h-4.5 text-zinc-300" />
-                      </div>
-                      <span className="text-[10px] font-mono px-2 py-0.5 rounded-md bg-zinc-800 text-zinc-400 border border-zinc-700 font-semibold">
-                        Free VIP
-                      </span>
-                    </div>
-                    <div>
-                      <h4 className="font-bold text-sm text-white group-hover:text-[#5865F2] transition">Auto-Responders</h4>
-                      <p className="text-xs text-zinc-400 mt-0.5 line-clamp-1">Custom keyword trigger replies</p>
-                    </div>
-                  </div>
-
-                  {/* Welcome & Goodbye */}
-                  <div
-                    onClick={() => {
-                      dashboardAudio.playClick();
-                      setActiveTab("welcome");
-                    }}
-                    className="pro-card p-4.5 flex flex-col justify-between group cursor-pointer h-32 relative overflow-hidden hover:border-zinc-700 transition"
-                  >
-                    <div className="flex items-start justify-between">
-                      <div className="w-9 h-9 rounded-lg bg-zinc-800 border border-zinc-700 flex items-center justify-center text-zinc-300 group-hover:text-white transition">
-                        <Bell className="w-4.5 h-4.5 text-zinc-300" />
-                      </div>
-                      <div className="w-6 h-6 rounded-md bg-zinc-800/60 flex items-center justify-center text-zinc-500 group-hover:text-zinc-300 group-hover:translate-x-0.5 transition">
-                        <ChevronRight className="w-3.5 h-3.5" />
-                      </div>
-                    </div>
-                    <div>
-                      <h4 className="font-bold text-sm text-white group-hover:text-[#5865F2] transition">Welcome Messages</h4>
-                      <p className="text-xs text-zinc-400 mt-0.5 line-clamp-1">Greet members &amp; assign auto-roles</p>
-                    </div>
-                  </div>
-
-                  {/* Starboard */}
-                  <div
-                    onClick={() => {
-                      dashboardAudio.playClick();
-                      setActiveTab("starboard");
-                    }}
-                    className="pro-card p-4.5 flex flex-col justify-between group cursor-pointer h-32 relative overflow-hidden hover:border-zinc-700 transition"
-                  >
-                    <div className="flex items-start justify-between">
-                      <div className="w-9 h-9 rounded-lg bg-zinc-800 border border-zinc-700 flex items-center justify-center text-zinc-300 group-hover:text-white transition">
-                        <Star className="w-4.5 h-4.5 text-amber-400" />
-                      </div>
-                      <div className="w-6 h-6 rounded-md bg-zinc-800/60 flex items-center justify-center text-zinc-500 group-hover:text-zinc-300 group-hover:translate-x-0.5 transition">
-                        <ChevronRight className="w-3.5 h-3.5" />
-                      </div>
-                    </div>
-                    <div>
-                      <h4 className="font-bold text-sm text-white group-hover:text-[#5865F2] transition">Starboard</h4>
-                      <p className="text-xs text-zinc-400 mt-0.5 line-clamp-1">Pin highlight messages with star reactions</p>
-                    </div>
-                  </div>
-
-                  {/* Suggestions */}
-                  <div
-                    onClick={() => {
-                      dashboardAudio.playClick();
-                      setActiveTab("suggestions");
-                    }}
-                    className="pro-card p-4.5 flex flex-col justify-between group cursor-pointer h-32 relative overflow-hidden hover:border-zinc-700 transition"
-                  >
-                    <div className="flex items-start justify-between">
-                      <div className="w-9 h-9 rounded-lg bg-zinc-800 border border-zinc-700 flex items-center justify-center text-zinc-300 group-hover:text-white transition">
-                        <ThumbsUp className="w-4.5 h-4.5 text-zinc-300" />
-                      </div>
-                      <div className="w-6 h-6 rounded-md bg-zinc-800/60 flex items-center justify-center text-zinc-500 group-hover:text-zinc-300 group-hover:translate-x-0.5 transition">
-                        <ChevronRight className="w-3.5 h-3.5" />
-                      </div>
-                    </div>
-                    <div>
-                      <h4 className="font-bold text-sm text-white group-hover:text-[#5865F2] transition">Suggestions Box</h4>
-                      <p className="text-xs text-zinc-400 mt-0.5 line-clamp-1">Community voting with upvote buttons</p>
-                    </div>
-                  </div>
-
-                  {/* Birthdays & Counting */}
-                  <div
-                    onClick={() => {
-                      dashboardAudio.playClick();
-                      setActiveTab("community");
-                    }}
-                    className="pro-card p-4.5 flex flex-col justify-between group cursor-pointer h-32 relative overflow-hidden hover:border-zinc-700 transition"
-                  >
-                    <div className="flex items-start justify-between">
-                      <div className="w-9 h-9 rounded-lg bg-zinc-800 border border-zinc-700 flex items-center justify-center text-zinc-300 group-hover:text-white transition">
-                        <Cake className="w-4.5 h-4.5 text-zinc-300" />
-                      </div>
-                      <div className="w-6 h-6 rounded-md bg-zinc-800/60 flex items-center justify-center text-zinc-500 group-hover:text-zinc-300 group-hover:translate-x-0.5 transition">
-                        <ChevronRight className="w-3.5 h-3.5" />
-                      </div>
-                    </div>
-                    <div>
-                      <h4 className="font-bold text-sm text-white group-hover:text-[#5865F2] transition">Birthdays &amp; Games</h4>
-                      <p className="text-xs text-zinc-400 mt-0.5 line-clamp-1">Birthday celebrations &amp; counting streaks</p>
-                    </div>
-                  </div>
-
-                  {/* Music & DJ (24/7 Stay) */}
-                  <div
-                    onClick={() => {
-                      dashboardAudio.playClick();
-                      setActiveTab("music");
-                    }}
-                    className="pro-card p-4.5 flex flex-col justify-between group cursor-pointer h-32 relative overflow-hidden hover:border-zinc-700 transition"
-                  >
-                    <div className="flex items-start justify-between">
-                      <div className="w-9 h-9 rounded-lg bg-zinc-800 border border-zinc-700 flex items-center justify-center text-zinc-300 group-hover:text-white transition">
-                        <Music className="w-4.5 h-4.5 text-[#5865F2]" />
-                      </div>
-                      <span className="text-[10px] font-mono px-2 py-0.5 rounded-md bg-[#5865F2]/10 text-[#5865F2] border border-[#5865F2]/20 font-semibold">
-                        24/7 Stay Free
-                      </span>
-                    </div>
-                    <div>
-                      <h4 className="font-bold text-sm text-white group-hover:text-[#5865F2] transition">Music &amp; DJ Suite</h4>
-                      <p className="text-xs text-zinc-400 mt-0.5 line-clamp-1">DJ permissions, volume &amp; 24/7 stay</p>
-                    </div>
-                  </div>
-
-                  {/* AI Chatbot */}
-                  <div
-                    onClick={() => {
-                      dashboardAudio.playClick();
-                      setActiveTab("ai");
-                    }}
-                    className="pro-card p-4.5 flex flex-col justify-between group cursor-pointer h-32 relative overflow-hidden hover:border-zinc-700 transition"
-                  >
-                    <div className="flex items-start justify-between">
-                      <div className="w-9 h-9 rounded-lg bg-zinc-800 border border-zinc-700 flex items-center justify-center text-zinc-300 group-hover:text-white transition">
-                        <Bot className="w-4.5 h-4.5 text-zinc-300" />
-                      </div>
-                      <div className="w-6 h-6 rounded-md bg-zinc-800/60 flex items-center justify-center text-zinc-500 group-hover:text-zinc-300 group-hover:translate-x-0.5 transition">
-                        <ChevronRight className="w-3.5 h-3.5" />
-                      </div>
-                    </div>
-                    <div>
-                      <h4 className="font-bold text-sm text-white group-hover:text-[#5865F2] transition">Gemini AI Chatbot</h4>
-                      <p className="text-xs text-zinc-400 mt-0.5 line-clamp-1">AI chat channel &amp; custom personality</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+          {/* ═══════════════════════════════════════════════════════════════════
+              SOCIAL MEDIA ALERTS & STREAMS (PINGCORD SYSTEM)
+          ═══════════════════════════════════════════════════════════════════ */}
+          {activeTab === "notifications" && (
+            <SocialAlertsStudio
+              channels={guild?.channels.text || []}
+              roles={guild?.roles || []}
+              guildId={guildId}
+              config={notificationsConfig}
+              onChange={setNotificationsConfig}
+              onSendTest={handleSendTestNotification}
+            />
           )}
 
           {/* ═══════════════════════════════════════════════════════════════════

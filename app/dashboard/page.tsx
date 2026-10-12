@@ -328,42 +328,42 @@ export default function DashboardPage() {
       )}
 
       {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 flex-1 w-full space-y-7">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 flex-1 w-full space-y-8">
         
         {/* Banner Section */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-zinc-800/80 pb-6">
           <div>
-            <div className="flex items-center gap-2.5">
-              <h1 className="text-2xl sm:text-3xl font-black text-white tracking-tight uppercase">
-                SERVER MANAGEMENT CONSOLE
+            <div className="flex items-center gap-3">
+              <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
+                Select a Server
               </h1>
-              <span className="text-xs px-2.5 py-0.5 rounded-full bg-[#5865F2]/10 border border-[#5865F2]/20 text-[#5865F2] font-mono font-bold">
+              <span className="text-xs px-2.5 py-0.5 rounded-full bg-[#5865F2]/10 border border-[#5865F2]/30 text-[#5865F2] font-mono font-bold">
                 {guilds.length} SERVERS
               </span>
             </div>
             <p className="text-xs sm:text-sm text-zinc-400 mt-1">
-              Select a Discord server to configure auto-moderation, music streaming, XP leveling, and automated audit logs.
+              Select a Discord server to configure auto-moderation, music streaming, alerts, and bot settings.
             </p>
           </div>
 
-          <div className="flex items-center gap-2.5">
+          <div className="flex items-center gap-3">
             <div className="relative">
-              <Search className="w-4 h-4 text-zinc-500 absolute left-3 top-1/2 -translate-y-1/2" />
+              <Search className="w-4 h-4 text-zinc-500 absolute left-3.5 top-1/2 -translate-y-1/2" />
               <input
                 type="text"
-                placeholder="Filter servers..."
+                placeholder="Filter Server..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="pro-input pl-9 pr-3.5 py-2 text-xs w-48 sm:w-60 font-medium"
+                className="pro-input pl-10 pr-4 py-2.5 text-xs w-52 sm:w-64 rounded-full font-medium"
               />
             </div>
             <button
               onClick={() => fetchGuilds(false)}
               title="Refresh server list"
-              className="px-3.5 py-2 rounded-lg btn-secondary flex items-center gap-2 text-xs font-bold cursor-pointer"
+              className="px-3.5 py-2.5 rounded-full btn-secondary flex items-center gap-2 text-xs font-bold cursor-pointer"
             >
               <RefreshCw className={`w-3.5 h-3.5 ${isRefreshing ? "animate-spin text-[#5865F2]" : ""}`} />
-              <span className="hidden sm:inline">REFRESH</span>
+              <span className="hidden sm:inline">Refresh</span>
             </button>
           </div>
         </div>
@@ -372,13 +372,13 @@ export default function DashboardPage() {
         <div className="flex items-center gap-2 overflow-x-auto pb-1">
           {[
             { id: "all", label: `All Servers (${guilds.length})` },
-            { id: "active", label: `Configured (${activeCount})` },
+            { id: "active", label: `Connected (${activeCount})` },
             { id: "uninvited", label: `Requires Setup (${guilds.length - activeCount})` },
           ].map((mode) => (
             <button
               key={mode.id}
               onClick={() => setFilterMode(mode.id as any)}
-              className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition cursor-pointer select-none ${
+              className={`px-4 py-1.5 rounded-full text-xs font-semibold transition cursor-pointer select-none ${
                 filterMode === mode.id
                   ? "bg-[#5865F2] text-white shadow-sm"
                   : "bg-[#12141c] text-zinc-400 hover:text-white border border-zinc-800"
@@ -392,8 +392,8 @@ export default function DashboardPage() {
         {/* Official BMC Patronage Callout */}
         <div className="p-5 sm:p-6 rounded-2xl bg-[#0d0f15] border border-zinc-800/80 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div className="flex items-center gap-4">
-            <div className="w-11 h-11 rounded-xl bg-[#FFDD00]/10 border border-[#FFDD00]/30 flex items-center justify-center text-[#FFDD00] shrink-0">
-              <BmcCupIcon className="w-5 h-5 text-[#FFDD00]" />
+            <div className="w-12 h-12 rounded-xl bg-[#FFDD00]/10 border border-[#FFDD00]/30 flex items-center justify-center text-[#FFDD00] shrink-0">
+              <BmcCupIcon className="w-6 h-6 text-[#FFDD00]" />
             </div>
             <div>
               <div className="text-sm font-bold text-white flex items-center gap-2">
@@ -412,7 +412,7 @@ export default function DashboardPage() {
               href="https://www.buymeacoffee.com/veplexity1"
               target="_blank"
               rel="noopener noreferrer"
-              className="btn-bmc px-4 py-2 rounded-lg text-xs font-bold flex items-center gap-2"
+              className="btn-bmc px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-2"
             >
               <BmcCupIcon className="w-4 h-4 text-black" />
               <span>BUY A COFFEE</span>
@@ -451,7 +451,7 @@ export default function DashboardPage() {
           <>
             {filteredGuilds.length === 0 ? (
               <div className="py-16 text-center rounded-2xl bg-[#0d0f15] border border-zinc-800 p-8 space-y-3">
-                <Server className="w-8 h-8 text-zinc-600 mx-auto" />
+                <Server className="w-10 h-10 text-zinc-600 mx-auto" />
                 <h3 className="text-sm font-bold uppercase text-zinc-300">NO SERVERS FOUND</h3>
                 <p className="text-xs text-zinc-500 max-w-sm mx-auto">
                   {search ? "No servers match your filter query." : "You do not currently manage any servers with Administrator permissions."}
@@ -465,10 +465,10 @@ export default function DashboardPage() {
                   hidden: { opacity: 0 },
                   show: {
                     opacity: 1,
-                    transition: { staggerChildren: 0.05 },
+                    transition: { staggerChildren: 0.04 },
                   },
                 }}
-                className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5"
+                className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
               >
                 {filteredGuilds.map((guild) => (
                   <motion.div
@@ -477,87 +477,92 @@ export default function DashboardPage() {
                       hidden: { opacity: 0, y: 12 },
                       show: { opacity: 1, y: 0, transition: { duration: 0.25, ease: [0.16, 1, 0.3, 1] } },
                     }}
-                    className="rounded-xl pro-card p-5 sm:p-6 flex flex-col justify-between gap-5 group"
+                    whileHover={{ y: -4, transition: { duration: 0.15 } }}
+                    className="rounded-2xl pro-card overflow-hidden flex flex-col justify-between group border border-zinc-800/80 hover:border-zinc-700 transition shadow-lg"
                   >
-                    {/* Server Info */}
-                    <div className="flex items-start gap-3.5">
-                      <div className="w-12 h-12 rounded-xl bg-zinc-900 border border-zinc-700/80 overflow-hidden shrink-0 flex items-center justify-center font-bold text-sm text-zinc-200">
-                        {guild.iconUrl ? (
-                          <img
-                            src={guild.iconUrl}
-                            alt={guild.name}
-                            className="w-full h-full object-cover"
-                            onError={(e) => { (e.currentTarget.style.display = "none"); }}
-                          />
+                    {/* Upper Ambient Backdrop */}
+                    <div className="h-20 bg-gradient-to-b from-[#181a29] to-[#0e1017] border-b border-zinc-800/40 relative">
+                      {/* Connection pill in top right */}
+                      <div className="absolute top-3 right-3">
+                        {guild.botJoined ? (
+                          <span className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-950/60 border border-emerald-500/30 text-emerald-400 font-mono text-[10px] font-bold">
+                            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                            Connected
+                          </span>
                         ) : (
-                          <span>{guild.name.slice(0, 2).toUpperCase()}</span>
+                          <span className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-zinc-900/80 border border-zinc-700 text-zinc-400 font-mono text-[10px] font-bold">
+                            Setup Needed
+                          </span>
                         )}
-                      </div>
-
-                      <div className="space-y-1.5 flex-1 min-w-0">
-                        <h3 className="font-bold text-base text-white truncate" title={guild.name}>
-                          {guild.name}
-                        </h3>
-
-                        <div className="flex items-center gap-2 text-xs">
-                          {guild.owner ? (
-                            <span className="font-mono text-zinc-400 text-[10px] font-bold uppercase bg-zinc-800/80 px-2 py-0.5 rounded">OWNER</span>
-                          ) : (
-                            <span className="font-mono text-zinc-400 text-[10px] font-bold uppercase bg-zinc-800/80 px-2 py-0.5 rounded">ADMIN</span>
-                          )}
-
-                          <span className="text-zinc-600">•</span>
-
-                          {guild.botJoined ? (
-                            <span className="flex items-center gap-1.5 text-emerald-400 font-mono text-[10px] font-bold uppercase">
-                              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                              CONNECTED
-                            </span>
-                          ) : (
-                            <span className="text-zinc-500 font-mono text-[10px] uppercase font-bold">
-                              SETUP NEEDED
-                            </span>
-                          )}
-                        </div>
                       </div>
                     </div>
 
-                    {/* Action */}
-                    <div>
-                      {guild.botJoined ? (
-                        <button
-                          onClick={() => handleManageClick(guild)}
-                          className="w-full py-2.5 px-4 rounded-lg btn-discord text-xs font-bold transition flex items-center justify-center gap-2 cursor-pointer"
-                        >
-                          <span>MANAGE SERVER</span>
-                          <ChevronRight className="w-4 h-4" />
-                        </button>
-                      ) : (
-                        <a
-                          href={`/invite?guild_id=${guild.id}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          onClick={() => handleInviteClick(guild.id, guild.name)}
-                          className={`w-full py-2.5 px-4 rounded-lg border text-xs font-bold transition flex items-center justify-center gap-2 ${
-                            pendingGuildId === guild.id
-                              ? "bg-zinc-900 border-[#5865F2] text-[#5865F2] animate-pulse"
-                              : "btn-secondary"
-                          }`}
-                        >
-                          {pendingGuildId === guild.id ? (
-                            <>
-                              <RefreshCw className="w-3.5 h-3.5 animate-spin" />
-                              <span>DETECTING BOT...</span>
-                            </>
+                    {/* Centered Large Circular Avatar */}
+                    <div className="flex flex-col items-center px-6 pb-6 pt-0 -mt-10 text-center flex-1 justify-between gap-5">
+                      <div className="flex flex-col items-center gap-3 w-full">
+                        <div className="w-20 h-20 sm:w-22 sm:h-22 rounded-full bg-[#12141c] border-4 border-[#0e1017] shadow-xl overflow-hidden flex items-center justify-center font-bold text-lg text-zinc-200 shrink-0 group-hover:scale-105 transition-transform duration-200">
+                          {guild.iconUrl ? (
+                            <img
+                              src={guild.iconUrl}
+                              alt={guild.name}
+                              className="w-full h-full object-cover"
+                              onError={(e) => { (e.currentTarget.style.display = "none"); }}
+                            />
                           ) : (
-                            <>
-                              <Plus className="w-4 h-4 text-[#5865F2]" />
-                              <span>INVITE BOT</span>
-                              <ExternalLink className="w-3.5 h-3.5 text-zinc-400" />
-                            </>
+                            <span className="text-xl font-mono text-zinc-300">{guild.name.slice(0, 2).toUpperCase()}</span>
                           )}
-                        </a>
-                      )}
+                        </div>
+
+                        {/* Server Title & Roles */}
+                        <div className="space-y-1 w-full">
+                          <h3 className="font-bold text-base text-white truncate max-w-full" title={guild.name}>
+                            {guild.name}
+                          </h3>
+
+                          <div className="flex items-center justify-center gap-2 text-xs">
+                            <span className="font-mono text-zinc-400 text-[11px] font-medium">
+                              {guild.owner ? "Server Owner" : "Administrator"}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Action Pill Button */}
+                      <div className="w-full pt-1">
+                        {guild.botJoined ? (
+                          <button
+                            onClick={() => handleManageClick(guild)}
+                            className="w-full py-2.5 px-4 rounded-xl btn-discord text-xs font-bold transition flex items-center justify-center gap-2 cursor-pointer shadow-md hover:shadow-[#5865F2]/20"
+                          >
+                            <span>Go</span>
+                            <ChevronRight className="w-4 h-4" />
+                          </button>
+                        ) : (
+                          <a
+                            href={`/invite?guild_id=${guild.id}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            onClick={() => handleInviteClick(guild.id, guild.name)}
+                            className={`w-full py-2.5 px-4 rounded-xl text-xs font-bold transition flex items-center justify-center gap-2 cursor-pointer ${
+                              pendingGuildId === guild.id
+                                ? "bg-zinc-900 border border-[#5865F2] text-[#5865F2] animate-pulse"
+                                : "bg-amber-500/10 hover:bg-amber-500/20 text-amber-300 border border-amber-500/30"
+                            }`}
+                          >
+                            {pendingGuildId === guild.id ? (
+                              <>
+                                <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                                <span>Detecting Bot...</span>
+                              </>
+                            ) : (
+                              <>
+                                <Plus className="w-4 h-4" />
+                                <span>Setup</span>
+                              </>
+                            )}
+                          </a>
+                        )}
+                      </div>
                     </div>
                   </motion.div>
                 ))}
