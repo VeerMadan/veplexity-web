@@ -898,43 +898,46 @@ export default function GuildDashboard({ params }: { params: Promise<{ guildId: 
 
   return (
     <div className="min-h-screen bg-[#070308] text-[#f2f3f5] flex flex-col font-sans w-full relative overflow-x-hidden selection:bg-orange-500/30 selection:text-orange-200">
-      {/* Ambient Radial Backdrops (Eliminates Empty Void) */}
+      {/* ─── AMBIENT LIQUID ORBS & HOLOGRAPHIC DEPTH ───────────────────────── */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
-        <div className="absolute -top-32 -left-32 w-96 h-96 bg-fuchsia-600/10 rounded-full blur-[140px]" />
-        <div className="absolute top-1/4 -right-32 w-96 h-96 bg-orange-600/10 rounded-full blur-[140px]" />
-        <div className="absolute bottom-1/4 left-1/4 w-96 h-96 bg-purple-700/10 rounded-full blur-[140px]" />
-        <div className="absolute -bottom-32 right-1/3 w-96 h-96 bg-fuchsia-700/10 rounded-full blur-[140px]" />
+        <div className="absolute -top-40 -left-40 w-[36rem] h-[36rem] bg-gradient-to-br from-fuchsia-600/20 via-pink-600/15 to-transparent rounded-full blur-[140px] animate-liquid-1" />
+        <div className="absolute top-1/4 -right-40 w-[38rem] h-[38rem] bg-gradient-to-bl from-orange-600/20 via-amber-600/15 to-transparent rounded-full blur-[150px] animate-liquid-2" />
+        <div className="absolute bottom-1/4 left-1/5 w-[34rem] h-[34rem] bg-gradient-to-tr from-purple-700/20 via-indigo-600/15 to-transparent rounded-full blur-[140px] animate-liquid-3" />
+        <div className="absolute -bottom-40 right-1/4 w-[36rem] h-[36rem] bg-gradient-to-tl from-fuchsia-700/18 via-purple-900/15 to-transparent rounded-full blur-[140px] animate-liquid-1" />
+        {/* Subtle Cyber Dust Hologram Mesh */}
+        <div className="absolute inset-0 bg-[radial-gradient(#ffffff0a_1px,transparent_1px)] [background-size:28px_28px] opacity-70" />
       </div>
 
       {/* Toast Alert */}
       {toast && (
         <div
-          className={`fixed top-5 right-5 z-50 px-5 py-3 rounded-xl border text-sm font-medium flex items-center gap-3 shadow-2xl backdrop-blur-xl transition-all ${
+          className={`fixed top-6 right-6 z-50 px-6 py-3.5 rounded-2xl border text-sm font-bold flex items-center gap-3 shadow-2xl backdrop-blur-2xl transition-all ${
             toast.type === "success"
-              ? "bg-[#182a20] border-emerald-500/40 text-emerald-300"
-              : "bg-[#2a1818] border-red-500/40 text-red-300"
+              ? "bg-[#182a20]/95 border-emerald-500/50 text-emerald-300 shadow-emerald-500/20"
+              : "bg-[#2a1818]/95 border-red-500/50 text-red-300 shadow-red-500/20"
           }`}
         >
-          {toast.type === "success" ? <CheckCircle2 className="w-4 h-4 text-emerald-400" /> : <AlertCircle className="w-4 h-4 text-red-400" />}
+          {toast.type === "success" ? <CheckCircle2 className="w-5 h-5 text-emerald-400" /> : <AlertCircle className="w-5 h-5 text-red-400" />}
           <span>{toast.message}</span>
         </div>
       )}
 
-      {/* Top Navbar - Full Width */}
-      <header className="border-b border-white/10 bg-[#0d0514]/90 backdrop-blur-2xl sticky top-0 z-40 px-6 sm:px-10 py-3.5 flex items-center justify-between w-full shadow-[0_4px_20px_rgba(0,0,0,0.5)]">
-        <div className="flex items-center gap-4">
+      {/* ─── TOP NAVBAR: HIGH-END LIQUID GLASS STRIP ──────────────────────── */}
+      <header className="glass-liquid-nav sticky top-0 z-40 px-6 sm:px-10 lg:px-12 py-4.5 sm:py-5 flex items-center justify-between w-full min-h-[4.75rem]">
+        <div className="flex items-center gap-5">
           <Link
             href="/dashboard"
-            className="flex items-center gap-2 text-xs font-semibold text-gray-400 hover:text-white transition-colors"
+            className="flex items-center gap-2.5 text-xs sm:text-sm font-bold text-zinc-300 hover:text-white neo-liquid-btn px-4 py-2.5 rounded-xl transition-all"
+            title="Return to Server Switcher"
           >
-            <ArrowLeft className="w-4 h-4" />
+            <ArrowLeft className="w-4.5 h-4.5 text-orange-400" />
             <span className="hidden sm:inline">All Servers</span>
           </Link>
 
-          <div className="h-4 w-px bg-white/10 hidden sm:block" />
+          <div className="h-6 w-px bg-white/10 hidden sm:block" />
 
-          <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-fuchsia-600/20 via-[#1e1f24] to-purple-800/30 border border-white/10 overflow-hidden flex items-center justify-center font-bold text-xs text-fuchsia-300 shrink-0 shadow-inner">
+          <div className="flex items-center gap-3.5">
+            <div className="w-12 h-12 sm:w-13 sm:h-13 rounded-2xl bg-gradient-to-br from-fuchsia-600/30 via-[#20102e] to-orange-600/30 border border-white/20 overflow-hidden flex items-center justify-center font-black text-sm text-fuchsia-300 shrink-0 shadow-[0_4px_20px_rgba(217,70,239,0.3)]">
               {guildIconUrl ? (
                 <img
                   src={guildIconUrl}
@@ -947,9 +950,9 @@ export default function GuildDashboard({ params }: { params: Promise<{ guildId: 
               )}
             </div>
             <div>
-              <div className="flex items-center gap-2.5">
-                <span className="font-extrabold text-sm sm:text-base text-white truncate max-w-xs">{guild?.name}</span>
-                <span className="text-[10px] px-2 py-0.5 rounded-full bg-fuchsia-500/10 text-fuchsia-300 font-mono hidden md:inline border border-fuchsia-500/20">
+              <div className="flex items-center gap-3">
+                <span className="font-black text-base sm:text-lg lg:text-xl text-white truncate max-w-sm tracking-tight">{guild?.name}</span>
+                <span className="text-xs px-2.5 py-1 rounded-full bg-fuchsia-500/15 text-fuchsia-300 font-mono hidden md:inline border border-fuchsia-500/30 font-bold">
                   {guild?.id}
                 </span>
               </div>
@@ -957,21 +960,21 @@ export default function GuildDashboard({ params }: { params: Promise<{ guildId: 
           </div>
         </div>
 
-        <div className="flex items-center gap-2.5 sm:gap-3">
+        <div className="flex items-center gap-3 sm:gap-3.5">
           <button
             onClick={() => {
               const next = dashboardAudio.toggleSound();
               setSoundOn(next);
             }}
-            className={`px-3 py-1.5 rounded-lg border text-xs flex items-center gap-1.5 transition cursor-pointer ${
+            className={`px-4 py-2.5 rounded-xl border text-xs sm:text-sm flex items-center gap-2 transition cursor-pointer neo-liquid-btn ${
               soundOn
-                ? "bg-amber-500/15 border-amber-500/30 text-amber-300 hover:bg-amber-500/25 shadow-sm shadow-amber-500/10"
-                : "bg-white/5 border-white/5 text-zinc-500 hover:text-zinc-300"
+                ? "bg-amber-500/20 border-amber-500/40 text-amber-300 shadow-md shadow-amber-500/15"
+                : "bg-white/5 border-white/10 text-zinc-400 hover:text-white"
             }`}
-            title="Toggle Dashboard Sound Effects"
+            title="Toggle Dashboard Cybernetic Sound Effects"
           >
-            {soundOn ? <Volume2 className="w-3.5 h-3.5 text-amber-400" /> : <VolumeX className="w-3.5 h-3.5" />}
-            <span className="hidden md:inline font-mono text-[11px] font-bold">
+            {soundOn ? <Volume2 className="w-4 h-4 text-amber-400" /> : <VolumeX className="w-4 h-4 text-zinc-500" />}
+            <span className="hidden md:inline font-mono text-xs font-bold">
               {soundOn ? "SFX ON" : "SFX MUTED"}
             </span>
           </button>
@@ -980,34 +983,34 @@ export default function GuildDashboard({ params }: { params: Promise<{ guildId: 
             href="https://www.discord.gg/R6ZrqpWEcc"
             target="_blank"
             rel="noopener noreferrer"
-            className="px-3.5 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-gray-300 hover:text-white transition text-xs flex items-center gap-2 border border-white/5"
-            title="Official Discord Server"
+            className="px-4 py-2.5 rounded-xl neo-liquid-btn text-zinc-300 hover:text-white transition text-xs sm:text-sm flex items-center gap-2 font-bold"
+            title="Join Official VePlexity Point Discord Community"
           >
-            <MessageCircle className="w-3.5 h-3.5 text-fuchsia-400" />
-            <span className="hidden sm:inline font-medium">VePlexity Point</span>
+            <MessageCircle className="w-4 h-4 text-fuchsia-400" />
+            <span className="hidden sm:inline">VePlexity Point</span>
           </a>
 
           <a
             href="https://www.buymeacoffee.com/veplexity1"
             target="_blank"
             rel="noopener noreferrer"
-            className="px-3.5 py-1.5 rounded-lg bg-amber-500/10 hover:bg-amber-500/20 text-amber-300 border border-amber-500/20 transition text-xs flex items-center gap-2"
-            title="Support Creator"
+            className="px-4.5 py-2.5 rounded-xl neo-liquid-btn bg-amber-500/15 hover:bg-amber-500/25 text-amber-300 border-amber-500/35 transition text-xs sm:text-sm flex items-center gap-2 font-extrabold"
+            title="Support Creator on Buy Me a Coffee"
           >
-            <Coffee className="w-3.5 h-3.5 text-amber-400" />
-            <span className="hidden sm:inline font-semibold">Support</span>
+            <Coffee className="w-4 h-4 text-amber-400" />
+            <span className="hidden sm:inline">Support</span>
           </a>
 
           <button
             onClick={handleSave}
             disabled={saving || !hasUnsavedChanges}
-            className={`py-1.5 px-5 rounded-lg font-bold text-xs transition-all flex items-center gap-2 ${
+            className={`py-2.5 px-6 sm:px-7 rounded-xl font-black text-xs sm:text-sm transition-all flex items-center gap-2.5 ${
               hasUnsavedChanges
-                ? "bg-fuchsia-600 hover:bg-fuchsia-500 text-white shadow-lg shadow-fuchsia-600/30 animate-pulse"
-                : "bg-white/5 text-gray-500 border border-white/5 cursor-not-allowed"
+                ? "neo-liquid-primary text-white shadow-xl shadow-fuchsia-600/40 animate-pulse cursor-pointer"
+                : "neo-liquid-btn text-zinc-500 border border-white/5 cursor-not-allowed opacity-60"
             }`}
           >
-            <Save className="w-3.5 h-3.5" />
+            <Save className="w-4 h-4" />
             <span>{saving ? "Saving..." : "Save Changes"}</span>
           </button>
         </div>
@@ -1015,31 +1018,34 @@ export default function GuildDashboard({ params }: { params: Promise<{ guildId: 
 
       {/* Main Full-Width Container */}
       <div className="flex-1 flex w-full">
-        {/* Left Navigation Sidebar */}
-        <aside className="w-72 xl:w-80 border-r border-white/10 bg-[#0c0512]/80 backdrop-blur-2xl p-4 shrink-0 hidden lg:flex flex-col justify-between z-10 shadow-xl">
-          <div className="space-y-6">
-            <div className="space-y-1">
+        {/* ─── LEFT NAVIGATION SIDEBAR: TACTILE LIQUID GLASS ASIDE ────────── */}
+        <aside className="w-80 xl:w-92 glass-liquid-aside p-5 xl:p-6 shrink-0 hidden lg:flex flex-col justify-between z-10">
+          <div className="space-y-7">
+            <div>
               <button
                 onClick={() => {
                   dashboardAudio.playClick();
                   setActiveTab("overview");
                 }}
-                className={`w-full text-left px-4 py-3 rounded-2xl text-xs font-bold flex items-center gap-3 transition cursor-pointer select-none ${
+                className={`w-full text-left px-4.5 py-3.5 rounded-2xl text-sm font-bold flex items-center gap-3.5 transition cursor-pointer select-none relative ${
                   activeTab === "overview"
-                    ? "bg-gradient-to-r from-orange-600/25 via-fuchsia-600/20 to-transparent text-white border border-orange-500/40 shadow-md shadow-orange-600/10"
-                    : "text-zinc-400 hover:text-white hover:bg-white/5"
+                    ? "neo-nav-active text-white shadow-lg shadow-orange-600/15"
+                    : "text-zinc-400 hover:text-white hover:bg-white/[0.06] border border-transparent"
                 }`}
               >
-                <Layers className="w-4.5 h-4.5 text-orange-400" />
-                <span className="text-sm">Server Overview</span>
+                {activeTab === "overview" && (
+                  <div className="absolute left-0 top-2 bottom-2 w-1.5 rounded-r-full bg-gradient-to-b from-orange-400 via-pink-500 to-fuchsia-500 shadow-[0_0_12px_#f97316]" />
+                )}
+                <Layers className="w-5 h-5 text-orange-400 shrink-0" />
+                <span className="text-base font-extrabold">Server Overview</span>
               </button>
             </div>
 
-            <div className="space-y-1.5">
-              <p className="text-[10px] uppercase font-mono tracking-wider text-zinc-500 px-3 font-bold">
+            <div className="space-y-2">
+              <p className="text-xs uppercase font-mono tracking-wider text-zinc-400 px-3.5 font-bold">
                 Modules & Features
               </p>
-              <nav className="space-y-1">
+              <nav className="space-y-1.5">
                 {[
                   { id: "moderation", label: "Bot Masters & Roles", icon: Shield },
                   { id: "logging", label: "Audit & Logging Channels", icon: FileText },
@@ -1068,18 +1074,21 @@ export default function GuildDashboard({ params }: { params: Promise<{ guildId: 
                         dashboardAudio.playClick();
                         setActiveTab(item.id as TabType);
                       }}
-                      className={`w-full text-left px-3.5 py-2.5 rounded-xl text-xs font-semibold flex items-center justify-between transition cursor-pointer select-none ${
+                      className={`w-full text-left px-4 py-3.5 rounded-2xl text-sm font-bold flex items-center justify-between transition cursor-pointer select-none relative group ${
                         active
-                          ? "bg-gradient-to-r from-fuchsia-600/25 via-pink-600/20 to-transparent text-white border border-fuchsia-500/40 shadow-md shadow-fuchsia-600/10"
-                          : "text-zinc-400 hover:text-white hover:bg-white/[0.04]"
+                          ? "neo-nav-active text-white shadow-lg shadow-fuchsia-600/20"
+                          : "text-zinc-400 hover:text-white hover:bg-white/[0.06] border border-transparent"
                       }`}
                     >
-                      <div className="flex items-center gap-2.5 min-w-0">
-                        <Icon className="w-4 h-4 shrink-0" />
+                      {active && (
+                        <div className="absolute left-0 top-2 bottom-2 w-1.5 rounded-r-full bg-gradient-to-b from-orange-400 via-pink-500 to-fuchsia-500 shadow-[0_0_12px_#f97316]" />
+                      )}
+                      <div className="flex items-center gap-3 min-w-0">
+                        <Icon className={`w-5 h-5 shrink-0 ${active ? "text-fuchsia-400" : "text-zinc-400 group-hover:text-white transition"}`} />
                         <span className="truncate">{item.label}</span>
                       </div>
                       {item.tag && (
-                        <span className="text-[9px] font-mono px-1.5 py-0.2 rounded bg-fuchsia-500/15 text-fuchsia-300 border border-fuchsia-500/20 shrink-0">
+                        <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-fuchsia-500/15 text-fuchsia-300 border border-fuchsia-500/30 shrink-0 font-bold">
                           {item.tag}
                         </span>
                       )}
@@ -1090,21 +1099,21 @@ export default function GuildDashboard({ params }: { params: Promise<{ guildId: 
             </div>
           </div>
 
-          <div className="p-3.5 rounded-xl bg-gradient-to-br from-amber-500/10 via-[#18111f] to-amber-950/20 border border-amber-500/30 text-xs text-zinc-300 space-y-2.5">
-            <div className="flex items-center gap-2">
-              <img src="/bmc/bmc-logo-yellow.png" alt="BMC" className="w-5 h-5 object-contain" />
-              <p className="font-bold text-amber-300 text-xs">Support VePlexity</p>
+          <div className="p-5 rounded-2xl glass-liquid-card border border-amber-500/30 text-zinc-200 space-y-3 mt-6">
+            <div className="flex items-center gap-2.5">
+              <img src="/bmc/bmc-logo-yellow.png" alt="BMC" className="w-6 h-6 object-contain" />
+              <p className="font-black text-amber-300 text-sm">Support VePlexity</p>
             </div>
-            <p className="text-[11px] text-zinc-400 leading-tight">
-              Fuel 24/7 cloud hosting & lossless audio features with Buy Me a Coffee.
+            <p className="text-xs text-zinc-400 leading-relaxed">
+              Fuel 24/7 lossless audio nodes, cloud hosting & continuous updates.
             </p>
             <a
               href="https://www.buymeacoffee.com/veplexity1"
               target="_blank"
               rel="noopener noreferrer"
-              className="w-full py-1.5 px-3 rounded-lg bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/40 text-[11px] font-bold flex items-center justify-center gap-1.5 transition-colors"
+              className="w-full py-2.5 px-4 rounded-xl bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/40 text-xs font-black flex items-center justify-center gap-2 neo-liquid-btn"
             >
-              <Coffee className="w-3.5 h-3.5 text-amber-400" />
+              <Coffee className="w-4 h-4 text-amber-400" />
               <span>Buy a Coffee</span>
             </a>
           </div>
@@ -1149,9 +1158,9 @@ export default function GuildDashboard({ params }: { params: Promise<{ guildId: 
               />
 
               {/* Maki-Style Expanded Server Banner Header */}
-              <div className="p-6 sm:p-8 rounded-2xl bg-[#14151b] border border-white/5 flex flex-col md:flex-row items-start md:items-center justify-between gap-6 w-full">
-                <div className="flex items-center gap-5">
-                  <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-fuchsia-600/20 via-[#1e1f26] to-purple-800/30 border border-white/10 overflow-hidden flex items-center justify-center font-black text-2xl text-fuchsia-300 shadow-2xl shrink-0">
+              <div className="p-8 sm:p-10 rounded-3xl glass-liquid-card flex flex-col md:flex-row items-start md:items-center justify-between gap-8 w-full">
+                <div className="flex items-center gap-6">
+                  <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-3xl bg-gradient-to-br from-fuchsia-600/30 via-[#221235] to-orange-600/30 border-2 border-white/20 overflow-hidden flex items-center justify-center font-black text-3xl text-fuchsia-300 shadow-[0_12px_35px_rgba(217,70,239,0.35)] shrink-0">
                     {guildIconUrl ? (
                       <img
                         src={guildIconUrl}
@@ -1163,22 +1172,22 @@ export default function GuildDashboard({ params }: { params: Promise<{ guildId: 
                       <span>{guildInitials}</span>
                     )}
                   </div>
-                  <div className="space-y-1">
-                    <h1 className="text-2xl font-black text-white">{guild?.name}</h1>
-                    <p className="text-xs font-mono text-gray-400">Server ID: {guild?.id}</p>
-                    <div className="flex items-center gap-2.5 pt-1 flex-wrap">
-                      <span className="text-xs px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-semibold flex items-center gap-1.5">
-                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                  <div className="space-y-2">
+                    <h1 className="text-3xl sm:text-4xl font-black text-white tracking-tight">{guild?.name}</h1>
+                    <p className="text-xs sm:text-sm font-mono text-zinc-400">Server ID: {guild?.id}</p>
+                    <div className="flex items-center gap-2.5 pt-1.5 flex-wrap">
+                      <span className="text-xs px-3.5 py-1 rounded-full bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 font-bold flex items-center gap-2">
+                        <span className="w-2 h-2 rounded-full bg-emerald-400 shadow-[0_0_8px_#34d399] animate-pulse" />
                         Bot Connected
                       </span>
-                      <span className="text-xs px-2.5 py-0.5 rounded-full bg-white/5 text-gray-300 font-medium">
+                      <span className="text-xs px-3.5 py-1 rounded-full bg-white/5 text-zinc-300 font-semibold border border-white/10">
                         {guild?.memberCount} Members
                       </span>
-                      <span className="text-xs px-2.5 py-0.5 rounded-full bg-fuchsia-500/10 text-fuchsia-300 border border-fuchsia-500/20 font-bold">
+                      <span className="text-xs px-3.5 py-1 rounded-full bg-fuchsia-500/15 text-fuchsia-300 border border-fuchsia-500/30 font-bold">
                         💎 All VIP Features Free
                       </span>
-                      <span className="text-xs px-2.5 py-0.5 rounded-full bg-orange-500/10 text-orange-300 border border-orange-500/20 font-bold flex items-center gap-1.5">
-                        <Terminal className="w-3 h-3 text-orange-400" />
+                      <span className="text-xs px-3.5 py-1 rounded-full bg-orange-500/15 text-orange-300 border border-orange-500/30 font-bold flex items-center gap-2">
+                        <Terminal className="w-3.5 h-3.5 text-orange-400" />
                         Dual-Engine: Slash &amp; Prefixes (. / ? / !)
                       </span>
                     </div>
@@ -1188,7 +1197,7 @@ export default function GuildDashboard({ params }: { params: Promise<{ guildId: 
                 <div className="flex items-center gap-3 self-stretch md:self-auto justify-end">
                   <Link
                     href="/dashboard"
-                    className="px-4 py-2 rounded-xl bg-white/5 hover:bg-white/10 text-xs font-semibold text-gray-300 transition"
+                    className="px-5 py-2.5 rounded-xl neo-liquid-btn text-sm font-bold text-zinc-200 hover:text-white transition"
                   >
                     Switch Server
                   </Link>
@@ -1196,307 +1205,307 @@ export default function GuildDashboard({ params }: { params: Promise<{ guildId: 
               </div>
 
               {/* Maki-Style Modular Section: Customization & Administration */}
-              <div className="space-y-3.5 w-full">
+              <div className="space-y-4 w-full">
                 <div className="flex items-center justify-between px-1">
-                  <p className="text-xs font-bold uppercase tracking-wider text-gray-400">
+                  <p className="text-sm font-black uppercase tracking-wider text-zinc-400">
                     Customization & Administration
                   </p>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
                   {/* Bot Masters */}
                   <div
                     onClick={() => setActiveTab("moderation")}
-                    className="p-5 rounded-2xl bg-[#15161c] hover:bg-[#1a1b23] border border-white/5 hover:border-white/10 transition cursor-pointer flex flex-col justify-between group h-36"
+                    className="p-6 sm:p-7 rounded-3xl glass-liquid-card flex flex-col justify-between group cursor-pointer h-44 sm:h-48 relative overflow-hidden transition-all duration-300"
                   >
                     <div className="flex items-start justify-between">
-                      <div className="w-10 h-10 rounded-xl bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-blue-400">
-                        <Shield className="w-5 h-5" />
+                      <div className="w-12 h-12 rounded-2xl bg-blue-500/15 border border-blue-500/30 flex items-center justify-center text-blue-400 shadow-inner group-hover:scale-110 transition-transform">
+                        <Shield className="w-6 h-6" />
                       </div>
-                      <div className="w-7 h-7 rounded-lg bg-white/5 flex items-center justify-center text-gray-400 group-hover:text-white">
-                        <ChevronRight className="w-4 h-4" />
+                      <div className="w-8 h-8 rounded-xl glass-liquid flex items-center justify-center text-zinc-400 group-hover:text-white group-hover:translate-x-1 transition">
+                        <ChevronRight className="w-4.5 h-4.5" />
                       </div>
                     </div>
                     <div>
-                      <h4 className="font-bold text-sm text-white group-hover:text-blue-300 transition">Bot Masters & Roles</h4>
-                      <p className="text-xs text-gray-400 mt-0.5">Admin & mod command authority</p>
+                      <h4 className="font-black text-base sm:text-lg text-white group-hover:text-blue-300 transition tracking-tight">Bot Masters & Roles</h4>
+                      <p className="text-xs sm:text-sm text-zinc-400 mt-1 line-clamp-2">Admin & mod command authority</p>
                     </div>
                   </div>
 
                   {/* Audit & Logging Channels (Skyra style) */}
                   <div
                     onClick={() => setActiveTab("logging")}
-                    className="p-5 rounded-2xl bg-[#15161c] hover:bg-[#1a1b23] border border-white/5 hover:border-white/10 transition cursor-pointer flex flex-col justify-between group h-36"
+                    className="p-6 sm:p-7 rounded-3xl glass-liquid-card flex flex-col justify-between group cursor-pointer h-44 sm:h-48 relative overflow-hidden transition-all duration-300"
                   >
                     <div className="flex items-start justify-between">
-                      <div className="w-10 h-10 rounded-xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center text-purple-400">
-                        <FileText className="w-5 h-5" />
+                      <div className="w-12 h-12 rounded-2xl bg-purple-500/15 border border-purple-500/30 flex items-center justify-center text-purple-400 shadow-inner group-hover:scale-110 transition-transform">
+                        <FileText className="w-6 h-6" />
                       </div>
-                      <div className="w-7 h-7 rounded-lg bg-white/5 flex items-center justify-center text-gray-400 group-hover:text-white">
-                        <ChevronRight className="w-4 h-4" />
+                      <div className="w-8 h-8 rounded-xl glass-liquid flex items-center justify-center text-zinc-400 group-hover:text-white group-hover:translate-x-1 transition">
+                        <ChevronRight className="w-4.5 h-4.5" />
                       </div>
                     </div>
                     <div>
-                      <h4 className="font-bold text-sm text-white group-hover:text-purple-300 transition">Audit & Logging Channels</h4>
-                      <p className="text-xs text-gray-400 mt-0.5">Route edited, deleted & mod event logs</p>
+                      <h4 className="font-black text-base sm:text-lg text-white group-hover:text-purple-300 transition tracking-tight">Audit & Logging Channels</h4>
+                      <p className="text-xs sm:text-sm text-zinc-400 mt-1 line-clamp-2">Route edited, deleted & mod event logs</p>
                     </div>
                   </div>
 
                   {/* Message Builder & Announcements */}
                   <div
                     onClick={() => setActiveTab("announce")}
-                    className="p-5 rounded-2xl bg-[#15161c] hover:bg-[#1a1b23] border border-white/5 hover:border-white/10 transition cursor-pointer flex flex-col justify-between group h-36"
+                    className="p-6 sm:p-7 rounded-3xl glass-liquid-card flex flex-col justify-between group cursor-pointer h-44 sm:h-48 relative overflow-hidden transition-all duration-300"
                   >
                     <div className="flex items-start justify-between">
-                      <div className="w-10 h-10 rounded-xl bg-fuchsia-500/10 border border-fuchsia-500/20 flex items-center justify-center text-fuchsia-400">
-                        <Megaphone className="w-5 h-5" />
+                      <div className="w-12 h-12 rounded-2xl bg-fuchsia-500/15 border border-fuchsia-500/30 flex items-center justify-center text-fuchsia-400 shadow-inner group-hover:scale-110 transition-transform">
+                        <Megaphone className="w-6 h-6" />
                       </div>
-                      <div className="w-7 h-7 rounded-lg bg-white/5 flex items-center justify-center text-gray-400 group-hover:text-white">
-                        <ChevronRight className="w-4 h-4" />
+                      <div className="w-8 h-8 rounded-xl glass-liquid flex items-center justify-center text-zinc-400 group-hover:text-white group-hover:translate-x-1 transition">
+                        <ChevronRight className="w-4.5 h-4.5" />
                       </div>
                     </div>
                     <div>
-                      <h4 className="font-bold text-sm text-white group-hover:text-fuchsia-300 transition">Message Builder</h4>
-                      <p className="text-xs text-gray-400 mt-0.5">Send custom announcement embeds to chat</p>
+                      <h4 className="font-black text-base sm:text-lg text-white group-hover:text-fuchsia-300 transition tracking-tight">Message Builder</h4>
+                      <p className="text-xs sm:text-sm text-zinc-400 mt-1 line-clamp-2">Send custom announcement embeds to chat</p>
                     </div>
                   </div>
 
                   {/* Auto-Mod Security */}
                   <div
                     onClick={() => setActiveTab("automod")}
-                    className="p-5 rounded-2xl bg-[#15161c] hover:bg-[#1a1b23] border border-white/5 hover:border-white/10 transition cursor-pointer flex flex-col justify-between group h-36"
+                    className="p-6 sm:p-7 rounded-3xl glass-liquid-card flex flex-col justify-between group cursor-pointer h-44 sm:h-48 relative overflow-hidden transition-all duration-300"
                   >
                     <div className="flex items-start justify-between">
-                      <div className="w-10 h-10 rounded-xl bg-red-500/10 border border-red-500/20 flex items-center justify-center text-red-400">
-                        <Lock className="w-5 h-5" />
+                      <div className="w-12 h-12 rounded-2xl bg-red-500/15 border border-red-500/30 flex items-center justify-center text-red-400 shadow-inner group-hover:scale-110 transition-transform">
+                        <Lock className="w-6 h-6" />
                       </div>
-                      <div className="w-7 h-7 rounded-lg bg-white/5 flex items-center justify-center text-gray-400 group-hover:text-white">
-                        <ChevronRight className="w-4 h-4" />
+                      <div className="w-8 h-8 rounded-xl glass-liquid flex items-center justify-center text-zinc-400 group-hover:text-white group-hover:translate-x-1 transition">
+                        <ChevronRight className="w-4.5 h-4.5" />
                       </div>
                     </div>
                     <div>
-                      <h4 className="font-bold text-sm text-white group-hover:text-red-300 transition">Auto-Mod Security</h4>
-                      <p className="text-xs text-gray-400 mt-0.5">Anti-Invite, Anti-Spam & Bad Words filter</p>
+                      <h4 className="font-black text-base sm:text-lg text-white group-hover:text-red-300 transition tracking-tight">Auto-Mod Security</h4>
+                      <p className="text-xs sm:text-sm text-zinc-400 mt-1 line-clamp-2">Anti-Invite, Anti-Spam & Bad Words filter</p>
                     </div>
                   </div>
                 </div>
               </div>
 
               {/* Maki-Style Modular Section: Engagement & Free Premium Features */}
-              <div className="space-y-3.5 w-full">
+              <div className="space-y-4 w-full">
                 <div className="flex items-center justify-between px-1">
-                  <p className="text-xs font-bold uppercase tracking-wider text-gray-400">
+                  <p className="text-sm font-black uppercase tracking-wider text-zinc-400">
                     Community Engagement (All Premium Unlocked)
                   </p>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
                   {/* Leveling & Rank System */}
                   <div
                     onClick={() => setActiveTab("leveling")}
-                    className="p-5 rounded-2xl bg-[#15161c] hover:bg-[#1a1b23] border border-white/5 hover:border-white/10 transition cursor-pointer flex flex-col justify-between group h-36 relative overflow-hidden"
+                    className="p-6 sm:p-7 rounded-3xl glass-liquid-card flex flex-col justify-between group cursor-pointer h-44 sm:h-48 relative overflow-hidden transition-all duration-300"
                   >
                     <div className="flex items-start justify-between">
-                      <div className="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400">
-                        <Award className="w-5 h-5" />
+                      <div className="w-12 h-12 rounded-2xl bg-amber-500/15 border border-amber-500/30 flex items-center justify-center text-amber-400 shadow-inner group-hover:scale-110 transition-transform">
+                        <Award className="w-6 h-6" />
                       </div>
-                      <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-300 border border-amber-500/20 font-bold">
+                      <span className="text-[10px] font-mono px-2.5 py-0.5 rounded-full bg-amber-500/15 text-amber-300 border border-amber-500/30 font-bold">
                         Free VIP
                       </span>
                     </div>
                     <div>
-                      <h4 className="font-bold text-sm text-white group-hover:text-amber-300 transition">Leveling & XP System</h4>
-                      <p className="text-xs text-gray-400 mt-0.5">XP cards, level-up channel & role rewards</p>
+                      <h4 className="font-black text-base sm:text-lg text-white group-hover:text-amber-300 transition tracking-tight">Leveling & XP System</h4>
+                      <p className="text-xs sm:text-sm text-zinc-400 mt-1 line-clamp-2">XP cards, level-up channel & role rewards</p>
                     </div>
                   </div>
 
                   {/* Voice & Text Activity Rewards */}
                   <div
                     onClick={() => setActiveTab("rewards")}
-                    className="p-5 rounded-2xl bg-[#15161c] hover:bg-[#1a1b23] border border-white/5 hover:border-fuchsia-500/30 transition cursor-pointer flex flex-col justify-between group h-36 relative overflow-hidden"
+                    className="p-6 sm:p-7 rounded-3xl glass-liquid-card flex flex-col justify-between group cursor-pointer h-44 sm:h-48 relative overflow-hidden transition-all duration-300"
                   >
                     <div className="flex items-start justify-between">
-                      <div className="w-10 h-10 rounded-xl bg-fuchsia-500/10 border border-fuchsia-500/20 flex items-center justify-center text-fuchsia-400">
-                        <Gift className="w-5 h-5" />
+                      <div className="w-12 h-12 rounded-2xl bg-fuchsia-500/15 border border-fuchsia-500/30 flex items-center justify-center text-fuchsia-400 shadow-inner group-hover:scale-110 transition-transform">
+                        <Gift className="w-6 h-6" />
                       </div>
-                      <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-fuchsia-500/10 text-fuchsia-300 border border-fuchsia-500/20 font-bold">
+                      <span className="text-[10px] font-mono px-2.5 py-0.5 rounded-full bg-fuchsia-500/15 text-fuchsia-300 border border-fuchsia-500/30 font-bold">
                         VC & Text
                       </span>
                     </div>
                     <div>
-                      <h4 className="font-bold text-sm text-white group-hover:text-fuchsia-300 transition">Voice & Text Rewards</h4>
-                      <p className="text-xs text-gray-400 mt-0.5">Time in VC & message milestones to roles</p>
+                      <h4 className="font-black text-base sm:text-lg text-white group-hover:text-fuchsia-300 transition tracking-tight">Voice & Text Rewards</h4>
+                      <p className="text-xs sm:text-sm text-zinc-400 mt-1 line-clamp-2">Time in VC & message milestones to roles</p>
                     </div>
                   </div>
 
                   {/* Server Boosters */}
                   <div
                     onClick={() => setActiveTab("boosters")}
-                    className="p-5 rounded-2xl bg-[#15161c] hover:bg-[#1a1b23] border border-white/5 hover:border-white/10 transition cursor-pointer flex flex-col justify-between group h-36 relative overflow-hidden"
+                    className="p-6 sm:p-7 rounded-3xl glass-liquid-card flex flex-col justify-between group cursor-pointer h-44 sm:h-48 relative overflow-hidden transition-all duration-300"
                   >
                     <div className="flex items-start justify-between">
-                      <div className="w-10 h-10 rounded-xl bg-pink-500/10 border border-pink-500/20 flex items-center justify-center text-pink-400">
-                        <Zap className="w-5 h-5" />
+                      <div className="w-12 h-12 rounded-2xl bg-pink-500/15 border border-pink-500/30 flex items-center justify-center text-pink-400 shadow-inner group-hover:scale-110 transition-transform">
+                        <Zap className="w-6 h-6" />
                       </div>
-                      <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-pink-500/10 text-pink-300 border border-pink-500/20 font-bold">
+                      <span className="text-[10px] font-mono px-2.5 py-0.5 rounded-full bg-pink-500/15 text-pink-300 border border-pink-500/30 font-bold">
                         Free VIP
                       </span>
                     </div>
                     <div>
-                      <h4 className="font-bold text-sm text-white group-hover:text-pink-300 transition">Server Boosters Rewards</h4>
-                      <p className="text-xs text-gray-400 mt-0.5">Thank boosters & auto-assign VIP roles</p>
+                      <h4 className="font-black text-base sm:text-lg text-white group-hover:text-pink-300 transition tracking-tight">Server Boosters Rewards</h4>
+                      <p className="text-xs sm:text-sm text-zinc-400 mt-1 line-clamp-2">Thank boosters & auto-assign VIP roles</p>
                     </div>
                   </div>
 
                   {/* Reaction Roles */}
                   <div
                     onClick={() => setActiveTab("reactionroles")}
-                    className="p-5 rounded-2xl bg-[#15161c] hover:bg-[#1a1b23] border border-white/5 hover:border-white/10 transition cursor-pointer flex flex-col justify-between group h-36 relative overflow-hidden"
+                    className="p-6 sm:p-7 rounded-3xl glass-liquid-card flex flex-col justify-between group cursor-pointer h-44 sm:h-48 relative overflow-hidden transition-all duration-300"
                   >
                     <div className="flex items-start justify-between">
-                      <div className="w-10 h-10 rounded-xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center text-purple-400">
-                        <Users className="w-5 h-5" />
+                      <div className="w-12 h-12 rounded-2xl bg-purple-500/15 border border-purple-500/30 flex items-center justify-center text-purple-400 shadow-inner group-hover:scale-110 transition-transform">
+                        <Users className="w-6 h-6" />
                       </div>
-                      <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-purple-500/10 text-purple-300 border border-purple-500/20 font-bold">
+                      <span className="text-[10px] font-mono px-2.5 py-0.5 rounded-full bg-purple-500/15 text-purple-300 border border-purple-500/30 font-bold">
                         Free VIP
                       </span>
                     </div>
                     <div>
-                      <h4 className="font-bold text-sm text-white group-hover:text-purple-300 transition">Reaction Roles</h4>
-                      <p className="text-xs text-gray-400 mt-0.5">Button & dropdown role self-assign</p>
+                      <h4 className="font-black text-base sm:text-lg text-white group-hover:text-purple-300 transition tracking-tight">Reaction Roles</h4>
+                      <p className="text-xs sm:text-sm text-zinc-400 mt-1 line-clamp-2">Button & dropdown role self-assign</p>
                     </div>
                   </div>
 
                   {/* Auto-Responders */}
                   <div
                     onClick={() => setActiveTab("autoresponders")}
-                    className="p-5 rounded-2xl bg-[#15161c] hover:bg-[#1a1b23] border border-white/5 hover:border-white/10 transition cursor-pointer flex flex-col justify-between group h-36 relative overflow-hidden"
+                    className="p-6 sm:p-7 rounded-3xl glass-liquid-card flex flex-col justify-between group cursor-pointer h-44 sm:h-48 relative overflow-hidden transition-all duration-300"
                   >
                     <div className="flex items-start justify-between">
-                      <div className="w-10 h-10 rounded-xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-400">
-                        <MessageCircle className="w-5 h-5" />
+                      <div className="w-12 h-12 rounded-2xl bg-cyan-500/15 border border-cyan-500/30 flex items-center justify-center text-cyan-400 shadow-inner group-hover:scale-110 transition-transform">
+                        <MessageCircle className="w-6 h-6" />
                       </div>
-                      <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-cyan-500/10 text-cyan-300 border border-cyan-500/20 font-bold">
+                      <span className="text-[10px] font-mono px-2.5 py-0.5 rounded-full bg-cyan-500/15 text-cyan-300 border border-cyan-500/30 font-bold">
                         Free VIP
                       </span>
                     </div>
                     <div>
-                      <h4 className="font-bold text-sm text-white group-hover:text-cyan-300 transition">Auto-Responders</h4>
-                      <p className="text-xs text-gray-400 mt-0.5">Instant custom chat trigger replies</p>
+                      <h4 className="font-black text-base sm:text-lg text-white group-hover:text-cyan-300 transition tracking-tight">Auto-Responders</h4>
+                      <p className="text-xs sm:text-sm text-zinc-400 mt-1 line-clamp-2">Instant custom chat trigger replies</p>
                     </div>
                   </div>
 
                   {/* Welcome & Goodbye */}
                   <div
                     onClick={() => setActiveTab("welcome")}
-                    className="p-5 rounded-2xl bg-[#15161c] hover:bg-[#1a1b23] border border-white/5 hover:border-white/10 transition cursor-pointer flex flex-col justify-between group h-36"
+                    className="p-6 sm:p-7 rounded-3xl glass-liquid-card flex flex-col justify-between group cursor-pointer h-44 sm:h-48 relative overflow-hidden transition-all duration-300"
                   >
                     <div className="flex items-start justify-between">
-                      <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
-                        <Bell className="w-5 h-5" />
+                      <div className="w-12 h-12 rounded-2xl bg-emerald-500/15 border border-emerald-500/30 flex items-center justify-center text-emerald-400 shadow-inner group-hover:scale-110 transition-transform">
+                        <Bell className="w-6 h-6" />
                       </div>
-                      <div className="w-7 h-7 rounded-lg bg-white/5 flex items-center justify-center text-gray-400 group-hover:text-white">
-                        <ChevronRight className="w-4 h-4" />
+                      <div className="w-8 h-8 rounded-xl glass-liquid flex items-center justify-center text-zinc-400 group-hover:text-white group-hover:translate-x-1 transition">
+                        <ChevronRight className="w-4.5 h-4.5" />
                       </div>
                     </div>
                     <div>
-                      <h4 className="font-bold text-sm text-white group-hover:text-emerald-300 transition">Welcome Messages</h4>
-                      <p className="text-xs text-gray-400 mt-0.5">Greet new members & assign auto-roles</p>
+                      <h4 className="font-black text-base sm:text-lg text-white group-hover:text-emerald-300 transition tracking-tight">Welcome Messages</h4>
+                      <p className="text-xs sm:text-sm text-zinc-400 mt-1 line-clamp-2">Greet new members & assign auto-roles</p>
                     </div>
                   </div>
 
                   {/* Starboard */}
                   <div
                     onClick={() => setActiveTab("starboard")}
-                    className="p-5 rounded-2xl bg-[#15161c] hover:bg-[#1a1b23] border border-white/5 hover:border-white/10 transition cursor-pointer flex flex-col justify-between group h-36"
+                    className="p-6 sm:p-7 rounded-3xl glass-liquid-card flex flex-col justify-between group cursor-pointer h-44 sm:h-48 relative overflow-hidden transition-all duration-300"
                   >
                     <div className="flex items-start justify-between">
-                      <div className="w-10 h-10 rounded-xl bg-yellow-500/10 border border-yellow-500/20 flex items-center justify-center text-yellow-400">
-                        <Star className="w-5 h-5" />
+                      <div className="w-12 h-12 rounded-2xl bg-yellow-500/15 border border-yellow-500/30 flex items-center justify-center text-yellow-400 shadow-inner group-hover:scale-110 transition-transform">
+                        <Star className="w-6 h-6" />
                       </div>
-                      <div className="w-7 h-7 rounded-lg bg-white/5 flex items-center justify-center text-gray-400 group-hover:text-white">
-                        <ChevronRight className="w-4 h-4" />
+                      <div className="w-8 h-8 rounded-xl glass-liquid flex items-center justify-center text-zinc-400 group-hover:text-white group-hover:translate-x-1 transition">
+                        <ChevronRight className="w-4.5 h-4.5" />
                       </div>
                     </div>
                     <div>
-                      <h4 className="font-bold text-sm text-white group-hover:text-yellow-300 transition">Starboard (Hall of Fame)</h4>
-                      <p className="text-xs text-gray-400 mt-0.5">Pin top community messages with stars</p>
+                      <h4 className="font-black text-base sm:text-lg text-white group-hover:text-yellow-300 transition tracking-tight">Starboard (Hall of Fame)</h4>
+                      <p className="text-xs sm:text-sm text-zinc-400 mt-1 line-clamp-2">Pin top community messages with stars</p>
                     </div>
                   </div>
 
                   {/* Suggestions */}
                   <div
                     onClick={() => setActiveTab("suggestions")}
-                    className="p-5 rounded-2xl bg-[#15161c] hover:bg-[#1a1b23] border border-white/5 hover:border-white/10 transition cursor-pointer flex flex-col justify-between group h-36"
+                    className="p-6 sm:p-7 rounded-3xl glass-liquid-card flex flex-col justify-between group cursor-pointer h-44 sm:h-48 relative overflow-hidden transition-all duration-300"
                   >
                     <div className="flex items-start justify-between">
-                      <div className="w-10 h-10 rounded-xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-400">
-                        <ThumbsUp className="w-5 h-5" />
+                      <div className="w-12 h-12 rounded-2xl bg-cyan-500/15 border border-cyan-500/30 flex items-center justify-center text-cyan-400 shadow-inner group-hover:scale-110 transition-transform">
+                        <ThumbsUp className="w-6 h-6" />
                       </div>
-                      <div className="w-7 h-7 rounded-lg bg-white/5 flex items-center justify-center text-gray-400 group-hover:text-white">
-                        <ChevronRight className="w-4 h-4" />
+                      <div className="w-8 h-8 rounded-xl glass-liquid flex items-center justify-center text-zinc-400 group-hover:text-white group-hover:translate-x-1 transition">
+                        <ChevronRight className="w-4.5 h-4.5" />
                       </div>
                     </div>
                     <div>
-                      <h4 className="font-bold text-sm text-white group-hover:text-cyan-300 transition">Suggestions Box</h4>
-                      <p className="text-xs text-gray-400 mt-0.5">Interactive voting with upvote buttons</p>
+                      <h4 className="font-black text-base sm:text-lg text-white group-hover:text-cyan-300 transition tracking-tight">Suggestions Box</h4>
+                      <p className="text-xs sm:text-sm text-zinc-400 mt-1 line-clamp-2">Interactive voting with upvote buttons</p>
                     </div>
                   </div>
 
                   {/* Birthdays & Counting */}
                   <div
                     onClick={() => setActiveTab("community")}
-                    className="p-5 rounded-2xl bg-[#15161c] hover:bg-[#1a1b23] border border-white/5 hover:border-white/10 transition cursor-pointer flex flex-col justify-between group h-36"
+                    className="p-6 sm:p-7 rounded-3xl glass-liquid-card flex flex-col justify-between group cursor-pointer h-44 sm:h-48 relative overflow-hidden transition-all duration-300"
                   >
                     <div className="flex items-start justify-between">
-                      <div className="w-10 h-10 rounded-xl bg-rose-500/10 border border-rose-500/20 flex items-center justify-center text-rose-400">
-                        <Cake className="w-5 h-5" />
+                      <div className="w-12 h-12 rounded-2xl bg-rose-500/15 border border-rose-500/30 flex items-center justify-center text-rose-400 shadow-inner group-hover:scale-110 transition-transform">
+                        <Cake className="w-6 h-6" />
                       </div>
-                      <div className="w-7 h-7 rounded-lg bg-white/5 flex items-center justify-center text-gray-400 group-hover:text-white">
-                        <ChevronRight className="w-4 h-4" />
+                      <div className="w-8 h-8 rounded-xl glass-liquid flex items-center justify-center text-zinc-400 group-hover:text-white group-hover:translate-x-1 transition">
+                        <ChevronRight className="w-4.5 h-4.5" />
                       </div>
                     </div>
                     <div>
-                      <h4 className="font-bold text-sm text-white group-hover:text-rose-300 transition">Birthdays & Counting</h4>
-                      <p className="text-xs text-gray-400 mt-0.5">Automated celebrations & counting streaks</p>
+                      <h4 className="font-black text-base sm:text-lg text-white group-hover:text-rose-300 transition tracking-tight">Birthdays & Counting</h4>
+                      <p className="text-xs sm:text-sm text-zinc-400 mt-1 line-clamp-2">Automated celebrations & counting streaks</p>
                     </div>
                   </div>
 
                   {/* Music & DJ (24/7 Stay) */}
                   <div
                     onClick={() => setActiveTab("music")}
-                    className="p-5 rounded-2xl bg-[#15161c] hover:bg-[#1a1b23] border border-white/5 hover:border-white/10 transition cursor-pointer flex flex-col justify-between group h-36"
+                    className="p-6 sm:p-7 rounded-3xl glass-liquid-card flex flex-col justify-between group cursor-pointer h-44 sm:h-48 relative overflow-hidden transition-all duration-300"
                   >
                     <div className="flex items-start justify-between">
-                      <div className="w-10 h-10 rounded-xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400">
-                        <Music className="w-5 h-5" />
+                      <div className="w-12 h-12 rounded-2xl bg-indigo-500/15 border border-indigo-500/30 flex items-center justify-center text-indigo-400 shadow-inner group-hover:scale-110 transition-transform">
+                        <Music className="w-6 h-6" />
                       </div>
-                      <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-indigo-500/10 text-indigo-300 border border-indigo-500/20 font-bold">
+                      <span className="text-[10px] font-mono px-2.5 py-0.5 rounded-full bg-indigo-500/15 text-indigo-300 border border-indigo-500/30 font-bold">
                         24/7 Stay Free
                       </span>
                     </div>
                     <div>
-                      <h4 className="font-bold text-sm text-white group-hover:text-indigo-300 transition">Music & DJ Audio</h4>
-                      <p className="text-xs text-gray-400 mt-0.5">DJ permissions, volume & 24/7 mode</p>
+                      <h4 className="font-black text-base sm:text-lg text-white group-hover:text-indigo-300 transition tracking-tight">Music & DJ Audio</h4>
+                      <p className="text-xs sm:text-sm text-zinc-400 mt-1 line-clamp-2">DJ permissions, volume & 24/7 mode</p>
                     </div>
                   </div>
 
                   {/* AI Chatbot */}
                   <div
                     onClick={() => setActiveTab("ai")}
-                    className="p-5 rounded-2xl bg-[#15161c] hover:bg-[#1a1b23] border border-white/5 hover:border-white/10 transition cursor-pointer flex flex-col justify-between group h-36"
+                    className="p-6 sm:p-7 rounded-3xl glass-liquid-card flex flex-col justify-between group cursor-pointer h-44 sm:h-48 relative overflow-hidden transition-all duration-300"
                   >
                     <div className="flex items-start justify-between">
-                      <div className="w-10 h-10 rounded-xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center text-purple-400">
-                        <Bot className="w-5 h-5" />
+                      <div className="w-12 h-12 rounded-2xl bg-purple-500/15 border border-purple-500/30 flex items-center justify-center text-purple-400 shadow-inner group-hover:scale-110 transition-transform">
+                        <Bot className="w-6 h-6" />
                       </div>
-                      <div className="w-7 h-7 rounded-lg bg-white/5 flex items-center justify-center text-gray-400 group-hover:text-white">
-                        <ChevronRight className="w-4 h-4" />
+                      <div className="w-8 h-8 rounded-xl glass-liquid flex items-center justify-center text-zinc-400 group-hover:text-white group-hover:translate-x-1 transition">
+                        <ChevronRight className="w-4.5 h-4.5" />
                       </div>
                     </div>
                     <div>
-                      <h4 className="font-bold text-sm text-white group-hover:text-purple-300 transition">Gemini AI Chatbot</h4>
-                      <p className="text-xs text-gray-400 mt-0.5">AI chat channel & custom lore prompt</p>
+                      <h4 className="font-black text-base sm:text-lg text-white group-hover:text-purple-300 transition tracking-tight">Gemini AI Chatbot</h4>
+                      <p className="text-xs sm:text-sm text-zinc-400 mt-1 line-clamp-2">AI chat channel & custom lore prompt</p>
                     </div>
                   </div>
                 </div>

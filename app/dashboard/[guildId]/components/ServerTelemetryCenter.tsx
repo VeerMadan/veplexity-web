@@ -42,113 +42,113 @@ export const ServerTelemetryCenter: React.FC<ServerTelemetryCenterProps> = ({
   };
 
   return (
-    <div className="space-y-6 w-full">
+    <div className="space-y-6 sm:space-y-8 w-full">
       {/* ─── TOP INTERACTIVE TELEMETRY & GATEWAY STRIP ─────────────────────── */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
         {/* Shard Ping & Gateway Radar */}
-        <div className="p-5 rounded-3xl bg-gradient-to-br from-[#120a1c] to-[#0c0512] border border-white/10 shadow-[0_8px_30px_rgba(0,0,0,0.6)] flex flex-col justify-between space-y-3 relative overflow-hidden group">
+        <div className="p-6 sm:p-7 rounded-3xl glass-liquid-card flex flex-col justify-between space-y-4 relative overflow-hidden group">
           <div className="flex items-center justify-between">
-            <span className="text-[11px] font-mono uppercase text-zinc-400 font-bold flex items-center gap-1.5">
-              <Radio className="w-3.5 h-3.5 text-emerald-400 animate-pulse" />
+            <span className="text-xs font-mono uppercase text-zinc-300 font-bold flex items-center gap-2">
+              <Radio className="w-4 h-4 text-emerald-400 animate-pulse" />
               <span>Gateway Shard #0</span>
             </span>
             <button
               onClick={handlePingTest}
               disabled={isPinging}
-              className="p-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-zinc-400 hover:text-white transition cursor-pointer text-[10px] font-mono flex items-center gap-1 border border-white/5"
+              className="px-2.5 py-1.5 rounded-xl neo-liquid-btn text-zinc-300 hover:text-white transition cursor-pointer text-xs font-mono flex items-center gap-1.5"
               title="Test Gateway Latency"
             >
-              <RefreshCw className={`w-3 h-3 ${isPinging ? "animate-spin text-orange-400" : ""}`} />
+              <RefreshCw className={`w-3.5 h-3.5 ${isPinging ? "animate-spin text-orange-400" : ""}`} />
               <span>Ping</span>
             </button>
           </div>
 
           <div>
             <div className="flex items-baseline gap-2">
-              <span className="text-3xl font-black text-white font-mono tracking-tight">
+              <span className="text-4xl sm:text-5xl font-black text-white font-mono tracking-tight">
                 {ping}
               </span>
-              <span className="text-xs font-mono text-emerald-400 font-bold">ms</span>
+              <span className="text-sm font-mono text-emerald-400 font-bold">ms</span>
             </div>
-            <p className="text-[11px] text-zinc-400 mt-1 flex items-center gap-1.5">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
-              <span>Optimal WebSocket Handshake ({lastPinged})</span>
+            <p className="text-xs text-zinc-400 mt-2 flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-emerald-400 shadow-[0_0_8px_#34d399]" />
+              <span>Optimal Handshake ({lastPinged})</span>
             </p>
           </div>
         </div>
 
         {/* Server Protection Health */}
-        <div className="p-5 rounded-3xl bg-gradient-to-br from-[#120a1c] to-[#0c0512] border border-white/10 shadow-[0_8px_30px_rgba(0,0,0,0.6)] flex flex-col justify-between space-y-3">
+        <div className="p-6 sm:p-7 rounded-3xl glass-liquid-card flex flex-col justify-between space-y-4">
           <div className="flex items-center justify-between">
-            <span className="text-[11px] font-mono uppercase text-zinc-400 font-bold flex items-center gap-1.5">
-              <ShieldCheck className="w-3.5 h-3.5 text-fuchsia-400" />
+            <span className="text-xs font-mono uppercase text-zinc-300 font-bold flex items-center gap-2">
+              <ShieldCheck className="w-4 h-4 text-fuchsia-400" />
               <span>Fortress Defense</span>
             </span>
-            <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-fuchsia-500/15 text-fuchsia-300 border border-fuchsia-500/20 font-bold">
-              ALL VIP FREE
+            <span className="text-xs font-mono px-2.5 py-1 rounded-full bg-fuchsia-500/15 text-fuchsia-300 border border-fuchsia-500/30 font-bold">
+              VIP FREE
             </span>
           </div>
 
           <div>
             <div className="flex items-baseline gap-2">
-              <span className="text-3xl font-black text-white font-mono tracking-tight">
+              <span className="text-4xl sm:text-5xl font-black text-white font-mono tracking-tight">
                 98%
               </span>
-              <span className="text-xs font-bold text-fuchsia-400">Score</span>
+              <span className="text-sm font-bold text-fuchsia-400">Score</span>
             </div>
-            <p className="text-[11px] text-zinc-400 mt-1">
+            <p className="text-xs text-zinc-400 mt-2">
               Active Shield across 5 threat vectors
             </p>
           </div>
         </div>
 
         {/* Command Runner Engine */}
-        <div className="p-5 rounded-3xl bg-gradient-to-br from-[#120a1c] to-[#0c0512] border border-white/10 shadow-[0_8px_30px_rgba(0,0,0,0.6)] flex flex-col justify-between space-y-3">
+        <div className="p-6 sm:p-7 rounded-3xl glass-liquid-card flex flex-col justify-between space-y-4">
           <div className="flex items-center justify-between">
-            <span className="text-[11px] font-mono uppercase text-zinc-400 font-bold flex items-center gap-1.5">
-              <Terminal className="w-3.5 h-3.5 text-orange-400" />
-              <span>Hybrid Command Engine</span>
+            <span className="text-xs font-mono uppercase text-zinc-300 font-bold flex items-center gap-2">
+              <Terminal className="w-4 h-4 text-orange-400" />
+              <span>Hybrid Engine</span>
             </span>
-            <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-orange-500/15 text-orange-300 border border-orange-500/20 font-bold">
+            <span className="text-xs font-mono px-2.5 py-1 rounded-full bg-orange-500/15 text-orange-300 border border-orange-500/30 font-bold">
               100 CMDS
             </span>
           </div>
 
           <div>
-            <p className="text-lg font-black text-white tracking-tight">
+            <p className="text-xl sm:text-2xl font-black text-white tracking-tight">
               Dual-Engine Active
             </p>
-            <p className="text-[11px] text-zinc-400 mt-1">
-              Slash + Rapid Prefixes (<code className="text-orange-400">.</code>, <code className="text-orange-400">?</code>, <code className="text-orange-400">!</code>)
+            <p className="text-xs text-zinc-400 mt-2">
+              Slash + Rapid Prefixes (<code className="text-orange-400 font-bold">.</code>, <code className="text-orange-400 font-bold">?</code>, <code className="text-orange-400 font-bold">!</code>)
             </p>
           </div>
         </div>
 
         {/* Audio FX & Interactive Feedback */}
-        <div className="p-5 rounded-3xl bg-gradient-to-br from-[#120a1c] to-[#0c0512] border border-white/10 shadow-[0_8px_30px_rgba(0,0,0,0.6)] flex flex-col justify-between space-y-3">
+        <div className="p-6 sm:p-7 rounded-3xl glass-liquid-card flex flex-col justify-between space-y-4">
           <div className="flex items-center justify-between">
-            <span className="text-[11px] font-mono uppercase text-zinc-400 font-bold flex items-center gap-1.5">
-              <Activity className="w-3.5 h-3.5 text-amber-400" />
-              <span>Dashboard Audio FX</span>
+            <span className="text-xs font-mono uppercase text-zinc-300 font-bold flex items-center gap-2">
+              <Activity className="w-4 h-4 text-amber-400" />
+              <span>Audio Feedback</span>
             </span>
             <button
               onClick={handleToggleSound}
-              className={`p-1.5 rounded-lg border transition cursor-pointer flex items-center gap-1 text-[10px] font-mono ${
+              className={`px-2.5 py-1.5 rounded-xl neo-liquid-btn transition cursor-pointer flex items-center gap-1.5 text-xs font-mono font-bold ${
                 soundEnabled
-                  ? "bg-amber-500/15 border-amber-500/30 text-amber-300"
-                  : "bg-white/5 border-white/5 text-zinc-500"
+                  ? "bg-amber-500/20 border-amber-500/40 text-amber-300"
+                  : "bg-white/5 border-white/10 text-zinc-500"
               }`}
             >
-              {soundEnabled ? <Volume2 className="w-3.5 h-3.5" /> : <VolumeX className="w-3.5 h-3.5" />}
-              <span>{soundEnabled ? "Sound ON" : "Muted"}</span>
+              {soundEnabled ? <Volume2 className="w-3.5 h-3.5 text-amber-400" /> : <VolumeX className="w-3.5 h-3.5" />}
+              <span>{soundEnabled ? "SFX ON" : "MUTED"}</span>
             </button>
           </div>
 
           <div>
-            <p className="text-sm font-bold text-white">
+            <p className="text-base sm:text-lg font-black text-white">
               Procedural Web Audio
             </p>
-            <p className="text-[11px] text-zinc-400 mt-1">
+            <p className="text-xs text-zinc-400 mt-2">
               Interactive cybernetic clicks & chimes active
             </p>
           </div>
@@ -156,28 +156,28 @@ export const ServerTelemetryCenter: React.FC<ServerTelemetryCenterProps> = ({
       </div>
 
       {/* ─── INTERACTIVE SANDBOX QUICK LAUNCHERS ─────────────────────────────── */}
-      <div className="p-6 sm:p-7 rounded-3xl bg-gradient-to-br from-[#120a1c] via-[#100b18] to-[#0c0512] border border-white/10 shadow-[0_12px_40px_rgba(0,0,0,0.7)] space-y-4">
+      <div className="p-7 sm:p-9 rounded-3xl glass-liquid space-y-5">
         <div className="flex items-center justify-between">
           <div>
-            <h3 className="text-base font-black text-white tracking-tight flex items-center gap-2">
-              <Sparkles className="w-4 h-4 text-orange-400" />
+            <h3 className="text-lg sm:text-xl font-black text-white tracking-tight flex items-center gap-2.5">
+              <Sparkles className="w-5 h-5 text-orange-400" />
               <span>Interactive Feature Sandboxes</span>
             </h3>
-            <p className="text-xs text-zinc-400 mt-0.5">
+            <p className="text-xs sm:text-sm text-zinc-400 mt-1">
               Launch real-time simulators and interactive visualizers for {guildName}:
             </p>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {[
             {
               tab: "automod",
               title: "Auto-Mod Shield Sandbox",
               desc: "Test live chat threats with simulated deletion",
               icon: Lock,
-              gradient: "from-red-600/20 to-orange-600/10",
-              border: "border-red-500/20 hover:border-red-500/50",
+              gradient: "from-red-600/20 via-orange-600/10 to-transparent",
+              border: "border-red-500/30 hover:border-red-500/60",
               color: "text-red-400",
             },
             {
@@ -185,8 +185,8 @@ export const ServerTelemetryCenter: React.FC<ServerTelemetryCenterProps> = ({
               title: "DJ Deck & Equalizer",
               desc: "Groove to live visualizer bars with 8D audio",
               icon: Music,
-              gradient: "from-pink-600/20 to-fuchsia-600/10",
-              border: "border-pink-500/20 hover:border-pink-500/50",
+              gradient: "from-pink-600/20 via-fuchsia-600/10 to-transparent",
+              border: "border-pink-500/30 hover:border-pink-500/60",
               color: "text-pink-400",
             },
             {
@@ -194,8 +194,8 @@ export const ServerTelemetryCenter: React.FC<ServerTelemetryCenterProps> = ({
               title: "Rank Card Studio",
               desc: "Customize level badges & live XP progression",
               icon: Award,
-              gradient: "from-amber-600/20 to-orange-600/10",
-              border: "border-amber-500/20 hover:border-amber-500/50",
+              gradient: "from-amber-600/20 via-orange-600/10 to-transparent",
+              border: "border-amber-500/30 hover:border-amber-500/60",
               color: "text-amber-400",
             },
             {
@@ -203,8 +203,8 @@ export const ServerTelemetryCenter: React.FC<ServerTelemetryCenterProps> = ({
               title: "Voice & Text Rewards",
               desc: "Configure milestones and role unlocks",
               icon: Gift,
-              gradient: "from-purple-600/20 to-indigo-600/10",
-              border: "border-purple-500/20 hover:border-purple-500/50",
+              gradient: "from-purple-600/20 via-indigo-600/10 to-transparent",
+              border: "border-purple-500/30 hover:border-purple-500/60",
               color: "text-purple-400",
             },
           ].map((item, idx) => {
@@ -216,17 +216,17 @@ export const ServerTelemetryCenter: React.FC<ServerTelemetryCenterProps> = ({
                   dashboardAudio.playClick();
                   setActiveTab(item.tab);
                 }}
-                className={`p-4 rounded-2xl bg-gradient-to-br ${item.gradient} border ${item.border} text-left transition-all duration-200 cursor-pointer group hover:scale-[1.02] flex flex-col justify-between h-32`}
+                className={`p-5 sm:p-6 rounded-2xl bg-gradient-to-br ${item.gradient} border ${item.border} text-left transition-all duration-300 cursor-pointer group glass-liquid-card flex flex-col justify-between h-36`}
               >
                 <div className="flex items-center justify-between">
-                  <div className={`w-9 h-9 rounded-xl bg-white/5 flex items-center justify-center ${item.color} border border-white/5`}>
+                  <div className={`w-11 h-11 rounded-xl bg-white/5 flex items-center justify-center ${item.color} border border-white/10 shadow-inner`}>
                     <Icon className="w-5 h-5" />
                   </div>
-                  <ChevronRight className="w-4 h-4 text-zinc-500 group-hover:text-white transition group-hover:translate-x-0.5" />
+                  <ChevronRight className="w-5 h-5 text-zinc-500 group-hover:text-white transition group-hover:translate-x-1" />
                 </div>
                 <div>
-                  <p className="font-bold text-xs text-white group-hover:text-orange-300 transition">{item.title}</p>
-                  <p className="text-[11px] text-zinc-400 mt-0.5 line-clamp-1">{item.desc}</p>
+                  <p className="font-extrabold text-sm sm:text-base text-white group-hover:text-orange-300 transition">{item.title}</p>
+                  <p className="text-xs text-zinc-400 mt-1 line-clamp-1">{item.desc}</p>
                 </div>
               </button>
             );

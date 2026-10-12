@@ -46,58 +46,58 @@ export const MusicDjStudio: React.FC<MusicDjStudioProps> = ({
     <div className="grid grid-cols-1 xl:grid-cols-12 gap-8 items-start w-full">
       {/* ─── LEFT: CONTROLS & SETTINGS (7 COLS) ─────────────────────────────── */}
       <div className="xl:col-span-7 space-y-6">
-        <div className="p-6 sm:p-8 rounded-3xl bg-gradient-to-br from-[#120a1c] via-[#100b18] to-[#0c0512] border border-white/10 shadow-[0_12px_40px_rgba(0,0,0,0.7)] space-y-7 relative overflow-hidden">
+        <div className="p-6 sm:p-8 rounded-3xl glass-liquid-card space-y-7 relative overflow-hidden">
           {/* Header */}
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-4 border-b border-white/10">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-5 border-b border-white/10">
             <div className="flex items-center gap-3.5">
-              <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-pink-600/20 via-fuchsia-500/10 to-purple-500/20 border border-fuchsia-500/30 flex items-center justify-center text-fuchsia-400 shadow-lg shadow-fuchsia-500/10">
+              <div className="w-13 h-13 rounded-2xl bg-gradient-to-br from-pink-600/20 via-fuchsia-500/10 to-purple-500/20 border border-fuchsia-500/30 flex items-center justify-center text-fuchsia-400 shadow-lg shadow-fuchsia-500/10 shrink-0">
                 <Music className="w-6 h-6" />
               </div>
               <div>
-                <h3 className="text-lg font-black text-white tracking-tight flex items-center gap-2">
+                <h3 className="text-lg sm:text-xl font-black text-white tracking-tight flex items-center gap-2.5">
                   <span>Music &amp; DJ Master Suite</span>
-                  <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-fuchsia-500/15 text-fuchsia-300 border border-fuchsia-500/25">
+                  <span className="text-[10px] font-mono px-2.5 py-0.5 rounded-full bg-fuchsia-500/15 text-fuchsia-300 border border-fuchsia-500/30 font-bold">
                     24/7 ZERO LAG
                   </span>
                 </h3>
-                <p className="text-xs text-zinc-400 mt-0.5">
+                <p className="text-xs sm:text-sm text-zinc-400 mt-0.5">
                   High-fidelity audio streaming, DSP equalizers, and permanent voice channel stay.
                 </p>
               </div>
             </div>
 
-            <span className="px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-xs font-bold shrink-0">
+            <span className="px-3.5 py-1 rounded-full bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 text-xs font-bold shrink-0">
               💎 Free Lifetime VIP
             </span>
           </div>
 
           {/* Hydra Comparison Banner */}
-          <div className="p-4 rounded-2xl bg-gradient-to-r from-purple-900/30 via-[#180f24] to-fuchsia-900/20 border border-fuchsia-500/30 flex items-center justify-between gap-4">
+          <div className="p-4.5 rounded-2xl glass-liquid border border-fuchsia-500/30 flex items-center justify-between gap-4">
             <div className="space-y-0.5">
-              <p className="font-bold text-xs text-fuchsia-300 flex items-center gap-1.5">
-                <Sparkles className="w-3.5 h-3.5 text-fuchsia-400" />
+              <p className="font-extrabold text-xs sm:text-sm text-fuchsia-300 flex items-center gap-2">
+                <Sparkles className="w-4 h-4 text-fuchsia-400" />
                 <span>Hydra charges $5.00/mo for 24/7 stay — VePlexity gives it 100% Free!</span>
               </p>
-              <p className="text-[11px] text-zinc-400">
+              <p className="text-xs text-zinc-400">
                 Full access to bassboost, 8D audio, and 24/7 stay with zero paywalls.
               </p>
             </div>
             <div className="text-right shrink-0">
-              <span className="text-xs font-black text-emerald-400">$0.00 / FREE</span>
+              <span className="text-xs sm:text-sm font-black text-emerald-400 font-mono">$0.00 / FREE</span>
             </div>
           </div>
 
           {/* 24/7 Voice Channel Stay Toggle */}
           <div
             onClick={() => setStay247(!stay247)}
-            className="p-5 rounded-2xl bg-[#181122] border border-white/10 hover:border-white/20 transition flex items-center justify-between gap-4 cursor-pointer select-none"
+            className="p-5 rounded-2xl glass-liquid-card flex items-center justify-between gap-4 cursor-pointer select-none"
           >
-            <div className="flex items-start gap-3.5">
-              <div className="w-10 h-10 rounded-xl bg-fuchsia-500/10 border border-fuchsia-500/20 flex items-center justify-center text-lg shrink-0">
+            <div className="flex items-start gap-4">
+              <div className="w-11 h-11 rounded-xl bg-fuchsia-500/15 border border-fuchsia-500/30 flex items-center justify-center text-xl shrink-0 shadow-inner">
                 📻
               </div>
               <div>
-                <p className="font-bold text-sm text-white">24/7 Voice Channel Stay</p>
+                <p className="font-extrabold text-sm sm:text-base text-white">24/7 Voice Channel Stay</p>
                 <p className="text-xs text-zinc-400 mt-0.5">
                   Bot stays parked in the voice channel indefinitely, ready to instantly play music.
                 </p>
@@ -182,24 +182,24 @@ export const MusicDjStudio: React.FC<MusicDjStudioProps> = ({
       </div>
 
       {/* ─── RIGHT: INTERACTIVE DJ DECK & AUDIO VISUALIZER (5 COLS) ─────────── */}
-      <div className="xl:col-span-5 space-y-6 xl:sticky xl:top-20">
-        <div className="p-6 rounded-3xl bg-gradient-to-br from-[#120a1c] via-[#140b20] to-[#0d0714] border border-white/10 shadow-[0_12px_40px_rgba(0,0,0,0.7)] space-y-5">
+      <div className="xl:col-span-5 space-y-6 xl:sticky xl:top-24">
+        <div className="p-6 sm:p-7 rounded-3xl glass-liquid-card space-y-5">
           {/* Deck Header */}
-          <div className="flex items-center justify-between pb-3 border-b border-white/10">
+          <div className="flex items-center justify-between pb-3.5 border-b border-white/10">
             <div className="flex items-center gap-2">
-              <Disc3 className={`w-4 h-4 text-fuchsia-400 ${isPlaying ? "animate-spin" : ""}`} />
-              <span className="font-mono text-xs uppercase tracking-wider font-bold text-white">
+              <Disc3 className={`w-4.5 h-4.5 text-fuchsia-400 ${isPlaying ? "animate-spin" : ""}`} />
+              <span className="font-mono text-xs sm:text-sm uppercase tracking-wider font-bold text-white">
                 Live DJ Turntable
               </span>
             </div>
-            <span className="text-[10px] font-mono text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">
+            <span className="text-[10px] font-mono text-emerald-400 bg-emerald-500/15 px-2.5 py-0.5 rounded-full border border-emerald-500/30 font-bold">
               24-Bit FLAC 48kHz
             </span>
           </div>
 
           {/* Equalizer Wave Spectrum */}
-          <div className="p-4 rounded-2xl bg-[#09050d] border border-white/10 space-y-3">
-            <div className="flex items-end justify-between h-20 gap-1 px-2">
+          <div className="p-4.5 rounded-2xl bg-[#09050d]/80 border border-white/10 space-y-3 shadow-inner">
+            <div className="flex items-end justify-between h-24 gap-1 px-2">
               {[40, 75, 55, 90, 65, 80, 45, 95, 70, 85, 50, 90, 60, 75, 45, 80, 65, 90, 55, 70].map((h, i) => (
                 <div
                   key={i}
@@ -209,13 +209,13 @@ export const MusicDjStudio: React.FC<MusicDjStudioProps> = ({
                     background: i % 2 === 0
                       ? "linear-gradient(to top, #d946ef, #f97316)"
                       : "linear-gradient(to top, #ec4899, #8b5cf6)",
-                    opacity: isPlaying ? 0.9 : 0.3,
+                    opacity: isPlaying ? 0.95 : 0.3,
                   }}
                 />
               ))}
             </div>
 
-            <div className="flex items-center justify-between text-[10px] font-mono text-zinc-400 pt-1 border-t border-white/5">
+            <div className="flex items-center justify-between text-[10px] font-mono text-zinc-400 pt-1.5 border-t border-white/5">
               <span>20Hz SUB-BASS</span>
               <span>1kHz MIDS</span>
               <span>20kHz HIGHS</span>
@@ -224,13 +224,13 @@ export const MusicDjStudio: React.FC<MusicDjStudioProps> = ({
 
           {/* Now Playing Card */}
           <div className="space-y-2">
-            <p className="text-[10px] font-mono uppercase text-zinc-400 font-bold">Currently Playing in VC:</p>
-            <div className="p-3.5 rounded-xl bg-[#1c1229] border border-white/10 space-y-2">
+            <p className="text-xs font-mono uppercase text-zinc-400 font-bold">Currently Playing in VC:</p>
+            <div className="p-4 rounded-xl glass-liquid space-y-2">
               <div className="flex items-center justify-between">
-                <p className="font-bold text-xs text-white truncate">{currentTrack.title}</p>
-                <span className="text-[10px] font-mono text-zinc-400 shrink-0">{currentTrack.duration}</span>
+                <p className="font-bold text-xs sm:text-sm text-white truncate">{currentTrack.title}</p>
+                <span className="text-xs font-mono text-zinc-400 shrink-0">{currentTrack.duration}</span>
               </div>
-              <p className="text-[11px] text-fuchsia-300">{currentTrack.author}</p>
+              <p className="text-xs text-fuchsia-300 font-semibold">{currentTrack.author}</p>
             </div>
           </div>
 
@@ -238,7 +238,7 @@ export const MusicDjStudio: React.FC<MusicDjStudioProps> = ({
           <div className="flex items-center justify-center gap-4 pt-2">
             <button
               onClick={handlePlayToggle}
-              className="w-12 h-12 rounded-full bg-gradient-to-r from-fuchsia-600 to-orange-500 hover:from-fuchsia-500 hover:to-orange-400 text-white flex items-center justify-center shadow-lg shadow-fuchsia-600/30 cursor-pointer transition hover:scale-105"
+              className="w-13 h-13 rounded-full neo-liquid-primary text-white flex items-center justify-center shadow-lg shadow-fuchsia-600/35 cursor-pointer transition hover:scale-105"
             >
               {isPlaying ? <Pause className="w-5 h-5" /> : <Play className="w-5 h-5 ml-0.5" />}
             </button>
@@ -251,7 +251,7 @@ export const MusicDjStudio: React.FC<MusicDjStudioProps> = ({
                   duration: "4:15",
                 });
               }}
-              className="p-3 rounded-full bg-white/5 hover:bg-white/10 text-zinc-300 hover:text-white border border-white/5 transition cursor-pointer"
+              className="p-3.5 rounded-full neo-liquid-btn text-zinc-300 hover:text-white transition cursor-pointer"
               title="Skip Track"
             >
               <SkipForward className="w-4 h-4" />
