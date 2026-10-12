@@ -47,6 +47,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     Discord({
       clientId: DISCORD_CLIENT_ID,
       clientSecret: DISCORD_CLIENT_SECRET,
+      issuer: "https://discord.com",
       authorization: "https://discord.com/api/oauth2/authorize?scope=identify+guilds+email",
       checks: ["state"],
     }),
