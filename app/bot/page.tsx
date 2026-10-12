@@ -12,6 +12,13 @@ import {
 export default function BotPage() {
   const features = [
     {
+      icon: <Terminal className="w-8 h-8 text-orange-400" />,
+      title: "Dual-Engine Hybrid Command Runner",
+      badge: "Instant . / ? / !",
+      borderColor: "hover:border-orange-400/50",
+      description: "Supports instant prefix commands (.purge, .afk, ?purge, !help) with fast typing aliases (.bal, .p, .np, .q, .vol) alongside modern Discord slash commands (/), complete with 5-second auto-clearing purge alerts.",
+    },
+    {
       icon: <Music className="w-8 h-8 text-fuchsia-500" />,
       title: "Lossless Audio DSP Engine",
       badge: "48kHz VOIP",
@@ -27,24 +34,17 @@ export default function BotPage() {
     },
     {
       icon: <Shield className="w-8 h-8 text-red-500" />,
-      title: "Enterprise Moderation Suite",
-      badge: "Automated",
+      title: "100% Free Moderation Suite",
+      badge: "Permanent Free",
       borderColor: "hover:border-red-500/50",
-      description: "Rule enforcement system with automated warning escalation, timed suspensions, channel lockdowns, and case-indexed audit logs.",
+      description: "All server safety tools (/ban, /kick, /warn, /timeout, .purge, /lock) remain permanently free with zero paywalls. Case-indexed audit logs with auto-moderation.",
     },
     {
       icon: <Sliders className="w-8 h-8 text-purple-500" />,
-      title: "Real-Time Cloud Dashboard",
+      title: "Cloud Dashboard & Activity Rewards",
       badge: "Next.js 16",
       borderColor: "hover:border-purple-500/50",
-      description: "Configure prefixes, notification channels, reaction roles, and automated welcome dispatches in real-time from veplexity.dev/dashboard.",
-    },
-    {
-      icon: <Gamepad2 className="w-8 h-8 text-cyan-500" />,
-      title: "Multiplayer Discord Games",
-      badge: "Component UI",
-      borderColor: "hover:border-cyan-500/50",
-      description: "Native Discord component mini-games including TicTacToe, Connect4, Rock-Paper-Scissors duels, and Trivia competitions directly in text channels.",
+      description: "Configure prefixes, notification channels, reaction roles, and customizable voice channel duration & message count milestone rewards in real-time.",
     },
     {
       icon: <Database className="w-8 h-8 text-orange-400" />,
@@ -57,20 +57,35 @@ export default function BotPage() {
 
   const commandCategories = [
     {
-      category: "Music & Audio DSP",
+      category: "Dual-Engine Rapid Prefix Aliases (. / ? / !)",
+      commands: [
+        ".purge [amount]", ".afk [reason]", ".bal", ".p [query]", 
+        ".q", ".np", ".vol [0-100]", ".dc", ".w @user [reason]", 
+        ".mute", ".unmute", ".av @user", ".h", ".si", ".ui", ".cf", ".8b"
+      ],
+    },
+    {
+      category: "Standalone Social & Action Commands (14 Standalone)",
+      commands: [
+        "/hug", "/kiss", "/pat", "/slap", "/bite", "/cuddle", 
+        "/poke", "/tickle", "/bonk", "/punch", "/blush", "/wink", "/lick", "/cry"
+      ],
+    },
+    {
+      category: "Music & Audio DSP (24/7 Voice Retention)",
       commands: ["/play", "/skip", "/queue", "/volume", "/247", "/pause", "/resume", "/stop", "/lyrics"],
     },
     {
-      category: "AI & Intelligence",
+      category: "AI & Intelligence (Google Gemini Multi-Modal)",
       commands: ["/gemini ask", "/gemini reset", "/gemini persona", "/gemini vision", "/imagine"],
     },
     {
-      category: "Security & Moderation",
-      commands: ["/ban", "/kick", "/timeout", "/warn", "/warnings", "/clearwarns", "/lock", "/unlock", "/purge"],
+      category: "100% Free Moderation & Server Protection",
+      commands: ["/ban", "/kick", "/timeout", "/warn", "/warnings", "/clearwarns", "/lock", "/unlock", "/purge", "/modlogs", "/massmod"],
     },
     {
-      category: "System & Configuration",
-      commands: ["/setup", "/setwelcome", "/reactionrole", "/announce", "/botinfo", "/serverinfo", "/stats", "/ping"],
+      category: "System, Economy & Activity Rewards",
+      commands: ["/setup", "/setwelcome", "/reactionrole", "/announce", "/botinfo", "/serverinfo", "/rank", "/balance", "/daily", "/work"],
     },
     {
       category: "Interactive & Mini-Games",
@@ -93,7 +108,7 @@ export default function BotPage() {
             animate={{ opacity: 1, y: 0 }}
             className="mb-8 flex items-center gap-2 px-4 py-2 border border-orange-500 text-orange-500 rounded-xl font-mono text-xs font-black uppercase tracking-widest bg-orange-500/10 shadow-[0_0_20px_rgba(249,115,22,0.2)] w-fit"
           >
-            <Terminal className="w-4 h-4" /> Render Node 24/7 • 101 Production Commands
+            <Terminal className="w-4 h-4" /> Render Node 24/7 • 100 Production Commands • Dual-Engine (Slash &amp; Prefixes)
           </motion.div>
 
           <motion.h1 
@@ -153,9 +168,9 @@ export default function BotPage() {
         {/* METRICS STRIP */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6 p-8 md:p-10 rounded-[2rem] bg-[#0c0512] border-[4px] border-zinc-900 mb-20 shadow-[0_0_40px_rgba(249,115,22,0.05)]">
           <div>
-            <div className="text-xs text-orange-500 font-black uppercase tracking-widest">COMMAND MATRIX</div>
-            <div className="text-4xl font-black text-white mt-1">101 PROD</div>
-            <div className="text-xs text-zinc-400 font-mono mt-1">Slash Handlers Ready</div>
+            <div className="text-xs text-orange-500 font-black uppercase tracking-widest">COMMAND ENGINE</div>
+            <div className="text-4xl font-black text-white mt-1">100 PROD</div>
+            <div className="text-xs text-zinc-400 font-mono mt-1">Slash &amp; Instant Prefixes</div>
           </div>
           <div>
             <div className="text-xs text-fuchsia-500 font-black uppercase tracking-widest">CLOUD DAEMON</div>
@@ -219,10 +234,10 @@ export default function BotPage() {
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-10 pb-6 border-b border-white/5">
             <div>
               <span className="font-mono text-xs font-black text-orange-500 uppercase tracking-widest">COMMAND INDEX</span>
-              <h2 className="text-3xl font-black text-white mt-1 tracking-tight">101 Slash Handlers</h2>
+              <h2 className="text-3xl font-black text-white mt-1 tracking-tight">100 Production Slash Routes &amp; Prefix Runners</h2>
             </div>
             <div className="text-xs text-zinc-400 font-mono">
-              Type <code className="text-orange-400 bg-black px-2 py-1 rounded border border-zinc-800">/help</code> in Discord for interactive documentation
+              Type <code className="text-orange-400 bg-black px-2 py-1 rounded border border-zinc-800">/help</code> or <code className="text-fuchsia-400 bg-black px-2 py-1 rounded border border-zinc-800">.help</code> in Discord
             </div>
           </div>
 

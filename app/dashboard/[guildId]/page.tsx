@@ -10,7 +10,7 @@ import {
   Send, ExternalLink, Gamepad2, Cake, Coffee, Flame,
   MessageCircle, FileText, Settings, ThumbsUp, ThumbsDown,
   Trash2, UserMinus, UserPlus, Clock, Layers, Award,
-  Zap, Radio, Link as LinkIcon, Compass, Gift, Users, Plus
+  Zap, Radio, Link as LinkIcon, Compass, Gift, Users, Plus, Terminal
 } from "lucide-react";
 
 interface RoleItem {
@@ -1131,6 +1131,10 @@ export default function GuildDashboard({ params }: { params: Promise<{ guildId: 
                       <span className="text-xs px-2.5 py-0.5 rounded-full bg-fuchsia-500/10 text-fuchsia-300 border border-fuchsia-500/20 font-bold">
                         💎 All VIP Features Free
                       </span>
+                      <span className="text-xs px-2.5 py-0.5 rounded-full bg-orange-500/10 text-orange-300 border border-orange-500/20 font-bold flex items-center gap-1.5">
+                        <Terminal className="w-3 h-3 text-orange-400" />
+                        Dual-Engine: Slash &amp; Prefixes (. / ? / !)
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -1469,6 +1473,37 @@ export default function GuildDashboard({ params }: { params: Promise<{ guildId: 
                     <p className="text-xs text-gray-400 mt-1 leading-relaxed">
                       Bot masters are Discord roles that can administer VePlexity and execute moderation commands (<code className="text-blue-300">/ban</code>, <code className="text-blue-300">/kick</code>, <code className="text-blue-300">/timeout</code>, <code className="text-blue-300">/warn</code>). Roles with Discord Administrator permission are automatically bot masters.
                     </p>
+                  </div>
+
+                  {/* Dual-Engine Prefix Runner Notice */}
+                  <div className="p-4 rounded-xl bg-orange-500/5 border border-orange-500/20 flex flex-col gap-2">
+                    <div className="flex items-center gap-2 text-xs font-bold text-orange-300">
+                      <Terminal className="w-4 h-4 text-orange-400" />
+                      <span>Instant Fast-Mod Commands Active</span>
+                      <span className="text-[10px] px-2 py-0.5 rounded-full bg-orange-500/10 border border-orange-500/30 text-orange-400 font-mono">
+                        Prefixes: . / ? / !
+                      </span>
+                    </div>
+                    <p className="text-[11px] text-gray-400 leading-relaxed">
+                      Moderators can execute rapid commands in chat without waiting for Discord slash menus. Purge notices auto-delete after 5 seconds to keep channels clean:
+                    </p>
+                    <div className="flex flex-wrap gap-2 pt-1 font-mono text-[11px]">
+                      <span className="px-2.5 py-1 bg-black/50 rounded-lg border border-white/5 text-gray-300">
+                        <code className="text-orange-400">.purge [n]</code> / <code className="text-orange-400">?purge [n]</code>
+                      </span>
+                      <span className="px-2.5 py-1 bg-black/50 rounded-lg border border-white/5 text-gray-300">
+                        <code className="text-orange-400">.warn @user [reason]</code>
+                      </span>
+                      <span className="px-2.5 py-1 bg-black/50 rounded-lg border border-white/5 text-gray-300">
+                        <code className="text-orange-400">.timeout @user [mins]</code>
+                      </span>
+                      <span className="px-2.5 py-1 bg-black/50 rounded-lg border border-white/5 text-gray-300">
+                        <code className="text-orange-400">.afk [reason]</code>
+                      </span>
+                      <span className="px-2.5 py-1 bg-black/50 rounded-lg border border-white/5 text-gray-300">
+                        <code className="text-orange-400">.mute</code> / <code className="text-orange-400">.unmute</code>
+                      </span>
+                    </div>
                   </div>
 
                   <div className="pt-2 space-y-2">

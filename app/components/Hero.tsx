@@ -87,9 +87,9 @@ export default function Hero() {
         >
           <div className="flex flex-col items-center p-3 rounded-xl bg-white/[0.02] border border-white/5">
             <span className="text-xs font-mono text-zinc-500 uppercase tracking-wider mb-1">Commercial Bot</span>
-            <span className="text-xl sm:text-2xl font-black text-white">97+ Cmds</span>
+            <span className="text-xl sm:text-2xl font-black text-white">100 Cmds</span>
             <span className="text-[10px] text-emerald-400 font-mono mt-1 flex items-center gap-1">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" /> Live on Render
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" /> Slash &amp; Prefixes (. / ? / !)
             </span>
           </div>
 

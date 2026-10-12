@@ -19,12 +19,23 @@ interface NewsItem {
 export default function NewsWire() {
   const newsItems: NewsItem[] = [
     {
+      id: "news-0",
+      tag: "CORE ENGINE // LIVE",
+      tagColor: "bg-emerald-500/10 text-emerald-400 border-emerald-500/30",
+      date: "OCTOBER 12, 2026 // LIVE",
+      title: "Dual-Engine Hybrid Command Runner Deployed Across Bots",
+      summary: "Major architecture update enables instant prefix execution (., ?, !) with rapid-fire typing aliases (.purge, .afk, .bal, .p) alongside 100 slash commands, featuring 5s auto-deleting audit alerts and full dashboard activity rewards.",
+      linkText: "Inspect Architecture",
+      linkHref: "/bot",
+      isExternal: false,
+    },
+    {
       id: "news-1",
       tag: "FLAGSHIP RELEASE",
       tagColor: "bg-fuchsia-500/10 text-fuchsia-400 border-fuchsia-500/30",
       date: "OCTOBER 2026 // LIVE",
       title: "VePlexity Commercial Discord Bot Enters Production",
-      summary: "Massive overhaul deployed across 24/7 cloud nodes with 101 slash commands, lossless audio, Gemini AI smart chatbot, and a web dashboard.",
+      summary: "Massive overhaul deployed across 24/7 cloud nodes with 100 slash commands, lossless audio, Gemini AI smart chatbot, and a web dashboard.",
       linkText: "Explore Commercial Bot",
       linkHref: "/bot",
       isExternal: false,
@@ -65,11 +76,11 @@ export default function NewsWire() {
   ];
 
   const tickerItems = [
-    "🔴 [BREAKING] VePlexity Commercial Bot running on Render with 101 slash commands",
-    "⚡ [STUDIO] VePlexity Cam multi-angle switcher integrated with zero-latency HDMI capture",
+    "⚡ [DUAL-ENGINE] Hybrid Prefix Runner live with ., ?, ! shortcuts and 5s auto-cleaning embeds",
+    "🔴 [BREAKING] VePlexity Commercial Bot running on Render with 100 global commands",
+    "🎁 [REWARDS] Voice channel time & text count milestone role rewards live on web dashboard",
     "🍃 [DATABASE] MongoDB Atlas cloud cluster fully synchronized with <15ms latency",
-    "🎵 [AUDIO] Studio master tracks (Tera Asar, Aisi Tu) archived in Audio Engineering Lab",
-    "☕ [BACKERS] Buy Me a Coffee supporter portal online — powering 24/7 cloud servers",
+    "🛡️ [SECURITY] 100% Free Moderation Suite permanently locked with zero paywalls",
     "🚀 [DASHBOARD] Full web configuration portal live at veplexity.dev/dashboard",
   ];
 

@@ -24,14 +24,34 @@ interface Dispatch {
 export default function NewsWirePage() {
   const dispatches: Dispatch[] = [
     {
+      id: "NW-2026-10-12",
+      category: "Engine Release",
+      date: "October 12, 2026",
+      time: "15:20 IST",
+      title: "Hybrid Prefix Command Runner (. / ? / !) Deployed Across All Bots",
+      summary: "Major dual-engine command runner deployed across both Exclusive (HQ) and Commercial bots, enabling instant text chat execution alongside 100 global slash commands.",
+      details: [
+        "Instant prefix support for '.', '?', and '!' prefixes without opening Discord slash UI menus.",
+        "Rapid typing aliases: .purge, .afk, .bal, .p, .np, .q, .vol, .clr, .mute, .w, .av, .si, .ui, .cf, .8b.",
+        "Auto-clearing purge feedback embeds that self-destruct after 5 seconds to keep channels pristine.",
+        "Full support for 14 standalone social and action commands (/bite, /cuddle, /bonk, /hug, etc.).",
+        "Wired to Web Dashboard for customizable Voice Channel Duration & Chat Milestone Role Rewards.",
+      ],
+      link: {
+        label: "Inspect Bot Architecture",
+        href: "/bot",
+        isExternal: false,
+      },
+    },
+    {
       id: "NW-2026-10-07",
       category: "Flagship Release",
       date: "October 7, 2026",
       time: "11:30 IST",
-      title: "Commercial VePlexity Bot Enters Production Across 101 Commands",
+      title: "Commercial VePlexity Bot Enters Production Across 100 Commands",
       summary: "VePlexity Bot is officially live as a multi-server commercial platform hosted 24/7 on Render cloud nodes with full MongoDB Atlas state persistence.",
       details: [
-        "101 modular slash commands loaded across Music, AI, Moderation, Utility, and Fun categories.",
+        "100 modular slash commands loaded across Music, AI, Moderation, Utility, and Fun categories.",
         "Lossless music streaming engine with 24/7 channel retention and dynamic queue control.",
         "Integrated Google Gemini AI assistant with persona tuning and multi-modal comprehension.",
         "Web management dashboard live at veplexity.dev/dashboard for instantaneous server configuration.",
