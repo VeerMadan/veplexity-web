@@ -27,6 +27,7 @@ export default function DashboardPage() {
   const [search, setSearch] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [authError, setAuthError] = useState<string | null>(null);
+  const [authErrorDetail, setAuthErrorDetail] = useState<string | null>(null);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -37,7 +38,9 @@ export default function DashboardPage() {
       }
       const params = new URLSearchParams(window.location.search);
       const err = params.get("error");
+      const detail = params.get("error_detail");
       if (err) setAuthError(err);
+      if (detail) setAuthErrorDetail(detail);
     }
   }, []);
 
@@ -171,6 +174,12 @@ export default function DashboardPage() {
                   ? "OAuth handshake could not be completed. Please ensure you are initiating sign-in on https://www.veplexity.dev and that both Redirect URIs are saved in Discord Developer Portal."
                   : `Authentication encountered an issue (${authError}). Please try logging in again.`}
               </p>
+              {authErrorDetail && (
+                <div className="p-2.5 bg-black/60 rounded border border-red-500/30 text-[10px] font-mono text-red-300 break-all leading-normal">
+                  <div className="text-[9px] uppercase font-bold text-red-400 mb-1">Diagnostic Detail:</div>
+                  {authErrorDetail}
+                </div>
+              )}
             </div>
           )}
 

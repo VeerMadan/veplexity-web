@@ -1,5 +1,6 @@
 import NextAuth from "next-auth";
 import Discord from "next-auth/providers/discord";
+import { recordAuthError } from "@/lib/authErrorStore";
 
 // Sanitize and enforce canonical URL in production
 if (process.env.NODE_ENV === "production") {
@@ -29,6 +30,15 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   debug: true,
   trustHost: true,
   secret: AUTH_SECRET,
+  logger: {
+    error(error) {
+      console.error("[NextAuth System Error]", error);
+      recordAuthError(error);
+    },
+    warn(code, ...message) {
+      console.warn("[NextAuth System Warning]", code, ...message);
+    },
+  },
   pages: {
     signIn: "/dashboard",
     error: "/dashboard",
@@ -38,6 +48,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       clientId: DISCORD_CLIENT_ID,
       clientSecret: DISCORD_CLIENT_SECRET,
       authorization: "https://discord.com/api/oauth2/authorize?scope=identify+guilds+email",
+      checks: ["state"],
     }),
   ],
   callbacks: {
