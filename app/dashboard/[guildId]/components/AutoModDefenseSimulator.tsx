@@ -3,7 +3,8 @@
 import React, { useState } from "react";
 import { 
   Lock, Shield, AlertTriangle, CheckCircle2, Zap, 
-  Terminal, Sparkles, Send, RotateCcw, Volume2, Flame 
+  Terminal, Send, RotateCcw, Volume2, Flame,
+  Ban, Link2, AlertOctagon, Megaphone, Check
 } from "lucide-react";
 import { TactileToggle } from "./TactileToggle";
 import { dashboardAudio } from "@/lib/dashboardAudio";
@@ -53,12 +54,12 @@ export const AutoModDefenseSimulator: React.FC<AutoModDefenseSimulatorProps> = (
   const defenseScore = Math.round((activeCount / 5) * 100);
 
   const presets = [
-    { label: "🔗 Discord Invite", text: "Join my new server: https://discord.gg/vip-hangout", type: "antiInvite" },
-    { label: "🚨 Phishing Scam", text: "Free Steam $50 Gift Card: http://claim-nitro.xyz/gift", type: "antiLinks" },
-    { label: "💥 CAPS SHOUTING", text: "HEY EVERYONE WAKE UP AND JOIN THE VOICE CHANNEL RIGHT NOW", type: "antiCaps" },
-    { label: "⚡ Mass Mentions", text: "@everyone @here ping ping spamming chat", type: "antiSpam" },
-    { label: "🤬 Hate Speech", text: "You are totally garbage trash idiot dumb", type: "antiBadWords" },
-    { label: "✨ Clean Chat", text: "Hey everyone! The new VePlexity bot update is awesome.", type: "clean" },
+    { label: "Discord Invite", text: "Join my new server: https://discord.gg/vip-hangout", type: "antiInvite" },
+    { label: "Phishing Link", text: "Free Steam $50 Gift Card: http://claim-nitro.xyz/gift", type: "antiLinks" },
+    { label: "Excessive Caps", text: "HEY EVERYONE WAKE UP AND JOIN THE VOICE CHANNEL RIGHT NOW", type: "antiCaps" },
+    { label: "Mass Mentions", text: "@everyone @here ping ping spamming chat", type: "antiSpam" },
+    { label: "Profanity Slurs", text: "You are totally garbage trash idiot dumb", type: "antiBadWords" },
+    { label: "Clean Chat", text: "Hey everyone! The new VePlexity bot update is awesome.", type: "clean" },
   ];
 
   const runSimulation = (text: string) => {
@@ -151,34 +152,30 @@ export const AutoModDefenseSimulator: React.FC<AutoModDefenseSimulatorProps> = (
       {/* ─── LEFT: CONTROLS & MODULE CONFIG (7 COLS) ─────────────────────────── */}
       <div className="xl:col-span-7 space-y-6">
         {/* Main Defense Shield Card */}
-        <div className="p-6 sm:p-8 rounded-3xl glass-liquid-card space-y-7 relative overflow-hidden">
-          {/* Subtle Ambient Radial Glow */}
-          <div className="absolute top-0 right-0 w-80 h-80 bg-red-600/10 rounded-full blur-3xl pointer-events-none -mr-20 -mt-20" />
-          <div className="absolute bottom-0 left-0 w-80 h-80 bg-fuchsia-600/10 rounded-full blur-3xl pointer-events-none -ml-20 -mb-20" />
-
+        <div className="pro-card p-6 sm:p-8 space-y-6">
           {/* Header Row */}
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-5 border-b border-white/10">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-5 border-b border-zinc-800">
             <div className="flex items-center gap-3.5">
-              <div className="w-13 h-13 rounded-2xl bg-gradient-to-br from-red-600/20 via-rose-500/10 to-orange-500/20 border border-red-500/30 flex items-center justify-center text-red-400 shadow-lg shadow-red-500/10 shrink-0">
-                <Lock className="w-6 h-6" />
+              <div className="w-12 h-12 rounded-xl bg-zinc-800 border border-zinc-700 flex items-center justify-center text-zinc-100 shrink-0">
+                <Shield className="w-6 h-6 text-[#5865F2]" />
               </div>
               <div>
-                <h3 className="text-lg sm:text-xl font-black text-white tracking-tight flex items-center gap-2.5">
-                  <span>Auto-Mod Defense Shield</span>
-                  <span className="text-[10px] font-mono px-2.5 py-0.5 rounded-full bg-red-500/15 text-red-300 border border-red-500/30 font-bold">
-                    HIGH SECURITY
+                <h3 className="text-base sm:text-lg font-bold text-white tracking-tight flex items-center gap-2.5">
+                  <span>Auto-Mod Defense Rules</span>
+                  <span className="text-[10px] font-mono px-2 py-0.5 rounded-md bg-[#5865F2]/10 text-[#5865F2] border border-[#5865F2]/20 font-semibold">
+                    REAL-TIME
                   </span>
                 </h3>
-                <p className="text-xs sm:text-sm text-zinc-400 mt-0.5">
-                  Automated real-time shields that monitor chat and delete malicious content instantly.
+                <p className="text-xs text-zinc-400 mt-0.5">
+                  Automated filters that intercept messages and enforce server integrity instantly.
                 </p>
               </div>
             </div>
 
-            {/* Live Shield Health Ring */}
-            <div className="flex items-center gap-3 px-4 py-2.5 rounded-2xl glass-liquid shrink-0">
-              <div className="relative w-11 h-11 flex items-center justify-center">
-                <svg className="w-11 h-11 -rotate-90" viewBox="0 0 36 36">
+            {/* Defense Health Ring */}
+            <div className="flex items-center gap-3 px-3.5 py-2 rounded-xl bg-zinc-900 border border-zinc-800 shrink-0">
+              <div className="relative w-10 h-10 flex items-center justify-center">
+                <svg className="w-10 h-10 -rotate-90" viewBox="0 0 36 36">
                   <path
                     className="text-zinc-800"
                     strokeWidth="3.5"
@@ -187,7 +184,7 @@ export const AutoModDefenseSimulator: React.FC<AutoModDefenseSimulatorProps> = (
                     d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
                   />
                   <path
-                    className={defenseScore === 100 ? "text-emerald-400" : defenseScore >= 60 ? "text-orange-400" : "text-red-400"}
+                    className={defenseScore === 100 ? "text-emerald-400" : defenseScore >= 60 ? "text-amber-400" : "text-rose-400"}
                     strokeDasharray={`${defenseScore}, 100`}
                     strokeWidth="3.5"
                     strokeLinecap="round"
@@ -196,154 +193,156 @@ export const AutoModDefenseSimulator: React.FC<AutoModDefenseSimulatorProps> = (
                     d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
                   />
                 </svg>
-                <span className="absolute font-mono text-xs font-black text-white">
+                <span className="absolute font-mono text-xs font-bold text-white">
                   {defenseScore}%
                 </span>
               </div>
               <div className="text-left">
-                <p className="text-[10px] font-mono uppercase tracking-wider text-zinc-400 font-bold">Defense Shield</p>
-                <p className="text-xs sm:text-sm font-black text-white">
+                <p className="text-[10px] font-mono uppercase tracking-wider text-zinc-400 font-semibold">Shield Status</p>
+                <p className="text-xs font-bold text-white">
                   {activeCount}/5 Active
                 </p>
               </div>
             </div>
           </div>
 
-          {/* Quick Preset Strictness Selector */}
-          <div className="space-y-2.5">
-            <p className="text-xs font-bold uppercase tracking-wider text-zinc-400 flex items-center gap-2">
-              <Flame className="w-4 h-4 text-orange-400" />
-              <span>Security Profile Preset</span>
+          {/* Preset Strictness Selector */}
+          <div className="space-y-2">
+            <p className="text-xs font-mono uppercase text-zinc-400 font-semibold">
+              Security Profile Preset
             </p>
-            <div className="grid grid-cols-3 gap-3">
+            <div className="grid grid-cols-3 gap-2.5">
               {[
                 { id: "balanced", label: "Balanced", desc: "Invites + Spam + Slurs" },
-                { id: "strict", label: "Strict / Anti-Raid", desc: "+ Block External URLs" },
-                { id: "fortress", label: "Fortress Lockdown", desc: "All 5 Shields Active" },
+                { id: "strict", label: "Strict", desc: "+ Block External URLs" },
+                { id: "fortress", label: "Fortress", desc: "All 5 Rules Active" },
               ].map((mode) => (
                 <button
                   key={mode.id}
                   onClick={() => handleModeSelect(mode.id as any)}
-                  className={`p-3.5 rounded-2xl border text-left transition-all duration-200 cursor-pointer ${
+                  className={`p-3 rounded-xl border text-left transition cursor-pointer ${
                     defenseMode === mode.id
-                      ? "neo-nav-active border-red-500/50 shadow-md shadow-red-500/15 text-white"
-                      : "neo-liquid-btn border-white/10 text-zinc-400 hover:text-zinc-200"
+                      ? "bg-zinc-800 border-[#5865F2] text-white"
+                      : "bg-zinc-900/60 border-zinc-800 text-zinc-400 hover:text-zinc-200 hover:border-zinc-700"
                   }`}
                 >
-                  <p className="text-xs sm:text-sm font-black uppercase tracking-wide flex items-center justify-between">
+                  <p className="text-xs font-bold flex items-center justify-between">
                     <span>{mode.label}</span>
-                    {defenseMode === mode.id && <span className="w-2 h-2 rounded-full bg-red-400 animate-ping" />}
+                    {defenseMode === mode.id && <span className="w-1.5 h-1.5 rounded-full bg-[#5865F2]" />}
                   </p>
-                  <p className="text-xs text-zinc-400 mt-0.5 truncate">{mode.desc}</p>
+                  <p className="text-[11px] text-zinc-400 mt-0.5 truncate">{mode.desc}</p>
                 </button>
               ))}
             </div>
           </div>
 
           {/* Filter Toggles List */}
-          <div className="space-y-3.5 pt-1">
+          <div className="space-y-2.5 pt-1">
             {[
               {
                 id: "antiInvite",
                 label: "Block Discord Invites",
-                desc: "Instantly deletes discord.gg, discord.com/invite, and vanity invite links posted by non-moderators.",
+                desc: "Deletes discord.gg and vanity invite links posted by non-moderators.",
                 value: antiInvite,
                 setter: setAntiInvite,
-                icon: "🚫",
+                icon: Ban,
                 color: "red" as const
               },
               {
                 id: "antiSpam",
                 label: "Anti-Spam Rate Limiter",
-                desc: "Stops chat flooding: deletes messages sent faster than 5 in 3s or messages containing mass user mentions (>4).",
+                desc: "Prevents chat flooding (>5 messages in 3s) and mass user mentions (>4).",
                 value: antiSpam,
                 setter: setAntiSpam,
-                icon: "⚡",
+                icon: Zap,
                 color: "orange" as const
               },
               {
                 id: "antiBadWords",
                 label: "Profanity & Slur Filter",
-                desc: "Scans for toxic hate speech, targeted slurs, and racial derogatory keywords with smart obfuscation bypass.",
+                desc: "Scans for toxic hate speech, targeted slurs, and malicious harassment.",
                 value: antiBadWords,
                 setter: setAntiBadWords,
-                icon: "🤬",
+                icon: AlertOctagon,
                 color: "fuchsia" as const
               },
               {
                 id: "antiLinks",
-                label: "Block External Suspicious Links",
-                desc: "Prevents phishing and account hijacking: blocks raw external links in public channels while whitelisting media.",
+                label: "Block External Links",
+                desc: "Blocks suspicious external domains and raw unverified hyperlinks.",
                 value: antiLinks,
                 setter: setAntiLinks,
-                icon: "🛡️",
+                icon: Link2,
                 color: "orange" as const
               },
               {
                 id: "antiCaps",
-                label: "Excessive Capitals Limiter",
-                desc: "Auto-cleans shout messages: deletes messages with over 70% capital letters longer than 10 characters.",
+                label: "Excessive Capitals Filter",
+                desc: "Deletes shouting messages containing over 70% uppercase letters.",
                 value: antiCaps,
                 setter: setAntiCaps,
-                icon: "📢",
+                icon: Megaphone,
                 color: "red" as const
               }
-            ].map((rule) => (
-              <div
-                key={rule.id}
-                onClick={() => rule.setter(!rule.value)}
-                className={`p-5 rounded-2xl border transition-all duration-200 flex items-center justify-between gap-4 cursor-pointer select-none ${
-                  rule.value
-                    ? "glass-liquid-card border-white/15 shadow-md"
-                    : "glass-liquid border-white/5 opacity-70"
-                }`}
-              >
-                <div className="flex items-start gap-4">
-                  <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center text-lg shrink-0 mt-0.5 border border-white/10 shadow-inner">
-                    {rule.icon}
+            ].map((rule) => {
+              const RuleIcon = rule.icon;
+              return (
+                <div
+                  key={rule.id}
+                  onClick={() => rule.setter(!rule.value)}
+                  className={`p-4 rounded-xl border transition flex items-center justify-between gap-4 cursor-pointer select-none ${
+                    rule.value
+                      ? "bg-zinc-900/90 border-zinc-700"
+                      : "bg-zinc-900/40 border-zinc-800/80 opacity-75 hover:opacity-100"
+                  }`}
+                >
+                  <div className="flex items-start gap-3.5">
+                    <div className="w-9 h-9 rounded-lg bg-zinc-800 flex items-center justify-center shrink-0 mt-0.5 border border-zinc-700 text-zinc-300">
+                      <RuleIcon className="w-4 h-4" />
+                    </div>
+                    <div>
+                      <p className="font-semibold text-sm text-white">
+                        {rule.label}
+                      </p>
+                      <p className="text-xs text-zinc-400 mt-0.5 leading-relaxed">{rule.desc}</p>
+                    </div>
                   </div>
-                  <div>
-                    <p className="font-extrabold text-sm sm:text-base text-white flex items-center gap-2">
-                      <span>{rule.label}</span>
-                    </p>
-                    <p className="text-xs sm:text-sm text-zinc-400 mt-0.5 leading-relaxed">{rule.desc}</p>
-                  </div>
-                </div>
 
-                <TactileToggle
-                  checked={rule.value}
-                  onChange={rule.setter}
-                  color={rule.color}
-                />
-              </div>
-            ))}
+                  <TactileToggle
+                    checked={rule.value}
+                    onChange={rule.setter}
+                    color="emerald"
+                  />
+                </div>
+              );
+            })}
           </div>
         </div>
       </div>
 
-      {/* ─── RIGHT: INTERACTIVE THREAT SIMULATOR & DISCORD PREVIEW (5 COLS) ──── */}
-      <div className="xl:col-span-5 space-y-6 xl:sticky xl:top-24">
-        <div className="p-6 sm:p-7 rounded-3xl glass-liquid-card space-y-5">
-          {/* Visualizer Header */}
-          <div className="flex items-center justify-between pb-3.5 border-b border-white/10">
+      {/* ─── RIGHT: THREAT SIMULATOR & CLIENT PREVIEW (5 COLS) ─────────────── */}
+      <div className="xl:col-span-5 space-y-6">
+        <div className="pro-card p-6 space-y-5">
+          {/* Header */}
+          <div className="flex items-center justify-between pb-3.5 border-b border-zinc-800">
             <div className="flex items-center gap-2">
-              <Terminal className="w-4.5 h-4.5 text-orange-400" />
-              <span className="font-mono text-xs sm:text-sm uppercase tracking-wider font-bold text-white">
+              <Terminal className="w-4 h-4 text-zinc-400" />
+              <span className="font-mono text-xs uppercase tracking-wider font-bold text-white">
                 Live Chat Simulator
               </span>
             </div>
-            <span className="text-[10px] font-mono text-fuchsia-300 bg-fuchsia-500/15 px-2.5 py-0.5 rounded-full border border-fuchsia-500/30 font-bold">
-              Interactive Test Sandbox
+            <span className="text-[10px] font-mono text-zinc-400 bg-zinc-800 px-2.5 py-0.5 rounded-md border border-zinc-700 font-semibold">
+              SANDBOX
             </span>
           </div>
 
           {/* Interactive Input Bar */}
-          <div className="space-y-2">
-            <label className="text-xs font-mono uppercase text-zinc-400 font-bold flex items-center justify-between">
+          <div className="space-y-1.5">
+            <label className="text-xs font-mono uppercase text-zinc-400 font-semibold flex items-center justify-between">
               <span>Test Chat Input</span>
-              <span className="text-zinc-500 font-normal">Press Enter or click presets</span>
+              <span className="text-zinc-500 font-normal">Press Enter or click preset</span>
             </label>
-            <div className="flex items-center gap-2.5">
+            <div className="flex items-center gap-2">
               <input
                 type="text"
                 value={testInput}
@@ -352,28 +351,28 @@ export const AutoModDefenseSimulator: React.FC<AutoModDefenseSimulatorProps> = (
                   if (e.key === "Enter") runSimulation(testInput);
                 }}
                 placeholder="Type a test message (e.g. discord.gg/nitro)..."
-                className="flex-1 neo-input rounded-xl px-4 py-3 text-xs sm:text-sm text-white placeholder-zinc-500 outline-none transition"
+                className="flex-1 pro-input px-3.5 py-2.5 text-xs sm:text-sm text-white placeholder-zinc-500"
               />
               <button
                 onClick={() => runSimulation(testInput)}
                 disabled={isSimulating}
-                className="px-5 py-3 rounded-xl neo-liquid-primary text-white font-black text-xs uppercase tracking-wider transition-all flex items-center gap-2 cursor-pointer shrink-0"
+                className="px-4 py-2.5 rounded-lg bg-[#5865F2] hover:bg-[#4752c4] text-white font-semibold text-xs transition cursor-pointer shrink-0 flex items-center gap-1.5"
               >
-                <Send className="w-4 h-4" />
+                <Send className="w-3.5 h-3.5" />
                 <span>Test</span>
               </button>
             </div>
           </div>
 
           {/* Preset Buttons */}
-          <div className="space-y-2">
-            <p className="text-xs font-mono text-zinc-400 font-bold uppercase">Click Quick Test Preset:</p>
-            <div className="flex flex-wrap gap-2">
+          <div className="space-y-1.5">
+            <p className="text-xs font-mono text-zinc-400 font-semibold uppercase">Presets:</p>
+            <div className="flex flex-wrap gap-1.5">
               {presets.map((preset, idx) => (
                 <button
                   key={idx}
                   onClick={() => runSimulation(preset.text)}
-                  className="px-3 py-1.5 rounded-xl neo-liquid-btn border border-white/10 text-xs text-zinc-300 hover:text-white transition cursor-pointer font-bold"
+                  className="px-2.5 py-1 rounded-md bg-zinc-900 border border-zinc-800 hover:border-zinc-700 text-xs text-zinc-300 hover:text-white transition cursor-pointer font-medium"
                 >
                   {preset.label}
                 </button>
@@ -382,12 +381,12 @@ export const AutoModDefenseSimulator: React.FC<AutoModDefenseSimulatorProps> = (
           </div>
 
           {/* Discord Chat Preview Container */}
-          <div className="rounded-2xl bg-[#313338] border border-black/40 p-4 font-sans text-xs shadow-2xl space-y-4">
+          <div className="rounded-xl bg-[#313338] border border-zinc-800 p-4 font-sans text-xs space-y-3.5">
             {/* Simulation Header */}
-            <div className="flex items-center justify-between border-b border-white/5 pb-2 text-[10px] font-mono text-zinc-400">
+            <div className="flex items-center justify-between border-b border-zinc-700/60 pb-2 text-[10px] font-mono text-zinc-400">
               <span className="flex items-center gap-1.5">
-                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-                <span>#general • Discord Client Preview</span>
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+                <span>#general • Discord Preview</span>
               </span>
               <span className="text-zinc-500">Live Gateway</span>
             </div>
@@ -395,24 +394,24 @@ export const AutoModDefenseSimulator: React.FC<AutoModDefenseSimulatorProps> = (
             {/* User message sent */}
             <div className="space-y-1">
               <div className="flex items-start gap-2.5">
-                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-indigo-600 to-purple-600 flex items-center justify-center font-bold text-white text-xs shrink-0 shadow">
-                  A
+                <div className="w-8 h-8 rounded-full bg-zinc-700 flex items-center justify-center font-bold text-white text-xs shrink-0">
+                  U
                 </div>
                 <div className="space-y-1 min-w-0 flex-1">
                   <div className="flex items-center gap-2">
-                    <span className="font-bold text-white text-xs">Alex_Player</span>
+                    <span className="font-semibold text-white text-xs">TestUser</span>
                     <span className="text-[10px] text-zinc-400 font-mono">Today at 11:42 PM</span>
                   </div>
 
                   {simulatedResult?.blocked ? (
-                    <div className="p-2.5 rounded-lg bg-red-950/40 border border-red-500/30 text-red-300 font-mono text-xs line-through flex items-center justify-between gap-2">
+                    <div className="p-2.5 rounded-lg bg-rose-950/40 border border-rose-800/60 text-rose-300 font-mono text-xs line-through flex items-center justify-between gap-2">
                       <span className="truncate">{testInput}</span>
-                      <span className="text-[10px] font-bold text-red-400 uppercase tracking-wider shrink-0 font-sans not-italic">
+                      <span className="text-[10px] font-bold text-rose-400 uppercase tracking-wider shrink-0 not-italic font-sans">
                         [DELETED]
                       </span>
                     </div>
                   ) : (
-                    <p className="text-xs text-zinc-200 bg-white/5 p-2 rounded-lg border border-white/5">
+                    <p className="text-xs text-zinc-200 bg-black/20 p-2 rounded-lg border border-white/5">
                       {testInput}
                     </p>
                   )}
@@ -423,56 +422,48 @@ export const AutoModDefenseSimulator: React.FC<AutoModDefenseSimulatorProps> = (
             {/* Bot Response */}
             {simulatedResult?.blocked ? (
               <div className="flex items-start gap-2.5 pt-1">
-                <div className="w-8 h-8 rounded-full bg-gradient-to-br from-red-600 to-orange-600 flex items-center justify-center text-sm shrink-0 shadow">
-                  🛡️
+                <div className="w-8 h-8 rounded-full bg-[#5865F2] flex items-center justify-center text-white shrink-0">
+                  <Shield className="w-4 h-4" />
                 </div>
                 <div className="space-y-1.5 min-w-0 flex-1">
                   <div className="flex items-center gap-1.5">
-                    <span className="font-bold text-white text-xs">VePlexity Shield</span>
-                    <span className="px-1.5 py-0.2 rounded bg-[#5865F2] text-white text-[9px] font-extrabold">BOT</span>
+                    <span className="font-bold text-white text-xs">VePlexity</span>
+                    <span className="px-1.5 py-0.2 rounded bg-[#5865F2] text-white text-[9px] font-bold">BOT</span>
                     <span className="text-[10px] text-zinc-400 font-mono">Today at 11:42 PM</span>
                   </div>
-                  <div className="text-xs text-amber-200 bg-amber-500/10 p-3 rounded-xl border border-amber-500/20 shadow-inner">
+                  <div className="text-xs text-amber-200 bg-amber-950/30 p-2.5 rounded-lg border border-amber-800/50">
                     <p className="font-semibold flex items-center gap-1.5">
                       <AlertTriangle className="w-3.5 h-3.5 text-amber-400 shrink-0" />
-                      <span>Action Enforced</span>
+                      <span>Security Violation Enforced</span>
                     </p>
                     <p className="text-[11px] text-amber-300/90 mt-1">
-                      ⚠️ <strong className="text-white">@Alex_Player</strong>, your message was deleted for violating <strong className="text-amber-200">{simulatedResult.reason}</strong>.
+                      Message deleted for violating <strong className="text-white">{simulatedResult.reason}</strong>.
                     </p>
                   </div>
                 </div>
               </div>
             ) : (
-              <div className="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-300 text-xs flex items-center gap-2">
+              <div className="p-2.5 rounded-lg bg-emerald-950/30 border border-emerald-800/50 text-emerald-300 text-xs flex items-center gap-2">
                 <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
-                <span>Message passed all active Auto-Mod security checks cleanly!</span>
+                <span>Message passed all active Auto-Mod rules cleanly.</span>
               </div>
             )}
 
             {/* Audit Log Entry */}
-            <div className="space-y-1.5 pt-2 border-t border-white/5">
-              <p className="text-[10px] font-mono uppercase text-zinc-400 font-bold flex items-center justify-between">
-                <span>Logged to #mod-logs (Audit Trail):</span>
+            <div className="space-y-1 pt-2 border-t border-zinc-700/60">
+              <p className="text-[10px] font-mono uppercase text-zinc-400 font-semibold flex items-center justify-between">
+                <span>Audit Trail (#mod-logs):</span>
                 <span className="text-zinc-500">&lt;1ms Execution</span>
               </p>
-              <div className="rounded-xl bg-[#2b2d31] border-l-4 border-red-500 p-3 space-y-1 text-xs">
-                <p className="font-bold text-white flex items-center justify-between">
-                  <span>🛡️ Auto-Mod Triggered: {simulatedResult?.blocked ? simulatedResult.reason : "No Threat Detected"}</span>
-                  <span className="text-[10px] font-mono text-zinc-400">ID: #AM-8921</span>
+              <div className="rounded-lg bg-[#2b2d31] border-l-2 border-rose-500 p-2.5 space-y-1 text-xs">
+                <p className="font-semibold text-white flex items-center justify-between">
+                  <span>Auto-Mod: {simulatedResult?.blocked ? simulatedResult.reason : "Passed"}</span>
+                  <span className="text-[10px] font-mono text-zinc-400">#AM-8921</span>
                 </p>
-                <div className="grid grid-cols-2 gap-2 text-[11px] text-zinc-300 pt-1">
-                  <div><strong>User:</strong> @Alex_Player (981273)</div>
-                  <div><strong>Channel:</strong> #general</div>
+                <div className="grid grid-cols-2 gap-2 text-[11px] text-zinc-400 pt-0.5">
+                  <div>User: @TestUser</div>
+                  <div>Channel: #general</div>
                 </div>
-                {simulatedResult?.payload && (
-                  <p className="text-zinc-300 text-[11px] pt-0.5 truncate">
-                    <strong>Payload:</strong>{" "}
-                    <code className="text-red-300 font-mono text-[10px] bg-black/40 px-1.5 py-0.5 rounded">
-                      {simulatedResult.payload}
-                    </code>
-                  </p>
-                )}
               </div>
             </div>
           </div>

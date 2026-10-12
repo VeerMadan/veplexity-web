@@ -1,10 +1,11 @@
 "use client";
 
 import React, { useState } from "react";
+import { motion } from "framer-motion";
 import { 
-  Zap, Radio, Activity, ShieldCheck, Cpu, 
-  Terminal, Sparkles, Volume2, VolumeX, RefreshCw, 
-  ChevronRight, ArrowRight, Music, Award, Gift, Lock 
+  Radio, ShieldCheck, Activity, RefreshCw, 
+  Volume2, VolumeX, ChevronRight, Lock, Music, 
+  Award, Gift, Terminal, Zap
 } from "lucide-react";
 import { dashboardAudio } from "@/lib/dashboardAudio";
 
@@ -42,193 +43,183 @@ export const ServerTelemetryCenter: React.FC<ServerTelemetryCenterProps> = ({
   };
 
   return (
-    <div className="space-y-6 sm:space-y-8 w-full">
-      {/* ─── TOP INTERACTIVE TELEMETRY & GATEWAY STRIP ─────────────────────── */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
-        {/* Shard Ping & Gateway Radar */}
-        <div className="p-6 sm:p-7 rounded-3xl glass-liquid-card flex flex-col justify-between space-y-4 relative overflow-hidden group">
+    <div className="space-y-6 w-full">
+      {/* ─── TELEMETRY STRIP ─────────────────────────────────────────────── */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        {/* Shard Ping & Gateway */}
+        <div className="pro-card p-5 flex flex-col justify-between space-y-4">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-mono uppercase text-zinc-300 font-bold flex items-center gap-2">
-              <Radio className="w-4 h-4 text-emerald-400 animate-pulse" />
+            <span className="text-xs font-mono uppercase text-zinc-400 font-semibold flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-emerald-400" />
               <span>Gateway Shard #0</span>
             </span>
             <button
               onClick={handlePingTest}
               disabled={isPinging}
-              className="px-2.5 py-1.5 rounded-xl neo-liquid-btn text-zinc-300 hover:text-white transition cursor-pointer text-xs font-mono flex items-center gap-1.5"
+              className="px-2.5 py-1 rounded-md bg-zinc-900 border border-zinc-800 hover:border-zinc-700 text-zinc-300 hover:text-white transition cursor-pointer text-xs font-mono flex items-center gap-1.5"
               title="Test Gateway Latency"
             >
-              <RefreshCw className={`w-3.5 h-3.5 ${isPinging ? "animate-spin text-orange-400" : ""}`} />
+              <RefreshCw className={`w-3 h-3 ${isPinging ? "animate-spin text-[#5865F2]" : ""}`} />
               <span>Ping</span>
             </button>
           </div>
 
           <div>
             <div className="flex items-baseline gap-2">
-              <span className="text-4xl sm:text-5xl font-black text-white font-mono tracking-tight">
+              <span className="text-3xl font-black text-white font-mono tracking-tight">
                 {ping}
               </span>
-              <span className="text-sm font-mono text-emerald-400 font-bold">ms</span>
+              <span className="text-xs font-mono text-emerald-400 font-semibold">ms latency</span>
             </div>
-            <p className="text-xs text-zinc-400 mt-2 flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-emerald-400 shadow-[0_0_8px_#34d399]" />
-              <span>Optimal Handshake ({lastPinged})</span>
+            <p className="text-xs text-zinc-500 mt-1">
+              Optimal Handshake ({lastPinged})
             </p>
           </div>
         </div>
 
-        {/* Server Protection Health */}
-        <div className="p-6 sm:p-7 rounded-3xl glass-liquid-card flex flex-col justify-between space-y-4">
+        {/* Protection Health */}
+        <div className="pro-card p-5 flex flex-col justify-between space-y-4">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-mono uppercase text-zinc-300 font-bold flex items-center gap-2">
-              <ShieldCheck className="w-4 h-4 text-fuchsia-400" />
-              <span>Fortress Defense</span>
+            <span className="text-xs font-mono uppercase text-zinc-400 font-semibold flex items-center gap-2">
+              <ShieldCheck className="w-4 h-4 text-[#5865F2]" />
+              <span>Security Shield</span>
             </span>
-            <span className="text-xs font-mono px-2.5 py-1 rounded-full bg-fuchsia-500/15 text-fuchsia-300 border border-fuchsia-500/30 font-bold">
-              VIP FREE
+            <span className="text-[10px] font-mono px-2 py-0.5 rounded-md bg-[#5865F2]/10 text-[#5865F2] border border-[#5865F2]/20 font-semibold">
+              ACTIVE
             </span>
           </div>
 
           <div>
             <div className="flex items-baseline gap-2">
-              <span className="text-4xl sm:text-5xl font-black text-white font-mono tracking-tight">
+              <span className="text-3xl font-black text-white font-mono tracking-tight">
                 98%
               </span>
-              <span className="text-sm font-bold text-fuchsia-400">Score</span>
+              <span className="text-xs font-semibold text-zinc-400">Score</span>
             </div>
-            <p className="text-xs text-zinc-400 mt-2">
-              Active Shield across 5 threat vectors
+            <p className="text-xs text-zinc-500 mt-1">
+              Defense active across 5 threat vectors
             </p>
           </div>
         </div>
 
         {/* Command Runner Engine */}
-        <div className="p-6 sm:p-7 rounded-3xl glass-liquid-card flex flex-col justify-between space-y-4">
+        <div className="pro-card p-5 flex flex-col justify-between space-y-4">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-mono uppercase text-zinc-300 font-bold flex items-center gap-2">
-              <Terminal className="w-4 h-4 text-orange-400" />
-              <span>Hybrid Engine</span>
+            <span className="text-xs font-mono uppercase text-zinc-400 font-semibold flex items-center gap-2">
+              <Terminal className="w-4 h-4 text-zinc-300" />
+              <span>Command Engine</span>
             </span>
-            <span className="text-xs font-mono px-2.5 py-1 rounded-full bg-orange-500/15 text-orange-300 border border-orange-500/30 font-bold">
+            <span className="text-[10px] font-mono px-2 py-0.5 rounded-md bg-zinc-800 text-zinc-300 border border-zinc-700 font-semibold">
               100 CMDS
             </span>
           </div>
 
           <div>
-            <p className="text-xl sm:text-2xl font-black text-white tracking-tight">
-              Dual-Engine Active
+            <p className="text-base font-bold text-white">
+              Dual-Engine Ready
             </p>
-            <p className="text-xs text-zinc-400 mt-2">
-              Slash + Rapid Prefixes (<code className="text-orange-400 font-bold">.</code>, <code className="text-orange-400 font-bold">?</code>, <code className="text-orange-400 font-bold">!</code>)
+            <p className="text-xs text-zinc-500 mt-1 font-mono">
+              Slash (/) &amp; Rapid (. ! ?)
             </p>
           </div>
         </div>
 
-        {/* Audio FX & Interactive Feedback */}
-        <div className="p-6 sm:p-7 rounded-3xl glass-liquid-card flex flex-col justify-between space-y-4">
+        {/* Audio FX Feedback */}
+        <div className="pro-card p-5 flex flex-col justify-between space-y-4">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-mono uppercase text-zinc-300 font-bold flex items-center gap-2">
-              <Activity className="w-4 h-4 text-amber-400" />
-              <span>Audio Feedback</span>
+            <span className="text-xs font-mono uppercase text-zinc-400 font-semibold flex items-center gap-2">
+              <Activity className="w-4 h-4 text-zinc-300" />
+              <span>Sound Feedback</span>
             </span>
             <button
               onClick={handleToggleSound}
-              className={`px-2.5 py-1.5 rounded-xl neo-liquid-btn transition cursor-pointer flex items-center gap-1.5 text-xs font-mono font-bold ${
+              className={`px-2.5 py-1 rounded-md transition cursor-pointer flex items-center gap-1.5 text-xs font-mono font-semibold ${
                 soundEnabled
-                  ? "bg-amber-500/20 border-amber-500/40 text-amber-300"
-                  : "bg-white/5 border-white/10 text-zinc-500"
+                  ? "bg-zinc-800 border border-zinc-700 text-white"
+                  : "bg-zinc-900 border border-zinc-800 text-zinc-500"
               }`}
             >
-              {soundEnabled ? <Volume2 className="w-3.5 h-3.5 text-amber-400" /> : <VolumeX className="w-3.5 h-3.5" />}
+              {soundEnabled ? <Volume2 className="w-3.5 h-3.5 text-emerald-400" /> : <VolumeX className="w-3.5 h-3.5" />}
               <span>{soundEnabled ? "SFX ON" : "MUTED"}</span>
             </button>
           </div>
 
           <div>
-            <p className="text-base sm:text-lg font-black text-white">
-              Procedural Web Audio
+            <p className="text-base font-bold text-white">
+              Audio Feedback
             </p>
-            <p className="text-xs text-zinc-400 mt-2">
-              Interactive cybernetic clicks & chimes active
+            <p className="text-xs text-zinc-500 mt-1">
+              Interactive interface acoustics
             </p>
           </div>
         </div>
       </div>
 
-      {/* ─── INTERACTIVE SANDBOX QUICK LAUNCHERS ─────────────────────────────── */}
-      <div className="p-7 sm:p-9 rounded-3xl glass-liquid space-y-5">
-        <div className="flex items-center justify-between">
-          <div>
-            <h3 className="text-lg sm:text-xl font-black text-white tracking-tight flex items-center gap-2.5">
-              <Sparkles className="w-5 h-5 text-orange-400" />
-              <span>Interactive Feature Sandboxes</span>
-            </h3>
-            <p className="text-xs sm:text-sm text-zinc-400 mt-1">
-              Launch real-time simulators and interactive visualizers for {guildName}:
-            </p>
-          </div>
+      {/* ─── QUICK FEATURE ACCESS TILES ──────────────────────────────────── */}
+      <div className="pro-card p-6 space-y-4">
+        <div>
+          <h3 className="text-sm font-bold text-white uppercase tracking-wider text-zinc-300 font-mono">
+            Direct Module Access
+          </h3>
+          <p className="text-xs text-zinc-400 mt-0.5">
+            Quickly navigate to configure core server systems for {guildName}:
+          </p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
           {[
             {
               tab: "automod",
-              title: "Auto-Mod Shield Sandbox",
-              desc: "Test live chat threats with simulated deletion",
+              title: "Auto-Mod Security",
+              desc: "Anti-invite, link filters, and spam protection",
               icon: Lock,
-              gradient: "from-red-600/20 via-orange-600/10 to-transparent",
-              border: "border-red-500/30 hover:border-red-500/60",
-              color: "text-red-400",
             },
             {
               tab: "music",
-              title: "DJ Deck & Equalizer",
-              desc: "Groove to live visualizer bars with 8D audio",
+              title: "Music & 24/7 Audio",
+              desc: "Lossless playback, DJ role, and stay-in-VC",
               icon: Music,
-              gradient: "from-pink-600/20 via-fuchsia-600/10 to-transparent",
-              border: "border-pink-500/30 hover:border-pink-500/60",
-              color: "text-pink-400",
             },
             {
               tab: "leveling",
-              title: "Rank Card Studio",
-              desc: "Customize level badges & live XP progression",
+              title: "XP & Rank Cards",
+              desc: "Level-up messages, customizable rate and cards",
               icon: Award,
-              gradient: "from-amber-600/20 via-orange-600/10 to-transparent",
-              border: "border-amber-500/30 hover:border-amber-500/60",
-              color: "text-amber-400",
             },
             {
               tab: "rewards",
-              title: "Voice & Text Rewards",
-              desc: "Configure milestones and role unlocks",
+              title: "Activity Rewards",
+              desc: "Role unlocks based on voice time and chat counts",
               icon: Gift,
-              gradient: "from-purple-600/20 via-indigo-600/10 to-transparent",
-              border: "border-purple-500/30 hover:border-purple-500/60",
-              color: "text-purple-400",
             },
           ].map((item, idx) => {
             const Icon = item.icon;
             return (
-              <button
+              <motion.button
                 key={idx}
+                whileHover={{ y: -2 }}
+                transition={{ duration: 0.15 }}
                 onClick={() => {
                   dashboardAudio.playClick();
                   setActiveTab(item.tab);
                 }}
-                className={`p-5 sm:p-6 rounded-2xl bg-gradient-to-br ${item.gradient} border ${item.border} text-left transition-all duration-300 cursor-pointer group glass-liquid-card flex flex-col justify-between h-36`}
+                className="p-4 rounded-lg bg-zinc-900/60 border border-zinc-800 hover:border-zinc-700 hover:bg-zinc-900 text-left transition cursor-pointer flex flex-col justify-between h-28 group"
               >
                 <div className="flex items-center justify-between">
-                  <div className={`w-11 h-11 rounded-xl bg-white/5 flex items-center justify-center ${item.color} border border-white/10 shadow-inner`}>
-                    <Icon className="w-5 h-5" />
+                  <div className="w-8 h-8 rounded-md bg-zinc-800 flex items-center justify-center text-zinc-200 border border-zinc-700/80 group-hover:text-white transition">
+                    <Icon className="w-4 h-4" />
                   </div>
-                  <ChevronRight className="w-5 h-5 text-zinc-500 group-hover:text-white transition group-hover:translate-x-1" />
+                  <ChevronRight className="w-4 h-4 text-zinc-500 group-hover:text-zinc-300 transition group-hover:translate-x-0.5" />
                 </div>
                 <div>
-                  <p className="font-extrabold text-sm sm:text-base text-white group-hover:text-orange-300 transition">{item.title}</p>
-                  <p className="text-xs text-zinc-400 mt-1 line-clamp-1">{item.desc}</p>
+                  <p className="font-semibold text-sm text-white group-hover:text-[#5865F2] transition">
+                    {item.title}
+                  </p>
+                  <p className="text-xs text-zinc-400 line-clamp-1 mt-0.5">
+                    {item.desc}
+                  </p>
                 </div>
-              </button>
+              </motion.button>
             );
           })}
         </div>

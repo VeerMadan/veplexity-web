@@ -1,8 +1,8 @@
 @import "tailwindcss";
 
 :root {
-  --background: #070308;
-  --foreground: #ffffff;
+  --background: #090a0f;
+  --foreground: #f4f4f5;
 }
 
 @theme inline {
@@ -13,233 +13,95 @@
 }
 
 body {
-  background-color: #070308;
-  color: #ffffff;
+  background-color: #090a0f;
+  color: #f4f4f5;
   font-family: var(--font-geist-sans), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Custom Scrollbar - VePlexity Sunset & Vice Plum */
+/* ══════════════════════════════════════════════════════════════════════
+   CLEAN PROFESSIONAL DESIGN SYSTEM (No Gimmicky Shine, No Eye Strain)
+   ══════════════════════════════════════════════════════════════════════ */
+
+/* Neutral Dark Scrollbar */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #070308;
+  background: #090a0f;
 }
 ::-webkit-scrollbar-thumb {
-  background: #1f1126;
+  background: #27272a;
   border-radius: 9999px;
-  border: 1px solid rgba(255, 255, 255, 0.05);
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #d946ef;
+  background: #3f3f46;
 }
 
-/* VePlexity Card System (Inspired by commit 60be601) */
-.vp-card {
-  background-color: #0c0512;
-  border: 3px solid #18181b;
-  border-radius: 2rem;
-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+/* Professional Solid Card */
+.pro-card {
+  background-color: #0d0f15;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 0.75rem;
+  transition: border-color 0.2s ease, transform 0.2s ease;
 }
 
-.vp-card:hover {
-  border-color: rgba(249, 115, 22, 0.5);
-  box-shadow: 0 0 40px rgba(249, 115, 22, 0.1);
+.pro-card:hover {
+  border-color: rgba(255, 255, 255, 0.18);
 }
 
-.vp-card-fuchsia:hover {
-  border-color: rgba(217, 70, 239, 0.5);
-  box-shadow: 0 0 40px rgba(217, 70, 239, 0.15);
-}
-
-/* VePlexity Gradient Text */
-.vp-gradient-text {
-  background: linear-gradient(135deg, #f97316 0%, #d946ef 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-/* ══════════════════════════════════════════════════════════════════════
-   NEO-LIQUID GLASS SYSTEM (VePlexity Cyber-Tactile Engine)
-   ══════════════════════════════════════════════════════════════════════ */
-
-@keyframes liquid-drift-1 {
-  0%, 100% {
-    transform: translate(0px, 0px) scale(1);
-  }
-  33% {
-    transform: translate(60px, -45px) scale(1.15);
-  }
-  66% {
-    transform: translate(-35px, 45px) scale(0.95);
-  }
-}
-
-@keyframes liquid-drift-2 {
-  0%, 100% {
-    transform: translate(0px, 0px) scale(1);
-  }
-  33% {
-    transform: translate(-55px, 40px) scale(1.12);
-  }
-  66% {
-    transform: translate(45px, -55px) scale(0.92);
-  }
-}
-
-@keyframes liquid-drift-3 {
-  0%, 100% {
-    transform: translate(0px, 0px) scale(1);
-  }
-  50% {
-    transform: translate(45px, 45px) scale(1.2);
-  }
-}
-
-.animate-liquid-1 {
-  animation: liquid-drift-1 20s ease-in-out infinite;
-}
-
-.animate-liquid-2 {
-  animation: liquid-drift-2 24s ease-in-out infinite;
-}
-
-.animate-liquid-3 {
-  animation: liquid-drift-3 18s ease-in-out infinite;
-}
-
-/* Liquid Glass Base */
-.glass-liquid {
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.055) 0%, rgba(255, 255, 255, 0.015) 100%);
-  backdrop-filter: blur(28px) saturate(190%);
-  -webkit-backdrop-filter: blur(28px) saturate(190%);
+/* Clean Input Field */
+.pro-input {
+  background-color: #12141c;
   border: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: 
-    0 20px 50px -10px rgba(0, 0, 0, 0.7),
-    0 8px 24px -5px rgba(0, 0, 0, 0.5),
-    inset 0 1px 1px 0 rgba(255, 255, 255, 0.22);
+  color: #f4f4f5;
+  border-radius: 0.5rem;
+  transition: border-color 0.15s ease;
 }
 
-/* Glass Liquid Elevated (Top Navbar) */
-.glass-liquid-nav {
-  background: linear-gradient(180deg, rgba(16, 7, 24, 0.9) 0%, rgba(10, 4, 15, 0.94) 100%);
-  backdrop-filter: blur(32px) saturate(200%);
-  -webkit-backdrop-filter: blur(32px) saturate(200%);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
-  box-shadow: 
-    0 14px 45px -10px rgba(0, 0, 0, 0.8),
-    inset 0 1px 1px 0 rgba(255, 255, 255, 0.25);
+.pro-input:focus {
+  border-color: #5865F2;
+  outline: none;
 }
 
-/* Glass Liquid Aside (Left Sidebar) */
-.glass-liquid-aside {
-  background: linear-gradient(180deg, rgba(13, 6, 20, 0.92) 0%, rgba(8, 3, 13, 0.96) 100%);
-  backdrop-filter: blur(32px) saturate(200%);
-  -webkit-backdrop-filter: blur(32px) saturate(200%);
-  border-right: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: 
-    10px 0 40px -10px rgba(0, 0, 0, 0.7),
-    inset 0 1px 1px 0 rgba(255, 255, 255, 0.18);
+/* Official Discord Blurple Action Button */
+.btn-discord {
+  background-color: #5865F2;
+  color: #ffffff;
+  font-weight: 600;
+  border-radius: 0.5rem;
+  transition: background-color 0.15s ease, opacity 0.15s ease;
+}
+.btn-discord:hover {
+  background-color: #4752c4;
 }
 
-/* Interactive Liquid Glass Card with Hover Lift & Specular Glow */
-.glass-liquid-card {
-  background: linear-gradient(145deg, rgba(22, 11, 33, 0.75) 0%, rgba(12, 5, 18, 0.85) 100%);
-  backdrop-filter: blur(24px) saturate(180%);
-  -webkit-backdrop-filter: blur(24px) saturate(180%);
-  border: 1px solid rgba(255, 255, 255, 0.09);
-  box-shadow: 
-    0 16px 36px -8px rgba(0, 0, 0, 0.6),
-    inset 0 1px 1px 0 rgba(255, 255, 255, 0.18);
-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+/* Official Buy Me a Coffee Action Button */
+.btn-bmc {
+  background-color: #FFDD00;
+  color: #000000;
+  font-weight: 700;
+  border-radius: 0.5rem;
+  transition: background-color 0.15s ease, opacity 0.15s ease;
+}
+.btn-bmc:hover {
+  background-color: #f0cf00;
 }
 
-.glass-liquid-card:hover {
-  transform: translateY(-3px);
-  border-color: rgba(217, 70, 239, 0.4);
-  box-shadow: 
-    0 24px 50px -10px rgba(0, 0, 0, 0.8),
-    0 0 35px -5px rgba(217, 70, 239, 0.22),
-    inset 0 1px 2px 0 rgba(255, 255, 255, 0.35);
-}
-
-/* Neomorphic Liquid Button */
-.neo-liquid-btn {
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.03) 100%);
-  border: 1px solid rgba(255, 255, 255, 0.13);
-  box-shadow: 
-    0 4px 14px rgba(0, 0, 0, 0.4),
-    inset 0 1px 1px rgba(255, 255, 255, 0.22);
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-  cursor: pointer;
-}
-
-.neo-liquid-btn:hover {
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.06) 100%);
-  border-color: rgba(255, 255, 255, 0.28);
-  transform: translateY(-1.5px);
-  box-shadow: 
-    0 8px 24px rgba(0, 0, 0, 0.5),
-    inset 0 1px 2px rgba(255, 255, 255, 0.35);
-}
-
-.neo-liquid-btn:active {
-  transform: translateY(1px) scale(0.98);
-  box-shadow: 
-    0 2px 8px rgba(0, 0, 0, 0.6),
-    inset 0 2px 4px rgba(0, 0, 0, 0.4);
-}
-
-/* Primary Liquid Button (Sunset Orange & Vice Fuchsia) */
-.neo-liquid-primary {
-  background: linear-gradient(135deg, #f97316 0%, #d946ef 100%);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  box-shadow: 
-    0 8px 25px rgba(217, 70, 239, 0.4),
-    inset 0 1px 2px rgba(255, 255, 255, 0.45);
-  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.neo-liquid-primary:hover {
-  transform: translateY(-2px);
-  box-shadow: 
-    0 12px 32px rgba(217, 70, 239, 0.55),
-    0 0 25px rgba(249, 115, 22, 0.45),
-    inset 0 1px 2px rgba(255, 255, 255, 0.6);
-}
-
-.neo-liquid-primary:active {
-  transform: translateY(1px) scale(0.98);
-  box-shadow: 
-    0 2px 10px rgba(217, 70, 239, 0.5),
-    inset 0 2px 5px rgba(0, 0, 0, 0.3);
-}
-
-/* Nav Pill Active (Tactile Embossed + Specular Edge) */
-.neo-nav-active {
-  background: linear-gradient(135deg, rgba(217, 70, 239, 0.22) 0%, rgba(249, 115, 22, 0.12) 100%);
-  border: 1px solid rgba(217, 70, 239, 0.55);
-  box-shadow: 
-    0 4px 22px -2px rgba(217, 70, 239, 0.3),
-    inset 0 1px 2px 0 rgba(255, 255, 255, 0.35),
-    inset 0 0 16px rgba(217, 70, 239, 0.12);
-}
-
-/* Neo Input Field */
-.neo-input {
-  background: rgba(10, 4, 15, 0.65);
+/* Clean Secondary Button */
+.btn-secondary {
+  background-color: rgba(255, 255, 255, 0.05);
+  color: #e4e4e7;
   border: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.6), 0 1px 0 rgba(255, 255, 255, 0.05);
-  transition: all 0.2s ease;
+  font-weight: 500;
+  border-radius: 0.5rem;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
 }
-
-.neo-input:focus {
-  border-color: rgba(217, 70, 239, 0.6);
-  box-shadow: 
-    0 0 0 3px rgba(217, 70, 239, 0.15),
-    inset 0 2px 6px rgba(0, 0, 0, 0.6);
+.btn-secondary:hover {
+  background-color: rgba(255, 255, 255, 0.09);
+  border-color: rgba(255, 255, 255, 0.2);
+  color: #ffffff;
 }

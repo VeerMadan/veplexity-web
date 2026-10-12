@@ -3,10 +3,15 @@
 import { useEffect, useState } from "react";
 import { useSession, signIn, signOut } from "next-auth/react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { motion, AnimatePresence } from "framer-motion";
 import { 
   Server, Plus, ArrowRight, RefreshCw, 
-  ExternalLink, LogOut, CheckCircle2, ChevronRight, Bot, Heart, AlertCircle 
+  ExternalLink, LogOut, CheckCircle2, ChevronRight, 
+  Search, ShieldCheck, Filter, AlertCircle, Coffee
 } from "lucide-react";
+import { DiscordLogo, BmcCupIcon } from "@/app/components/BrandIcons";
+import { ServerRevealTransition } from "@/app/components/ServerRevealTransition";
 
 interface GuildItem {
   id: string;
@@ -19,19 +24,28 @@ interface GuildItem {
 
 export default function DashboardPage() {
   const { data: session, status } = useSession();
+  const router = useRouter();
+
   const [guilds, setGuilds] = useState<GuildItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [pendingGuildId, setPendingGuildId] = useState<string | null>(null);
   const [toast, setToast] = useState<string | null>(null);
   const [search, setSearch] = useState("");
+  const [filterMode, setFilterMode] = useState<"all" | "active" | "uninvited">("all");
   const [error, setError] = useState<string | null>(null);
   const [authError, setAuthError] = useState<string | null>(null);
   const [authErrorDetail, setAuthErrorDetail] = useState<string | null>(null);
 
+  // Transition Reveal State
+  const [transitionServer, setTransitionServer] = useState<{
+    id: string;
+    name: string;
+    icon?: string | null;
+  } | null>(null);
+
   useEffect(() => {
     if (typeof window !== "undefined") {
-      // If user loads on apex domain, seamlessly redirect to canonical www to maintain cookie parity
       if (window.location.hostname === "veplexity.dev") {
         window.location.replace(`https://www.veplexity.dev${window.location.pathname}${window.location.search}`);
         return;
@@ -107,7 +121,7 @@ export default function DashboardPage() {
             if (found?.botJoined) {
               clearInterval(interval);
               setPendingGuildId(null);
-              setToast(`🎉 VePlexity connected to ${guildName}!`);
+              setToast(`VePlexity connected to ${guildName}!`);
               setTimeout(() => setToast(null), 5000);
             }
           }
@@ -123,16 +137,40 @@ export default function DashboardPage() {
     }, 2500);
   };
 
-  const filteredGuilds = guilds.filter((g) =>
-    g.name.toLowerCase().includes(search.toLowerCase())
-  );
+  // Smooth server transition handler
+  const handleManageClick = (guild: GuildItem) => {
+    setTransitionServer({
+      id: guild.id,
+      name: guild.name,
+      icon: guild.iconUrl,
+    });
+    // Give animation 450ms before routing
+    setTimeout(() => {
+      router.push(`/dashboard/${guild.id}`);
+    }, 450);
+  };
+
+  const filteredGuilds = guilds
+    .filter((g) => g.name.toLowerCase().includes(search.toLowerCase()))
+    .filter((g) => {
+      if (filterMode === "active") return g.botJoined;
+      if (filterMode === "uninvited") return !g.botJoined;
+      return true;
+    });
+
+  const activeCount = guilds.filter((g) => g.botJoined).length;
 
   // ─── LOGIN SCREEN (UNAUTHENTICATED) ─────────────────────────────────────────
   if (status === "unauthenticated") {
     return (
-      <main className="min-h-screen bg-black text-white flex flex-col justify-center items-center px-4 relative">
-        <div className="max-w-md w-full p-10 rounded-xl bg-[#0c0c0c] border border-white/15 text-center space-y-6 shadow-2xl">
-          <div className="w-14 h-14 rounded-xl bg-zinc-900 border border-white/20 mx-auto p-2 flex items-center justify-center">
+      <main className="min-h-screen bg-[#090a0f] text-zinc-100 flex flex-col justify-center items-center px-4 relative font-sans">
+        <motion.div 
+          initial={{ opacity: 0, y: 15 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+          className="max-w-md w-full p-8 sm:p-10 rounded-2xl bg-[#0d0f15] border border-zinc-800 text-center space-y-6 shadow-xl"
+        >
+          <div className="w-14 h-14 rounded-2xl bg-[#12141c] border border-zinc-700/80 mx-auto p-2.5 flex items-center justify-center">
             <img 
               src="/vp-logo-icon.png" 
               alt="VePlexity" 
@@ -142,16 +180,16 @@ export default function DashboardPage() {
           </div>
 
           <div className="space-y-2">
-            <h1 className="text-2xl font-black uppercase tracking-tight text-white">
-              COMMAND CENTER
+            <h1 className="text-xl sm:text-2xl font-black text-white tracking-tight uppercase">
+              SERVER MANAGEMENT CONSOLE
             </h1>
-            <p className="text-xs text-zinc-400 leading-relaxed font-normal">
+            <p className="text-xs sm:text-sm text-zinc-400 leading-relaxed font-normal">
               Sign in with your Discord account to manage servers, assign roles, and configure bot settings.
             </p>
           </div>
 
           {authError && (
-            <div className="p-4 rounded-xl bg-red-500/10 border border-red-500/30 text-left text-xs space-y-2 relative">
+            <div className="p-4 rounded-xl bg-red-950/30 border border-red-500/30 text-left text-xs space-y-2 relative">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2 font-bold text-red-400">
                   <AlertCircle className="w-4 h-4 shrink-0" />
@@ -164,12 +202,12 @@ export default function DashboardPage() {
                       window.history.replaceState({}, document.title, window.location.pathname);
                     }
                   }}
-                  className="text-gray-400 hover:text-white text-xs underline font-mono cursor-pointer"
+                  className="text-zinc-400 hover:text-white text-xs underline font-mono cursor-pointer"
                 >
                   ✕ Dismiss
                 </button>
               </div>
-              <p className="text-[11px] text-gray-300 leading-relaxed">
+              <p className="text-[11px] text-zinc-300 leading-relaxed">
                 {authError === "Configuration" 
                   ? "OAuth handshake could not be completed. Please ensure you are initiating sign-in on https://www.veplexity.dev and that both Redirect URIs are saved in Discord Developer Portal."
                   : `Authentication encountered an issue (${authError}). Please try logging in again.`}
@@ -196,29 +234,36 @@ export default function DashboardPage() {
                 signIn("discord", { callbackUrl: "/dashboard", redirectTo: "/dashboard" });
               }
             }}
-            className="w-full py-3.5 px-4 rounded bg-white hover:bg-zinc-200 text-black font-black uppercase tracking-wider text-xs transition-colors flex items-center justify-center gap-2 cursor-pointer"
+            className="w-full py-3.5 px-5 rounded-xl btn-discord text-sm font-bold flex items-center justify-center gap-2.5 cursor-pointer shadow-md shadow-[#5865F2]/20"
           >
+            <DiscordLogo className="w-5 h-5" fill="#ffffff" />
             <span>LOGIN WITH DISCORD</span>
-            <ArrowRight className="w-4 h-4" />
           </button>
 
-          <Link href="/" className="inline-block text-xs text-zinc-500 hover:text-white transition-colors font-mono uppercase font-bold tracking-wider">
-            ← RETURN TO OVERVIEW
+          <Link href="/" className="inline-block text-xs text-zinc-500 hover:text-zinc-300 transition-colors font-mono uppercase font-bold tracking-wider">
+            ← Return to Overview
           </Link>
-        </div>
+        </motion.div>
       </main>
     );
   }
 
   // ─── AUTHENTICATED SERVER SELECTOR ──────────────────────────────────────────
   return (
-    <main className="min-h-screen bg-black text-white flex flex-col font-sans">
+    <main className="min-h-screen bg-[#090a0f] text-zinc-100 flex flex-col font-sans">
+      {/* Seamless Transition Overlay */}
+      <ServerRevealTransition
+        serverName={transitionServer?.name || "Server"}
+        serverIcon={transitionServer?.icon}
+        isVisible={Boolean(transitionServer)}
+      />
+
       {/* Navigation Header */}
-      <header className="border-b border-white/10 bg-black/90 backdrop-blur-md sticky top-0 z-40">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 h-18 flex items-center justify-between">
+      <header className="border-b border-zinc-800/80 bg-[#0c0d14] sticky top-0 z-40">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <Link href="/" className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded bg-zinc-900 border border-white/15 p-1 flex items-center justify-center">
+              <div className="w-8 h-8 rounded-lg bg-[#141620] border border-zinc-700/60 p-1 flex items-center justify-center">
                 <img 
                   src="/vp-logo-icon.png" 
                   alt="VP" 
@@ -226,27 +271,30 @@ export default function DashboardPage() {
                   onError={(e) => { e.currentTarget.style.display = 'none'; }} 
                 />
               </div>
-              <span className="font-black text-sm tracking-tighter text-white uppercase">
+              <span className="font-black text-sm tracking-tight text-white uppercase">
                 VEPLEXITY
               </span>
             </Link>
-            <span className="text-[10px] px-2 py-0.5 rounded bg-white/10 border border-white/20 text-white font-mono uppercase font-bold">
-              DASHBOARD
+            <span className="text-[10px] px-2.5 py-0.5 rounded-full bg-zinc-800/80 border border-zinc-700 text-zinc-300 font-mono uppercase font-bold">
+              CONSOLE
             </span>
           </div>
 
-          <div className="flex items-center gap-5">
-            <Link href="/bot" className="text-xs font-black uppercase tracking-wider text-zinc-400 hover:text-white transition-colors hidden sm:inline">
-              VEPLEXITY BOT
-            </Link>
-            <Link href="/support" className="text-xs font-black uppercase tracking-wider text-pink-400 hover:text-pink-300 transition-colors hidden sm:inline flex items-center gap-1.5">
-              <Heart className="w-3.5 h-3.5 fill-pink-500" />
-              <span>SUPPORT</span>
-            </Link>
+          <div className="flex items-center gap-4">
+            <a 
+              href="https://www.buymeacoffee.com/veplexity1"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn-bmc px-3.5 py-1.5 rounded-lg text-xs font-bold flex items-center gap-2"
+              title="Support Creator"
+            >
+              <BmcCupIcon className="w-4 h-4 text-black" />
+              <span className="hidden sm:inline">SUPPORT ON BMC</span>
+            </a>
 
             {session?.user && (
-              <div className="flex items-center gap-3 pl-3 border-l border-white/10">
-                <div className="w-8 h-8 rounded-full overflow-hidden border border-white/20 bg-zinc-900">
+              <div className="flex items-center gap-3 pl-3 border-l border-zinc-800">
+                <div className="w-8 h-8 rounded-full overflow-hidden border border-zinc-700 bg-zinc-800">
                   {session.user.image ? (
                     <img src={session.user.image} alt="Avatar" className="w-full h-full object-cover" />
                   ) : (
@@ -255,13 +303,13 @@ export default function DashboardPage() {
                     </div>
                   )}
                 </div>
-                <span className="text-xs font-black text-zinc-200 hidden md:inline">
+                <span className="text-xs font-semibold text-zinc-200 hidden md:inline">
                   {session.user.name}
                 </span>
                 <button
                   onClick={() => signOut()}
                   title="Sign out"
-                  className="p-1 rounded text-zinc-500 hover:text-red-400 transition-colors"
+                  className="p-1 rounded text-zinc-500 hover:text-red-400 transition-colors cursor-pointer"
                 >
                   <LogOut className="w-4 h-4" />
                 </button>
@@ -273,58 +321,89 @@ export default function DashboardPage() {
 
       {/* Toast Alert */}
       {toast && (
-        <div className="fixed top-5 right-5 z-50 px-4 py-2.5 rounded border bg-zinc-900 border-emerald-500/50 text-emerald-300 text-xs font-bold flex items-center gap-2 shadow-2xl">
+        <div className="fixed top-5 right-5 z-50 px-4 py-2.5 rounded-xl border bg-zinc-900 border-emerald-500/50 text-emerald-300 text-xs font-bold flex items-center gap-2 shadow-xl">
           <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
           <span>{toast}</span>
         </div>
       )}
 
       {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 flex-1 w-full space-y-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 flex-1 w-full space-y-7">
         
         {/* Banner Section */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-white/10 pb-6">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-zinc-800/80 pb-6">
           <div>
-            <h1 className="text-3xl font-black uppercase tracking-tight text-white">SELECT A SERVER</h1>
-            <p className="text-xs text-zinc-400 mt-1">
-              Servers where you hold Administrator permissions.
+            <div className="flex items-center gap-2.5">
+              <h1 className="text-2xl sm:text-3xl font-black text-white tracking-tight uppercase">
+                SERVER MANAGEMENT CONSOLE
+              </h1>
+              <span className="text-xs px-2.5 py-0.5 rounded-full bg-[#5865F2]/10 border border-[#5865F2]/20 text-[#5865F2] font-mono font-bold">
+                {guilds.length} SERVERS
+              </span>
+            </div>
+            <p className="text-xs sm:text-sm text-zinc-400 mt-1">
+              Select a Discord server to configure auto-moderation, music streaming, XP leveling, and automated audit logs.
             </p>
           </div>
 
-          <div className="flex items-center gap-3">
-            <input
-              type="text"
-              placeholder="FILTER SERVERS..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              className="bg-[#0c0c0c] border border-white/15 focus:border-pink-500 rounded px-3.5 py-2 text-xs text-white placeholder-zinc-500 outline-none w-52 sm:w-64 font-mono font-bold tracking-wider transition-colors"
-            />
+          <div className="flex items-center gap-2.5">
+            <div className="relative">
+              <Search className="w-4 h-4 text-zinc-500 absolute left-3 top-1/2 -translate-y-1/2" />
+              <input
+                type="text"
+                placeholder="Filter servers..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                className="pro-input pl-9 pr-3.5 py-2 text-xs w-48 sm:w-60 font-medium"
+              />
+            </div>
             <button
               onClick={() => fetchGuilds(false)}
               title="Refresh server list"
-              className="px-4 py-2 rounded bg-zinc-900 hover:bg-zinc-800 border border-white/15 text-zinc-200 hover:text-white transition-colors flex items-center gap-2 text-xs font-black uppercase tracking-wider"
+              className="px-3.5 py-2 rounded-lg btn-secondary flex items-center gap-2 text-xs font-bold cursor-pointer"
             >
-              <RefreshCw className={`w-3.5 h-3.5 ${isRefreshing ? "animate-spin text-pink-400" : ""}`} />
+              <RefreshCw className={`w-3.5 h-3.5 ${isRefreshing ? "animate-spin text-[#5865F2]" : ""}`} />
               <span className="hidden sm:inline">REFRESH</span>
             </button>
           </div>
         </div>
 
-        {/* Support Callout */}
-        <div className="p-6 rounded-lg bg-[#0c0c0c] border border-white/15 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        {/* Quick Filter Bar */}
+        <div className="flex items-center gap-2 overflow-x-auto pb-1">
+          {[
+            { id: "all", label: `All Servers (${guilds.length})` },
+            { id: "active", label: `Configured (${activeCount})` },
+            { id: "uninvited", label: `Requires Setup (${guilds.length - activeCount})` },
+          ].map((mode) => (
+            <button
+              key={mode.id}
+              onClick={() => setFilterMode(mode.id as any)}
+              className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition cursor-pointer select-none ${
+                filterMode === mode.id
+                  ? "bg-[#5865F2] text-white shadow-sm"
+                  : "bg-[#12141c] text-zinc-400 hover:text-white border border-zinc-800"
+              }`}
+            >
+              {mode.label}
+            </button>
+          ))}
+        </div>
+
+        {/* Official BMC Patronage Callout */}
+        <div className="p-5 sm:p-6 rounded-2xl bg-[#0d0f15] border border-zinc-800/80 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div className="flex items-center gap-4">
-            <div className="w-10 h-10 rounded bg-pink-500/10 border border-pink-500/30 flex items-center justify-center text-pink-400 shrink-0">
-              <Heart className="w-5 h-5 fill-pink-500" />
+            <div className="w-11 h-11 rounded-xl bg-[#FFDD00]/10 border border-[#FFDD00]/30 flex items-center justify-center text-[#FFDD00] shrink-0">
+              <BmcCupIcon className="w-5 h-5 text-[#FFDD00]" />
             </div>
             <div>
-              <div className="text-sm font-black uppercase text-white flex items-center gap-2">
-                <span>SUPPORT 24/7 BOT INFRASTRUCTURE</span>
-                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-pink-500/10 text-pink-400 border border-pink-500/20 font-bold">
-                  COMMUNITY PATRONAGE
+              <div className="text-sm font-bold text-white flex items-center gap-2">
+                <span>Support 24/7 Lossless Audio &amp; Hosting Nodes</span>
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-[#FFDD00]/10 text-[#FFDD00] border border-[#FFDD00]/20 font-bold">
+                  OFFICIAL BMC
                 </span>
               </div>
-              <p className="text-xs text-zinc-400 mt-1 font-normal">
-                Back server operating costs directly on Buy Me a Coffee to unlock VIP Discord roles and priority queues.
+              <p className="text-xs text-zinc-400 mt-0.5">
+                Back operating and bandwidth costs directly on Buy Me a Coffee to unlock VIP server perks and continuous 24/7 uptime.
               </p>
             </div>
           </div>
@@ -333,10 +412,10 @@ export default function DashboardPage() {
               href="https://www.buymeacoffee.com/veplexity1"
               target="_blank"
               rel="noopener noreferrer"
-              className="px-5 py-2.5 rounded bg-white hover:bg-zinc-200 text-black font-black uppercase tracking-wider text-xs transition-colors flex items-center gap-2"
+              className="btn-bmc px-4 py-2 rounded-lg text-xs font-bold flex items-center gap-2"
             >
-              <Heart className="w-3.5 h-3.5 fill-black" />
-              <span>SUPPORT ON BMC</span>
+              <BmcCupIcon className="w-4 h-4 text-black" />
+              <span>BUY A COFFEE</span>
             </a>
           </div>
         </div>
@@ -344,8 +423,8 @@ export default function DashboardPage() {
         {/* Loading State */}
         {loading && (
           <div className="py-24 flex flex-col items-center justify-center space-y-3">
-            <div className="w-8 h-8 border-2 border-white/20 border-t-pink-500 rounded-full animate-spin" />
-            <p className="text-xs font-mono text-zinc-400 uppercase tracking-widest font-bold">
+            <div className="w-8 h-8 border-2 border-zinc-700 border-t-[#5865F2] rounded-full animate-spin" />
+            <p className="text-xs font-mono text-zinc-400 uppercase tracking-wider font-bold">
               SCANNING DISCORD SERVERS...
             </p>
           </div>
@@ -353,14 +432,14 @@ export default function DashboardPage() {
 
         {/* Error State */}
         {!loading && error && (
-          <div className="p-5 rounded-lg bg-red-950/20 border border-red-500/30 text-red-300 flex items-center justify-between gap-4">
+          <div className="p-5 rounded-xl bg-red-950/20 border border-red-500/30 text-red-300 flex items-center justify-between gap-4">
             <div>
               <p className="font-bold text-xs uppercase">FAILED TO RETRIEVE SERVERS</p>
               <p className="text-[11px] text-red-300/80 mt-0.5">{error}</p>
             </div>
             <button
               onClick={() => fetchGuilds()}
-              className="px-4 py-2 rounded bg-red-500/20 hover:bg-red-500/30 text-xs font-black uppercase tracking-wider transition-colors"
+              className="px-4 py-2 rounded-lg bg-red-500/20 hover:bg-red-500/30 text-xs font-bold uppercase transition-colors"
             >
               RETRY
             </button>
@@ -371,23 +450,38 @@ export default function DashboardPage() {
         {!loading && !error && (
           <>
             {filteredGuilds.length === 0 ? (
-              <div className="py-16 text-center rounded-lg bg-[#0c0c0c] border border-white/10 p-8 space-y-3">
+              <div className="py-16 text-center rounded-2xl bg-[#0d0f15] border border-zinc-800 p-8 space-y-3">
                 <Server className="w-8 h-8 text-zinc-600 mx-auto" />
-                <h3 className="text-sm font-black uppercase text-zinc-300">NO SERVERS FOUND</h3>
+                <h3 className="text-sm font-bold uppercase text-zinc-300">NO SERVERS FOUND</h3>
                 <p className="text-xs text-zinc-500 max-w-sm mx-auto">
-                  {search ? "No servers match your filter." : "You do not currently manage any servers with Administrator permissions."}
+                  {search ? "No servers match your filter query." : "You do not currently manage any servers with Administrator permissions."}
                 </p>
               </div>
             ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              <motion.div 
+                initial="hidden"
+                animate="show"
+                variants={{
+                  hidden: { opacity: 0 },
+                  show: {
+                    opacity: 1,
+                    transition: { staggerChildren: 0.05 },
+                  },
+                }}
+                className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5"
+              >
                 {filteredGuilds.map((guild) => (
-                  <div
+                  <motion.div
                     key={guild.id}
-                    className="rounded-lg bg-[#0c0c0c] border border-white/10 hover:border-pink-500/50 transition-all p-6 flex flex-col justify-between gap-6"
+                    variants={{
+                      hidden: { opacity: 0, y: 12 },
+                      show: { opacity: 1, y: 0, transition: { duration: 0.25, ease: [0.16, 1, 0.3, 1] } },
+                    }}
+                    className="rounded-xl pro-card p-5 sm:p-6 flex flex-col justify-between gap-5 group"
                   >
                     {/* Server Info */}
-                    <div className="flex items-start gap-4">
-                      <div className="w-12 h-12 rounded bg-zinc-900 border border-white/15 overflow-hidden shrink-0 flex items-center justify-center font-black text-sm text-white">
+                    <div className="flex items-start gap-3.5">
+                      <div className="w-12 h-12 rounded-xl bg-zinc-900 border border-zinc-700/80 overflow-hidden shrink-0 flex items-center justify-center font-bold text-sm text-zinc-200">
                         {guild.iconUrl ? (
                           <img
                             src={guild.iconUrl}
@@ -401,27 +495,27 @@ export default function DashboardPage() {
                       </div>
 
                       <div className="space-y-1.5 flex-1 min-w-0">
-                        <h3 className="font-black text-base text-white truncate uppercase tracking-tight" title={guild.name}>
+                        <h3 className="font-bold text-base text-white truncate" title={guild.name}>
                           {guild.name}
                         </h3>
 
                         <div className="flex items-center gap-2 text-xs">
                           {guild.owner ? (
-                            <span className="font-mono text-zinc-400 text-[10px] font-bold uppercase">OWNER</span>
+                            <span className="font-mono text-zinc-400 text-[10px] font-bold uppercase bg-zinc-800/80 px-2 py-0.5 rounded">OWNER</span>
                           ) : (
-                            <span className="font-mono text-zinc-400 text-[10px] font-bold uppercase">ADMIN</span>
+                            <span className="font-mono text-zinc-400 text-[10px] font-bold uppercase bg-zinc-800/80 px-2 py-0.5 rounded">ADMIN</span>
                           )}
 
                           <span className="text-zinc-600">•</span>
 
                           {guild.botJoined ? (
-                            <span className="flex items-center gap-1 text-emerald-400 font-mono text-[10px] font-bold uppercase">
+                            <span className="flex items-center gap-1.5 text-emerald-400 font-mono text-[10px] font-bold uppercase">
                               <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                              ACTIVE
+                              CONNECTED
                             </span>
                           ) : (
                             <span className="text-zinc-500 font-mono text-[10px] uppercase font-bold">
-                              NOT JOINED
+                              SETUP NEEDED
                             </span>
                           )}
                         </div>
@@ -431,23 +525,23 @@ export default function DashboardPage() {
                     {/* Action */}
                     <div>
                       {guild.botJoined ? (
-                        <Link
-                          href={`/dashboard/${guild.id}`}
-                          className="w-full py-3 px-4 rounded bg-white hover:bg-zinc-200 text-black font-black uppercase tracking-wider text-xs transition-colors flex items-center justify-center gap-2"
+                        <button
+                          onClick={() => handleManageClick(guild)}
+                          className="w-full py-2.5 px-4 rounded-lg btn-discord text-xs font-bold transition flex items-center justify-center gap-2 cursor-pointer"
                         >
                           <span>MANAGE SERVER</span>
                           <ChevronRight className="w-4 h-4" />
-                        </Link>
+                        </button>
                       ) : (
                         <a
                           href={`/invite?guild_id=${guild.id}`}
                           target="_blank"
                           rel="noopener noreferrer"
                           onClick={() => handleInviteClick(guild.id, guild.name)}
-                          className={`w-full py-3 px-4 rounded border text-xs font-black uppercase tracking-wider transition-colors flex items-center justify-center gap-2 ${
+                          className={`w-full py-2.5 px-4 rounded-lg border text-xs font-bold transition flex items-center justify-center gap-2 ${
                             pendingGuildId === guild.id
-                              ? "bg-zinc-900 border-pink-500/50 text-pink-400 animate-pulse"
-                              : "bg-zinc-900 hover:bg-zinc-800 border-white/15 text-white"
+                              ? "bg-zinc-900 border-[#5865F2] text-[#5865F2] animate-pulse"
+                              : "btn-secondary"
                           }`}
                         >
                           {pendingGuildId === guild.id ? (
@@ -457,17 +551,17 @@ export default function DashboardPage() {
                             </>
                           ) : (
                             <>
-                              <Plus className="w-4 h-4 text-pink-400" />
-                              <span>ADD TO DISCORD</span>
+                              <Plus className="w-4 h-4 text-[#5865F2]" />
+                              <span>INVITE BOT</span>
                               <ExternalLink className="w-3.5 h-3.5 text-zinc-400" />
                             </>
                           )}
                         </a>
                       )}
                     </div>
-                  </div>
+                  </motion.div>
                 ))}
-              </div>
+              </motion.div>
             )}
           </>
         )}

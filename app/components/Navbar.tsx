@@ -5,6 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { Menu, X, ArrowUpRight, Bot } from "lucide-react";
+import { DiscordLogo } from "./BrandIcons";
 
 export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -81,9 +82,9 @@ export default function Navbar() {
 
           <Link
             href="/dashboard"
-            className="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-orange-500 to-fuchsia-600 text-white font-black uppercase tracking-wider text-xs rounded-xl shadow-[0_0_20px_rgba(217,70,239,0.35)] hover:scale-105 transition-transform"
+            className="inline-flex items-center gap-2 px-4 py-2 bg-[#5865F2] hover:bg-[#4752c4] text-white font-semibold text-xs rounded-lg transition"
           >
-            <Bot className="w-3.5 h-3.5" />
+            <DiscordLogo className="w-3.5 h-3.5" />
             <span>Dashboard</span>
           </Link>
         </div>
@@ -130,9 +131,10 @@ export default function Navbar() {
             <Link
               href="/dashboard"
               onClick={() => setMobileMenuOpen(false)}
-              className="w-full py-3 px-4 text-center text-xs font-black uppercase tracking-wider text-white bg-gradient-to-r from-orange-500 to-fuchsia-600 rounded-xl shadow-[0_0_20px_rgba(217,70,239,0.35)]"
+              className="w-full py-2.5 px-4 text-center text-xs font-semibold text-white bg-[#5865F2] hover:bg-[#4752c4] rounded-lg transition flex items-center justify-center gap-2"
             >
-              Launch Dashboard
+              <DiscordLogo className="w-3.5 h-3.5" />
+              <span>Launch Dashboard</span>
             </Link>
           </div>
         </div>
