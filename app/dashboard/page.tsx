@@ -30,6 +30,11 @@ export default function DashboardPage() {
 
   useEffect(() => {
     if (typeof window !== "undefined") {
+      // If user loads on apex domain, seamlessly redirect to canonical www to maintain cookie parity
+      if (window.location.hostname === "veplexity.dev") {
+        window.location.replace(`https://www.veplexity.dev${window.location.pathname}${window.location.search}`);
+        return;
+      }
       const params = new URLSearchParams(window.location.search);
       const err = params.get("error");
       if (err) setAuthError(err);
@@ -143,22 +148,46 @@ export default function DashboardPage() {
           </div>
 
           {authError && (
-            <div className="p-4 rounded-xl bg-red-500/10 border border-red-500/30 text-left text-xs space-y-2">
-              <div className="flex items-center gap-2 font-bold text-red-400">
-                <AlertCircle className="w-4 h-4 shrink-0" />
-                <span>Discord Sign-In Error ({authError})</span>
+            <div className="p-4 rounded-xl bg-red-500/10 border border-red-500/30 text-left text-xs space-y-2 relative">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2 font-bold text-red-400">
+                  <AlertCircle className="w-4 h-4 shrink-0" />
+                  <span>Discord Sign-In Error ({authError})</span>
+                </div>
+                <button
+                  onClick={() => {
+                    setAuthError(null);
+                    if (typeof window !== "undefined") {
+                      window.history.replaceState({}, document.title, window.location.pathname);
+                    }
+                  }}
+                  className="text-gray-400 hover:text-white text-xs underline font-mono cursor-pointer"
+                >
+                  ✕ Dismiss
+                </button>
               </div>
               <p className="text-[11px] text-gray-300 leading-relaxed">
                 {authError === "Configuration" 
-                  ? "OAuth handshake could not be completed. Please verify that both Redirect URIs (https://www.veplexity.dev/api/auth/callback/discord and https://veplexity.dev/api/auth/callback/discord) are registered in your Discord Developer Portal under OAuth2."
+                  ? "OAuth handshake could not be completed. Please ensure you are initiating sign-in on https://www.veplexity.dev and that both Redirect URIs are saved in Discord Developer Portal."
                   : `Authentication encountered an issue (${authError}). Please try logging in again.`}
               </p>
             </div>
           )}
 
           <button
-            onClick={() => signIn("discord")}
-            className="w-full py-3.5 px-4 rounded bg-white hover:bg-zinc-200 text-black font-black uppercase tracking-wider text-xs transition-colors flex items-center justify-center gap-2"
+            onClick={() => {
+              setAuthError(null);
+              if (typeof window !== "undefined") {
+                window.history.replaceState({}, document.title, window.location.pathname);
+                const target = window.location.hostname.includes("localhost")
+                  ? "/dashboard"
+                  : "https://www.veplexity.dev/dashboard";
+                signIn("discord", { callbackUrl: target, redirectTo: target });
+              } else {
+                signIn("discord", { callbackUrl: "/dashboard", redirectTo: "/dashboard" });
+              }
+            }}
+            className="w-full py-3.5 px-4 rounded bg-white hover:bg-zinc-200 text-black font-black uppercase tracking-wider text-xs transition-colors flex items-center justify-center gap-2 cursor-pointer"
           >
             <span>LOGIN WITH DISCORD</span>
             <ArrowRight className="w-4 h-4" />

@@ -1,21 +1,10 @@
 import NextAuth from "next-auth";
 import Discord from "next-auth/providers/discord";
 
-// Sanitize and normalize URL in production
+// Sanitize and enforce canonical URL in production
 if (process.env.NODE_ENV === "production") {
-  if (process.env.NEXTAUTH_URL && process.env.NEXTAUTH_URL.includes("localhost")) {
-    delete process.env.NEXTAUTH_URL;
-  }
-  if (process.env.AUTH_URL && process.env.AUTH_URL.includes("localhost")) {
-    delete process.env.AUTH_URL;
-  }
-  // Ensure canonical www is matched if set to apex domain
-  if (process.env.AUTH_URL === "https://veplexity.dev") {
-    process.env.AUTH_URL = "https://www.veplexity.dev";
-  }
-  if (process.env.NEXTAUTH_URL === "https://veplexity.dev") {
-    process.env.NEXTAUTH_URL = "https://www.veplexity.dev";
-  }
+  process.env.AUTH_URL = "https://www.veplexity.dev";
+  process.env.NEXTAUTH_URL = "https://www.veplexity.dev";
 }
 
 const DISCORD_CLIENT_ID = (
