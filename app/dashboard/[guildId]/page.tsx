@@ -16,7 +16,7 @@ import { TactileToggle } from "./components/TactileToggle";
 import { AutoModDefenseSimulator } from "./components/AutoModDefenseSimulator";
 import { MusicDjStudio } from "./components/MusicDjStudio";
 import { RankCardStudio } from "./components/RankCardStudio";
-import { ServerRevealTransition } from "@/app/components/ServerRevealTransition";
+import { ServerDestinationReveal } from "@/app/components/ServerRevealTransition";
 import { SocialAlertsStudio, NotificationsConfig, SocialPlatformConfig } from "./components/SocialAlertsStudio";
 import { ServerOverviewTab, OverviewModuleItem } from "./components/ServerOverviewTab";
 import { dashboardAudio } from "@/lib/dashboardAudio";
@@ -934,10 +934,10 @@ export default function GuildDashboard({ params }: { params: Promise<{ guildId: 
   if (loading && !guild) {
     return (
       <main className="min-h-screen bg-[#090a0f] text-white flex flex-col items-center justify-center font-sans">
-        <ServerRevealTransition
-          isVisible={true}
-          serverName="Connecting Server..."
-          serverInitials="VP"
+        <ServerDestinationReveal
+          isReady={false}
+          fallbackServerName="Connecting Server..."
+          fallbackServerIcon={null}
         />
       </main>
     );
@@ -968,11 +968,122 @@ export default function GuildDashboard({ params }: { params: Promise<{ guildId: 
 
   const overviewModules: OverviewModuleItem[] = [
     {
+      id: "welcome",
+      name: "Welcome & Goodbye",
+      desc: "Custom welcome cards, join announcements, departure logs, and instant auto-roles.",
+      category: "essentials",
+      categoryLabel: "Essentials",
+      accentColor: "emerald",
+      icon: Bell,
+      bgColor: "bg-emerald-500/10 text-emerald-400 border-emerald-500/20",
+      active: welcomeEnabled,
+      onToggle: (val: boolean) => setWelcomeEnabled(val),
+    },
+    {
+      id: "reactionroles",
+      name: "Reaction Roles & Menus",
+      desc: "Interactive Discord button and menu role assignment for self-assignable roles.",
+      category: "essentials",
+      categoryLabel: "Essentials",
+      accentColor: "pink",
+      icon: Users,
+      bgColor: "bg-pink-500/10 text-pink-400 border-pink-500/20",
+      active: Boolean(rrItems.length > 0 && rrChannel),
+      onToggle: () => setActiveTab("reactionroles"),
+    },
+    {
+      id: "announce",
+      name: "Message Builder & Embeds",
+      desc: "Craft and dispatch rich announcements with mentions, embeds, and buttons.",
+      category: "essentials",
+      categoryLabel: "Essentials",
+      accentColor: "blue",
+      icon: Megaphone,
+      bgColor: "bg-blue-500/10 text-blue-400 border-blue-500/20",
+      active: Boolean(annChannel),
+      onToggle: () => setActiveTab("announce"),
+    },
+    {
+      id: "leveling",
+      name: "XP Leveling & Rank System",
+      desc: "Chat activity XP progression, automated level-up role rewards, and custom rank cards.",
+      category: "engagement",
+      categoryLabel: "Engagement & XP",
+      accentColor: "indigo",
+      icon: Award,
+      bgColor: "bg-indigo-500/10 text-indigo-400 border-indigo-500/20",
+      active: levelingEnabled,
+      onToggle: (val: boolean) => setLevelingEnabled(val),
+    },
+    {
+      id: "rewards",
+      name: "Voice & Text Activity Rewards",
+      desc: "Earn server roles automatically by spending time in voice channels and text chatting.",
+      category: "engagement",
+      categoryLabel: "Engagement & XP",
+      accentColor: "cyan",
+      icon: Gift,
+      bgColor: "bg-cyan-500/10 text-cyan-400 border-cyan-500/20",
+      active: rewardsEnabled,
+      onToggle: (val: boolean) => setRewardsEnabled(val),
+    },
+    {
+      id: "starboard",
+      name: "Starboard (Hall of Fame)",
+      desc: "Showcase community highlight messages in a dedicated hall of fame channel.",
+      category: "engagement",
+      categoryLabel: "Engagement & XP",
+      accentColor: "amber",
+      icon: Star,
+      bgColor: "bg-amber-500/10 text-amber-400 border-amber-500/20",
+      active: Boolean(starboardChannel),
+      onToggle: () => setActiveTab("starboard"),
+    },
+    {
+      id: "community",
+      name: "Birthdays & Counting Games",
+      desc: "Interactive counting streak game channel and celebratory birthday shoutouts.",
+      category: "engagement",
+      categoryLabel: "Engagement & XP",
+      accentColor: "fuchsia",
+      icon: Gamepad2,
+      bgColor: "bg-fuchsia-500/10 text-fuchsia-400 border-fuchsia-500/20",
+      active: Boolean(countingChannel || birthdayChannel),
+      onToggle: () => setActiveTab("community"),
+    },
+    {
+      id: "boosters",
+      name: "Server Boosters Appreciation",
+      desc: "Automatic public booster shoutouts and custom thank-you perks for server boosters.",
+      category: "engagement",
+      categoryLabel: "Engagement & XP",
+      accentColor: "violet",
+      icon: Zap,
+      bgColor: "bg-violet-500/10 text-violet-400 border-violet-500/20",
+      active: boostersEnabled,
+      onToggle: (val: boolean) => setBoostersEnabled(val),
+    },
+    {
+      id: "ai",
+      name: "Gemini AI Chatbot",
+      desc: "Conversational Google Gemini companion channel with custom personality.",
+      category: "engagement",
+      categoryLabel: "Engagement & XP",
+      accentColor: "teal",
+      icon: Bot,
+      bgColor: "bg-teal-500/10 text-teal-400 border-teal-500/20",
+      active: aiEnabled,
+      onToggle: (val: boolean) => setAiEnabled(val),
+    },
+    {
       id: "automod",
       name: "Auto-Mod Security",
       desc: "Instant spam shield, invite link blocker, toxic language filter, and anti-caps engine.",
+      category: "security",
+      categoryLabel: "Security & Mod",
+      accentColor: "red",
       icon: Lock,
-      bgColor: "bg-indigo-500/10 text-indigo-400 border-indigo-500/20",
+      bgColor: "bg-red-500/10 text-red-400 border-red-500/20",
       active: Boolean(antiSpam || antiInvite || antiBadWords || antiLinks),
       onToggle: (val: boolean) => {
         setAntiSpam(val);
@@ -982,9 +1093,36 @@ export default function GuildDashboard({ params }: { params: Promise<{ guildId: 
       },
     },
     {
+      id: "moderation",
+      name: "Bot Masters & Roles",
+      desc: "Authorize moderator roles to execute administrative and moderation commands.",
+      category: "security",
+      categoryLabel: "Security & Mod",
+      accentColor: "rose",
+      icon: Shield,
+      bgColor: "bg-rose-500/10 text-rose-400 border-rose-500/20",
+      active: modRoles.length > 0,
+      onToggle: () => setActiveTab("moderation"),
+    },
+    {
+      id: "logging",
+      name: "Audit & Logging Channels",
+      desc: "Detailed server audit logs for message edits, deletions, joins, and mod actions.",
+      category: "security",
+      categoryLabel: "Security & Mod",
+      accentColor: "slate",
+      icon: FileText,
+      bgColor: "bg-slate-500/10 text-slate-400 border-slate-500/20",
+      active: Boolean(modLogChannel || loggingChannels?.messageEdit),
+      onToggle: () => setActiveTab("logging"),
+    },
+    {
       id: "notifications",
       name: "Social Alerts (Pingcord)",
-      desc: "Automated live stream alerts & video notifications for YouTube, Twitch, TikTok, X, and Reddit.",
+      desc: "Automated stream alerts for YouTube, Twitch, TikTok, X, and Reddit.",
+      category: "social",
+      categoryLabel: "Social Alerts",
+      accentColor: "purple",
       icon: Radio,
       bgColor: "bg-purple-500/10 text-purple-400 border-purple-500/20",
       active: notificationsConfig.enabled,
@@ -993,142 +1131,50 @@ export default function GuildDashboard({ params }: { params: Promise<{ guildId: 
       },
     },
     {
-      id: "welcome",
-      name: "Welcome & Goodbye",
-      desc: "Custom welcome cards, join announcements, departure logs, and instant auto-roles.",
-      icon: Bell,
-      bgColor: "bg-emerald-500/10 text-emerald-400 border-emerald-500/20",
-      active: welcomeEnabled,
-      onToggle: (val: boolean) => setWelcomeEnabled(val),
-    },
-    {
-      id: "leveling",
-      name: "XP Leveling & Rank System",
-      desc: "Chat activity XP progression, automated level-up role rewards, and custom rank cards.",
-      icon: Award,
-      bgColor: "bg-amber-500/10 text-amber-400 border-amber-500/20",
-      active: levelingEnabled,
-      onToggle: (val: boolean) => setLevelingEnabled(val),
-    },
-    {
-      id: "rewards",
-      name: "Voice & Text Activity Rewards",
-      desc: "Earn server roles automatically by spending time in voice channels and active chatting.",
-      icon: Gift,
-      bgColor: "bg-cyan-500/10 text-cyan-400 border-cyan-500/20",
-      active: rewardsEnabled,
-      onToggle: (val: boolean) => setRewardsEnabled(val),
-    },
-    {
       id: "music",
       name: "Music & DJ Audio (24/7)",
-      desc: "Lossless 24/7 high-fidelity music streaming, DSP audio equalizers, and DJ role permissions.",
+      desc: "Lossless 24/7 high-fidelity music streaming, equalizers, and DJ controls.",
+      category: "utilities",
+      categoryLabel: "Utilities",
+      accentColor: "blue",
       icon: Music,
       bgColor: "bg-[#5865F2]/10 text-[#5865F2] border-[#5865F2]/20",
       active: stay247,
       onToggle: (val: boolean) => setStay247(val),
     },
     {
-      id: "moderation",
-      name: "Bot Masters & Roles",
-      desc: "Authorize moderator roles to execute administrative and moderation commands.",
-      icon: Shield,
-      bgColor: "bg-blue-500/10 text-blue-400 border-blue-500/20",
-      active: modRoles.length > 0,
-      onToggle: () => setActiveTab("moderation"),
-    },
-    {
-      id: "logging",
-      name: "Audit & Logging Channels",
-      desc: "Detailed server audit logs for message edits, deletions, member joins/leaves, and mod actions.",
-      icon: FileText,
-      bgColor: "bg-slate-500/10 text-slate-400 border-slate-500/20",
-      active: Boolean(modLogChannel || loggingChannels?.messageEdit),
-      onToggle: () => setActiveTab("logging"),
-    },
-    {
-      id: "reactionroles",
-      name: "Reaction Roles & Menus",
-      desc: "Interactive Discord button and menu role assignment so members can self-assign roles.",
-      icon: Users,
-      bgColor: "bg-pink-500/10 text-pink-400 border-pink-500/20",
-      active: Boolean(rrItems.length > 0 && rrChannel),
-      onToggle: () => setActiveTab("reactionroles"),
-    },
-    {
-      id: "ai",
-      name: "Gemini AI Chatbot",
-      desc: "Conversational Google Gemini AI companion channel with customizable bot personality.",
-      icon: Bot,
-      bgColor: "bg-teal-500/10 text-teal-400 border-teal-500/20",
-      active: aiEnabled,
-      onToggle: (val: boolean) => setAiEnabled(val),
-    },
-    {
       id: "tempvc",
       name: "Temporary Voice Hubs",
       desc: "Dynamic join-to-create temporary voice channels that automatically delete when empty.",
+      category: "utilities",
+      categoryLabel: "Utilities",
+      accentColor: "emerald",
       icon: Mic,
-      bgColor: "bg-indigo-500/10 text-indigo-400 border-indigo-500/20",
+      bgColor: "bg-emerald-500/10 text-emerald-400 border-emerald-500/20",
       active: Boolean(tempVcHub),
       onToggle: () => setActiveTab("tempvc"),
-    },
-    {
-      id: "starboard",
-      name: "Starboard (Hall of Fame)",
-      desc: "Showcase community highlight messages in a dedicated hall of fame based on star reactions.",
-      icon: Star,
-      bgColor: "bg-yellow-500/10 text-yellow-400 border-yellow-500/20",
-      active: Boolean(starboardChannel),
-      onToggle: () => setActiveTab("starboard"),
     },
     {
       id: "autoresponders",
       name: "Custom Auto-Responders",
       desc: "Automated keyword triggers and instant pre-configured replies in server channels.",
+      category: "utilities",
+      categoryLabel: "Utilities",
+      accentColor: "orange",
       icon: MessageCircle,
       bgColor: "bg-orange-500/10 text-orange-400 border-orange-500/20",
       active: autoResponders.length > 0,
       onToggle: () => setActiveTab("autoresponders"),
     },
-    {
-      id: "community",
-      name: "Birthdays & Counting Games",
-      desc: "Interactive counting streak game channel and automated celebratory birthday shoutouts.",
-      icon: Gamepad2,
-      bgColor: "bg-green-500/10 text-green-400 border-green-500/20",
-      active: Boolean(countingChannel || birthdayChannel),
-      onToggle: () => setActiveTab("community"),
-    },
-    {
-      id: "announce",
-      name: "Message Builder & Embeds",
-      desc: "Craft and dispatch polished rich Discord announcements with mentions and embeds.",
-      icon: Megaphone,
-      bgColor: "bg-rose-500/10 text-rose-400 border-rose-500/20",
-      active: Boolean(annChannel),
-      onToggle: () => setActiveTab("announce"),
-    },
-    {
-      id: "boosters",
-      name: "Server Boosters Appreciation",
-      desc: "Automatic public booster shoutouts and custom thank-you perks for server boosters.",
-      icon: Zap,
-      bgColor: "bg-violet-500/10 text-violet-400 border-violet-500/20",
-      active: boostersEnabled,
-      onToggle: (val: boolean) => setBoostersEnabled(val),
-    },
   ];
 
   return (
     <div className="h-screen w-full flex flex-col bg-[#090a0f] text-[#f4f4f5] font-sans overflow-hidden relative">
-      {/* Expanding Morphing Reveal Pill Overlay */}
-      <ServerRevealTransition
-        isVisible={revealActive}
-        serverName={guild?.name || "Server"}
-        serverIcon={guildIconUrl}
-        serverInitials={guildInitials}
-        onAnimationComplete={() => setRevealActive(false)}
+      {/* Shared-Element Destination Reveal Veil */}
+      <ServerDestinationReveal
+        isReady={!loading && Boolean(guild)}
+        fallbackServerName={guild?.name}
+        fallbackServerIcon={guildIconUrl}
       />
       {/* Toast Alert */}
       {toast && (
@@ -1748,7 +1794,7 @@ export default function GuildDashboard({ params }: { params: Promise<{ guildId: 
               setLevelingMessage={setLevelingMessage}
               xpRate={xpRate}
               setXpRate={setXpRate}
-              channels={guild?.channels?.filter((c) => c.type === 0) || []}
+              channels={guild?.channels?.text || []}
             />
           )}
 

@@ -11,7 +11,7 @@ import {
   Search, ShieldCheck, Filter, AlertCircle, Coffee
 } from "lucide-react";
 import { DiscordLogo, BmcCupIcon } from "@/app/components/BrandIcons";
-import { ServerRevealTransition } from "@/app/components/ServerRevealTransition";
+import { ServerFlightVeil, FlightRect } from "@/app/components/ServerRevealTransition";
 
 interface GuildItem {
   id: string;
@@ -37,12 +37,10 @@ export default function DashboardPage() {
   const [authError, setAuthError] = useState<string | null>(null);
   const [authErrorDetail, setAuthErrorDetail] = useState<string | null>(null);
 
-  // Transition Reveal State
-  const [transitionServer, setTransitionServer] = useState<{
-    id: string;
-    name: string;
-    icon?: string | null;
-  } | null>(null);
+  // Shared-element button-to-fullscreen reveal flight (mvk-builders architecture)
+  const [flightRect, setFlightRect] = useState<FlightRect | null>(null);
+  const [flightGuild, setFlightGuild] = useState<GuildItem | null>(null);
+  const [isFlightActive, setIsFlightActive] = useState(false);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -137,17 +135,38 @@ export default function DashboardPage() {
     }, 2500);
   };
 
-  // Smooth server transition handler
-  const handleManageClick = (guild: GuildItem) => {
-    setTransitionServer({
-      id: guild.id,
-      name: guild.name,
-      icon: guild.iconUrl,
-    });
-    // Give animation 450ms before routing
+  // Shared-element button-to-fullscreen reveal flight (mvk-builders architecture)
+  const handleManageClick = (e: React.MouseEvent, guild: GuildItem) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const rect = e.currentTarget.getBoundingClientRect();
+    const flightData: FlightRect = {
+      top: rect.top,
+      left: rect.left,
+      width: rect.width,
+      height: rect.height,
+    };
+
+    try {
+      sessionStorage.setItem(
+        "vep_server_flight",
+        JSON.stringify({
+          ...flightData,
+          id: guild.id,
+          name: guild.name,
+          icon: guild.iconUrl,
+        })
+      );
+    } catch {}
+
+    setFlightRect(flightData);
+    setFlightGuild(guild);
+    setIsFlightActive(true);
+
+    // Navigate right as flight reaches full bleed
     setTimeout(() => {
       router.push(`/dashboard/${guild.id}`);
-    }, 450);
+    }, 580);
   };
 
   const filteredGuilds = guilds
@@ -251,11 +270,12 @@ export default function DashboardPage() {
   // ─── AUTHENTICATED SERVER SELECTOR ──────────────────────────────────────────
   return (
     <main className="min-h-screen bg-[#090a0f] text-zinc-100 flex flex-col font-sans">
-      {/* Seamless Transition Overlay */}
-      <ServerRevealTransition
-        serverName={transitionServer?.name || "Server"}
-        serverIcon={transitionServer?.icon}
-        isVisible={Boolean(transitionServer)}
+      {/* Shared-Element Button-to-Fullscreen Reveal Flight Veil */}
+      <ServerFlightVeil
+        isOpen={isFlightActive}
+        sourceRect={flightRect}
+        serverName={flightGuild?.name || "Server"}
+        serverIcon={flightGuild?.iconUrl}
       />
 
       {/* Navigation Header */}
@@ -478,7 +498,14 @@ export default function DashboardPage() {
                       show: { opacity: 1, y: 0, transition: { duration: 0.25, ease: [0.16, 1, 0.3, 1] } },
                     }}
                     whileHover={{ y: -4, transition: { duration: 0.15 } }}
-                    className="rounded-2xl pro-card overflow-hidden flex flex-col justify-between group border border-zinc-800/80 hover:border-zinc-700 transition shadow-lg"
+                    onClick={(e) => {
+                      if (guild.botJoined) {
+                        handleManageClick(e, guild);
+                      }
+                    }}
+                    className={`rounded-2xl pro-card overflow-hidden flex flex-col justify-between group border border-zinc-800/80 hover:border-zinc-700 transition shadow-lg ${
+                      guild.botJoined ? "cursor-pointer" : ""
+                    }`}
                   >
                     {/* Upper Ambient Backdrop */}
                     <div className="h-20 bg-gradient-to-b from-[#181a29] to-[#0e1017] border-b border-zinc-800/40 relative">
@@ -531,11 +558,11 @@ export default function DashboardPage() {
                       <div className="w-full pt-1">
                         {guild.botJoined ? (
                           <button
-                            onClick={() => handleManageClick(guild)}
-                            className="w-full py-2.5 px-4 rounded-xl btn-discord text-xs font-bold transition flex items-center justify-center gap-2 cursor-pointer shadow-md hover:shadow-[#5865F2]/20"
+                            onClick={(e) => handleManageClick(e, guild)}
+                            className="w-full py-2.5 px-4 rounded-xl btn-discord text-xs font-bold transition flex items-center justify-center gap-2 cursor-pointer shadow-md hover:shadow-[#5865F2]/20 active:scale-95 group/btn"
                           >
                             <span>Go</span>
-                            <ChevronRight className="w-4 h-4" />
+                            <ChevronRight className="w-4 h-4 transition-transform group-hover/btn:translate-x-0.5" />
                           </button>
                         ) : (
                           <a
