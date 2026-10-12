@@ -6,12 +6,18 @@ import Link from "next/link";
 import { 
   Shield, Bell, Bot, Music, Check, Sparkles, AlertCircle, 
   ArrowLeft, Save, CheckCircle2, ChevronRight, Hash, 
-  Volume2, Megaphone, Lock, Star, Mic, RotateCcw,
+  Volume2, VolumeX, Megaphone, Lock, Star, Mic, RotateCcw,
   Send, ExternalLink, Gamepad2, Cake, Coffee, Flame,
   MessageCircle, FileText, Settings, ThumbsUp, ThumbsDown,
   Trash2, UserMinus, UserPlus, Clock, Layers, Award,
   Zap, Radio, Link as LinkIcon, Compass, Gift, Users, Plus, Terminal
 } from "lucide-react";
+import { TactileToggle } from "./components/TactileToggle";
+import { AutoModDefenseSimulator } from "./components/AutoModDefenseSimulator";
+import { ServerTelemetryCenter } from "./components/ServerTelemetryCenter";
+import { MusicDjStudio } from "./components/MusicDjStudio";
+import { RankCardStudio } from "./components/RankCardStudio";
+import { dashboardAudio } from "@/lib/dashboardAudio";
 
 interface RoleItem {
   id: string;
@@ -204,6 +210,7 @@ export default function GuildDashboard({ params }: { params: Promise<{ guildId: 
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [toast, setToast] = useState<{ message: string; type: "success" | "error" } | null>(null);
+  const [soundOn, setSoundOn] = useState(dashboardAudio.enabled);
 
   // Form State
   const [modRoles, setModRoles] = useState<string[]>([]);
@@ -890,7 +897,15 @@ export default function GuildDashboard({ params }: { params: Promise<{ guildId: 
   };
 
   return (
-    <div className="min-h-screen bg-[#0d0e12] text-[#f2f3f5] flex flex-col font-sans w-full">
+    <div className="min-h-screen bg-[#070308] text-[#f2f3f5] flex flex-col font-sans w-full relative overflow-x-hidden selection:bg-orange-500/30 selection:text-orange-200">
+      {/* Ambient Radial Backdrops (Eliminates Empty Void) */}
+      <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
+        <div className="absolute -top-32 -left-32 w-96 h-96 bg-fuchsia-600/10 rounded-full blur-[140px]" />
+        <div className="absolute top-1/4 -right-32 w-96 h-96 bg-orange-600/10 rounded-full blur-[140px]" />
+        <div className="absolute bottom-1/4 left-1/4 w-96 h-96 bg-purple-700/10 rounded-full blur-[140px]" />
+        <div className="absolute -bottom-32 right-1/3 w-96 h-96 bg-fuchsia-700/10 rounded-full blur-[140px]" />
+      </div>
+
       {/* Toast Alert */}
       {toast && (
         <div
@@ -906,7 +921,7 @@ export default function GuildDashboard({ params }: { params: Promise<{ guildId: 
       )}
 
       {/* Top Navbar - Full Width */}
-      <header className="border-b border-white/5 bg-[#111217] sticky top-0 z-40 px-6 sm:px-10 py-3.5 flex items-center justify-between w-full">
+      <header className="border-b border-white/10 bg-[#0d0514]/90 backdrop-blur-2xl sticky top-0 z-40 px-6 sm:px-10 py-3.5 flex items-center justify-between w-full shadow-[0_4px_20px_rgba(0,0,0,0.5)]">
         <div className="flex items-center gap-4">
           <Link
             href="/dashboard"
@@ -943,6 +958,24 @@ export default function GuildDashboard({ params }: { params: Promise<{ guildId: 
         </div>
 
         <div className="flex items-center gap-2.5 sm:gap-3">
+          <button
+            onClick={() => {
+              const next = dashboardAudio.toggleSound();
+              setSoundOn(next);
+            }}
+            className={`px-3 py-1.5 rounded-lg border text-xs flex items-center gap-1.5 transition cursor-pointer ${
+              soundOn
+                ? "bg-amber-500/15 border-amber-500/30 text-amber-300 hover:bg-amber-500/25 shadow-sm shadow-amber-500/10"
+                : "bg-white/5 border-white/5 text-zinc-500 hover:text-zinc-300"
+            }`}
+            title="Toggle Dashboard Sound Effects"
+          >
+            {soundOn ? <Volume2 className="w-3.5 h-3.5 text-amber-400" /> : <VolumeX className="w-3.5 h-3.5" />}
+            <span className="hidden md:inline font-mono text-[11px] font-bold">
+              {soundOn ? "SFX ON" : "SFX MUTED"}
+            </span>
+          </button>
+
           <a
             href="https://www.discord.gg/R6ZrqpWEcc"
             target="_blank"
@@ -983,27 +1016,30 @@ export default function GuildDashboard({ params }: { params: Promise<{ guildId: 
       {/* Main Full-Width Container */}
       <div className="flex-1 flex w-full">
         {/* Left Navigation Sidebar */}
-        <aside className="w-64 xl:w-72 border-r border-white/5 bg-[#111217]/70 p-4 shrink-0 hidden lg:flex flex-col justify-between">
+        <aside className="w-72 xl:w-80 border-r border-white/10 bg-[#0c0512]/80 backdrop-blur-2xl p-4 shrink-0 hidden lg:flex flex-col justify-between z-10 shadow-xl">
           <div className="space-y-6">
             <div className="space-y-1">
               <button
-                onClick={() => setActiveTab("overview")}
-                className={`w-full text-left px-3.5 py-2.5 rounded-xl text-xs font-semibold flex items-center gap-3 transition ${
+                onClick={() => {
+                  dashboardAudio.playClick();
+                  setActiveTab("overview");
+                }}
+                className={`w-full text-left px-4 py-3 rounded-2xl text-xs font-bold flex items-center gap-3 transition cursor-pointer select-none ${
                   activeTab === "overview"
-                    ? "bg-fuchsia-600/20 text-fuchsia-300 border border-fuchsia-500/30"
-                    : "text-gray-400 hover:text-white hover:bg-white/5"
+                    ? "bg-gradient-to-r from-orange-600/25 via-fuchsia-600/20 to-transparent text-white border border-orange-500/40 shadow-md shadow-orange-600/10"
+                    : "text-zinc-400 hover:text-white hover:bg-white/5"
                 }`}
               >
-                <Layers className="w-4 h-4" />
+                <Layers className="w-4.5 h-4.5 text-orange-400" />
                 <span className="text-sm">Server Overview</span>
               </button>
             </div>
 
             <div className="space-y-1.5">
-              <p className="text-[10px] uppercase font-mono tracking-wider text-gray-500 px-3 font-bold">
+              <p className="text-[10px] uppercase font-mono tracking-wider text-zinc-500 px-3 font-bold">
                 Modules & Features
               </p>
-              <nav className="space-y-0.5">
+              <nav className="space-y-1">
                 {[
                   { id: "moderation", label: "Bot Masters & Roles", icon: Shield },
                   { id: "logging", label: "Audit & Logging Channels", icon: FileText },
@@ -1028,11 +1064,14 @@ export default function GuildDashboard({ params }: { params: Promise<{ guildId: 
                   return (
                     <button
                       key={item.id}
-                      onClick={() => setActiveTab(item.id as TabType)}
-                      className={`w-full text-left px-3.5 py-2 rounded-xl text-xs font-medium flex items-center justify-between transition ${
+                      onClick={() => {
+                        dashboardAudio.playClick();
+                        setActiveTab(item.id as TabType);
+                      }}
+                      className={`w-full text-left px-3.5 py-2.5 rounded-xl text-xs font-semibold flex items-center justify-between transition cursor-pointer select-none ${
                         active
-                          ? "bg-fuchsia-600/20 text-fuchsia-300 border border-fuchsia-500/30"
-                          : "text-gray-400 hover:text-white hover:bg-white/[0.03]"
+                          ? "bg-gradient-to-r from-fuchsia-600/25 via-pink-600/20 to-transparent text-white border border-fuchsia-500/40 shadow-md shadow-fuchsia-600/10"
+                          : "text-zinc-400 hover:text-white hover:bg-white/[0.04]"
                       }`}
                     >
                       <div className="flex items-center gap-2.5 min-w-0">
@@ -1102,6 +1141,13 @@ export default function GuildDashboard({ params }: { params: Promise<{ guildId: 
           ═══════════════════════════════════════════════════════════════════ */}
           {activeTab === "overview" && (
             <div className="space-y-8 w-full">
+              {/* Interactive Telemetry & Shard Radar */}
+              <ServerTelemetryCenter
+                guildName={guild?.name || "Server"}
+                memberCount={guild?.memberCount || 0}
+                setActiveTab={setActiveTab}
+              />
+
               {/* Maki-Style Expanded Server Banner Header */}
               <div className="p-6 sm:p-8 rounded-2xl bg-[#14151b] border border-white/5 flex flex-col md:flex-row items-start md:items-center justify-between gap-6 w-full">
                 <div className="flex items-center gap-5">
@@ -1805,189 +1851,20 @@ export default function GuildDashboard({ params }: { params: Promise<{ guildId: 
           )}
 
           {/* ═══════════════════════════════════════════════════════════════════
-              4. LEVELING & XP SYSTEM (FREE VIP FEATURE - MEE6 CHARGES $12/MO)
+              4. LEVELING & XP SYSTEM (INTERACTIVE RANK CARD STUDIO)
           ═══════════════════════════════════════════════════════════════════ */}
           {activeTab === "leveling" && (
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start w-full">
-              <div className="lg:col-span-7 space-y-6">
-                <div className="p-6 sm:p-7 rounded-2xl bg-[#15161c] border border-white/5 space-y-5">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <div className="flex items-center gap-2">
-                        <h3 className="text-base font-bold text-white flex items-center gap-2">
-                          <Award className="w-5 h-5 text-amber-400" />
-                          <span>Leveling & XP Rank System</span>
-                        </h3>
-                        <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 font-bold border border-amber-500/30">
-                          100% Free
-                        </span>
-                      </div>
-                      <p className="text-xs text-gray-400 mt-1">
-                        Reward active chatters with XP, level-up cards, and milestone role unlocks.
-                      </p>
-                    </div>
-
-                    <input
-                      type="checkbox"
-                      checked={levelingEnabled}
-                      onChange={(e) => setLevelingEnabled(e.target.checked)}
-                      className="w-5 h-5 accent-amber-500 cursor-pointer"
-                    />
-                  </div>
-
-                  {levelingEnabled && (
-                    <div className="space-y-4 pt-4 border-t border-white/5">
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <div>
-                          <label className="text-xs font-semibold uppercase text-gray-400 tracking-wider mb-1.5 block">
-                            Level Up Announcement Channel
-                          </label>
-                          <select
-                            value={levelingChannel}
-                            onChange={(e) => setLevelingChannel(e.target.value)}
-                            className="w-full bg-[#1c1d24] border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white outline-none focus:border-amber-500/50"
-                          >
-                            <option value="">Current Channel (Where member chatted)</option>
-                            {guild?.channels?.text?.map((c) => (
-                              <option key={c.id} value={c.id}>
-                                #{c.name}
-                              </option>
-                            ))}
-                          </select>
-                        </div>
-
-                        <div>
-                          <label className="text-xs font-semibold uppercase text-gray-400 tracking-wider mb-1.5 block">
-                            XP Rate Multiplier
-                          </label>
-                          <select
-                            value={xpRate}
-                            onChange={(e) => setXpRate(Number(e.target.value))}
-                            className="w-full bg-[#1c1d24] border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white outline-none focus:border-amber-500/50"
-                          >
-                            <option value={1}>1.0x (Standard 15-25 XP/msg)</option>
-                            <option value={1.5}>1.5x (Weekend Boost)</option>
-                            <option value={2}>2.0x (Double XP Mode)</option>
-                            <option value={3}>3.0x (Triple High Speed)</option>
-                          </select>
-                        </div>
-                      </div>
-
-                      <div>
-                        <label className="text-xs font-semibold uppercase text-gray-400 tracking-wider mb-1.5 block">
-                          Level-Up Announcement Message
-                        </label>
-                        <textarea
-                          rows={3}
-                          value={levelingMessage}
-                          onChange={(e) => setLevelingMessage(e.target.value)}
-                          className="w-full bg-[#1c1d24] border border-white/10 rounded-xl p-3.5 text-xs text-white outline-none focus:border-amber-500/50"
-                          placeholder="GG {user}, you leveled up to Level {level}! 🎉"
-                        />
-                        <div className="flex items-center gap-1.5 mt-2 text-xs text-gray-400">
-                          <span>Click to insert:</span>
-                          <button
-                            type="button"
-                            onClick={() => setLevelingMessage(m => m + " {user}")}
-                            className="px-2 py-0.5 rounded bg-white/5 hover:bg-amber-500/20 text-amber-300 font-mono text-[11px]"
-                          >
-                            + &#123;user&#125;
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => setLevelingMessage(m => m + " {level}")}
-                            className="px-2 py-0.5 rounded bg-white/5 hover:bg-amber-500/20 text-amber-300 font-mono text-[11px]"
-                          >
-                            + &#123;level&#125;
-                          </button>
-                        </div>
-                      </div>
-
-                      <div className="p-4 rounded-xl bg-[#1c1d24] border border-white/5 space-y-2">
-                        <p className="text-xs font-bold text-white">🏆 Milestone Role Rewards (Automatic)</p>
-                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-[11px] text-gray-400">
-                          <div className="p-2 bg-black/30 rounded border border-white/5">
-                            <span className="text-amber-400 font-bold block">Level 5</span>
-                            <span>Bronze Member</span>
-                          </div>
-                          <div className="p-2 bg-black/30 rounded border border-white/5">
-                            <span className="text-gray-300 font-bold block">Level 10</span>
-                            <span>Silver Member</span>
-                          </div>
-                          <div className="p-2 bg-black/30 rounded border border-white/5">
-                            <span className="text-yellow-400 font-bold block">Level 25</span>
-                            <span>Gold Elite</span>
-                          </div>
-                          <div className="p-2 bg-black/30 rounded border border-white/5">
-                            <span className="text-cyan-400 font-bold block">Level 50</span>
-                            <span>Diamond Master</span>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              {/* Right Output Visualizer: Discord Level Up Card */}
-              <div className="lg:col-span-5 space-y-3 sticky top-20">
-                <div className="flex items-center justify-between text-xs text-gray-400 px-1">
-                  <span className="font-semibold uppercase text-[10px] tracking-wider">Discord Output Visualizer</span>
-                  <span className="text-[10px] font-mono text-amber-400">#level-up</span>
-                </div>
-
-                <div className="rounded-2xl bg-[#313338] border border-black/30 p-5 font-sans text-xs shadow-2xl space-y-3">
-                  <div className="flex items-start gap-3">
-                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-amber-500 to-yellow-600 flex items-center justify-center font-bold text-white text-xs shrink-0 overflow-hidden shadow-lg">
-                      <img src="/vp-logo-icon.png" alt="VP" className="w-full h-full object-cover" />
-                    </div>
-                    <div className="flex-1 space-y-2">
-                      <div className="flex items-center gap-2">
-                        <span className="font-bold text-white text-sm">VePlexity Levels</span>
-                        <span className="px-1.5 py-0.2 rounded bg-[#5865F2] text-white text-[9px] font-extrabold">BOT</span>
-                        <span className="text-[10px] text-gray-400">Today at 4:21 PM</span>
-                      </div>
-
-                      <div className="rounded-xl bg-[#2b2d31] border-l-4 border-amber-400 p-4 space-y-3">
-                        <div className="flex items-center justify-between">
-                          <span className="font-bold text-white text-sm">🎉 LEVEL UP!</span>
-                          <span className="text-xs font-mono px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 font-bold">
-                            LEVEL 5
-                          </span>
-                        </div>
-
-                        <p className="text-xs text-gray-200">
-                          {levelingMessage
-                            .replace(/{user}/g, "@Alex")
-                            .replace(/{level}/g, "5")}
-                        </p>
-
-                        <div className="space-y-1">
-                          <div className="flex items-center justify-between text-[10px] text-gray-400 font-mono">
-                            <span>Rank #3 • 2,450 XP</span>
-                            <span>Next: Level 6</span>
-                          </div>
-                          <div className="w-full h-2 rounded-full bg-black/50 overflow-hidden border border-white/5">
-                            <div className="h-full bg-gradient-to-r from-amber-500 to-yellow-400 rounded-full w-4/5" />
-                          </div>
-                        </div>
-
-                        <div className="pt-2 border-t border-white/5 flex items-center gap-2 text-[11px] text-gray-300">
-                          <span>Unlocked Role:</span>
-                          <span className="px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 font-semibold border border-amber-500/30">
-                            🥉 Bronze Member
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <p className="text-[11px] text-gray-500 px-1">
-                  Illustrates the level-up card dispatched to members when earning XP.
-                </p>
-              </div>
-            </div>
+            <RankCardStudio
+              levelingEnabled={levelingEnabled}
+              setLevelingEnabled={setLevelingEnabled}
+              levelingChannel={levelingChannel}
+              setLevelingChannel={setLevelingChannel}
+              levelingMessage={levelingMessage}
+              setLevelingMessage={setLevelingMessage}
+              xpRate={xpRate}
+              setXpRate={setXpRate}
+              channels={guild?.channels?.filter((c) => c.type === 0) || []}
+            />
           )}
 
           {/* ═══════════════════════════════════════════════════════════════════
@@ -2015,11 +1892,11 @@ export default function GuildDashboard({ params }: { params: Promise<{ guildId: 
                       </p>
                     </div>
 
-                    <input
-                      type="checkbox"
+                    <TactileToggle
                       checked={rewardsEnabled}
-                      onChange={(e) => setRewardsEnabled(e.target.checked)}
-                      className="w-5 h-5 accent-fuchsia-500 cursor-pointer"
+                      onChange={setRewardsEnabled}
+                      color="fuchsia"
+                      activeLabel="ARMED"
                     />
                   </div>
                 </div>
@@ -2046,11 +1923,11 @@ export default function GuildDashboard({ params }: { params: Promise<{ guildId: 
                           </div>
                         </div>
 
-                        <input
-                          type="checkbox"
+                        <TactileToggle
                           checked={voiceRewardsEnabled}
-                          onChange={(e) => setVoiceRewardsEnabled(e.target.checked)}
-                          className="w-4 h-4 accent-purple-500 cursor-pointer"
+                          onChange={setVoiceRewardsEnabled}
+                          color="fuchsia"
+                          activeLabel="ON"
                         />
                       </div>
 
@@ -2212,11 +2089,11 @@ export default function GuildDashboard({ params }: { params: Promise<{ guildId: 
                           </div>
                         </div>
 
-                        <input
-                          type="checkbox"
+                        <TactileToggle
                           checked={textRewardsEnabled}
-                          onChange={(e) => setTextRewardsEnabled(e.target.checked)}
-                          className="w-4 h-4 accent-fuchsia-500 cursor-pointer"
+                          onChange={setTextRewardsEnabled}
+                          color="fuchsia"
+                          activeLabel="ON"
                         />
                       </div>
 
@@ -2918,252 +2795,36 @@ export default function GuildDashboard({ params }: { params: Promise<{ guildId: 
           )}
 
           {/* ═══════════════════════════════════════════════════════════════════
-              7. AUTO-MOD DEFENSE (EXPANDED FILTERS)
+              7. AUTO-MOD DEFENSE (EXPANDED FILTERS & INTERACTIVE SANDBOX)
           ═══════════════════════════════════════════════════════════════════ */}
           {activeTab === "automod" && (
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start w-full">
-              <div className="lg:col-span-7 space-y-6">
-                <div className="p-6 sm:p-7 rounded-2xl bg-[#15161c] border border-white/5 space-y-5">
-                  <div>
-                    <h3 className="text-base font-bold text-white flex items-center gap-2">
-                      <Lock className="w-5 h-5 text-red-400" />
-                      <span>Auto-Mod Defense Shield</span>
-                    </h3>
-                    <p className="text-xs text-gray-400 mt-1">
-                      Automated real-time shields that monitor chat and delete malicious content.
-                    </p>
-                  </div>
-
-                  <div className="space-y-3 pt-1">
-                    {[
-                      {
-                        id: "antiInvite",
-                        label: "Block Discord Invites",
-                        desc: "Deletes unauthorized Discord invite links sent by regular members.",
-                        value: antiInvite,
-                        setter: setAntiInvite
-                      },
-                      {
-                        id: "antiSpam",
-                        label: "Anti-Spam Rate Limiter",
-                        desc: "Prevents rapid message spam and mass mentions (>4 pings).",
-                        value: antiSpam,
-                        setter: setAntiSpam
-                      },
-                      {
-                        id: "antiBadWords",
-                        label: "Profanity & Slur Filter",
-                        desc: "Filters severe hate speech and slurs to keep chat compliant.",
-                        value: antiBadWords,
-                        setter: setAntiBadWords
-                      },
-                      {
-                        id: "antiLinks",
-                        label: "Block External Suspicious Links",
-                        desc: "Blocks unknown phishing and scam URLs in public channels.",
-                        value: antiLinks,
-                        setter: setAntiLinks
-                      },
-                      {
-                        id: "antiCaps",
-                        label: "Excessive Capitals Limiter",
-                        desc: "Automatically deletes messages with >70% shout caps.",
-                        value: antiCaps,
-                        setter: setAntiCaps
-                      }
-                    ].map((rule) => (
-                      <div
-                        key={rule.id}
-                        className="p-4 rounded-xl bg-[#1c1d24] border border-white/5 flex items-center justify-between gap-4"
-                      >
-                        <div>
-                          <p className="font-bold text-xs text-white">{rule.label}</p>
-                          <p className="text-[11px] text-gray-400 mt-0.5">{rule.desc}</p>
-                        </div>
-
-                        <input
-                          type="checkbox"
-                          checked={rule.value}
-                          onChange={(e) => rule.setter(e.target.checked)}
-                          className="w-5 h-5 accent-red-500 cursor-pointer shrink-0"
-                        />
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-
-              {/* Right Output Visualizer */}
-              <div className="lg:col-span-5 space-y-3 sticky top-20">
-                <div className="flex items-center justify-between text-xs text-gray-400 px-1">
-                  <span className="font-semibold uppercase text-[10px] tracking-wider">Discord Output Visualizer</span>
-                  <span className="text-[10px] font-mono text-red-400">#general & #mod-logs</span>
-                </div>
-
-                <div className="rounded-2xl bg-[#313338] border border-black/30 p-5 font-sans text-xs shadow-2xl space-y-4">
-                  <div className="space-y-2 border-b border-white/5 pb-3">
-                    <p className="text-[10px] font-mono uppercase text-gray-400 font-bold">1. What member sees in channel:</p>
-                    <div className="flex items-start gap-2.5">
-                      <div className="w-7 h-7 rounded-full bg-red-600/80 flex items-center justify-center font-bold text-white text-[10px] shrink-0">
-                        🛡️
-                      </div>
-                      <div className="space-y-1">
-                        <div className="flex items-center gap-1.5">
-                          <span className="font-bold text-white text-xs">VePlexity Shield</span>
-                          <span className="px-1.5 py-0.2 rounded bg-[#5865F2] text-white text-[9px] font-extrabold">BOT</span>
-                        </div>
-                        <p className="text-xs text-amber-200 bg-amber-500/10 p-2.5 rounded-lg border border-amber-500/20">
-                          ⚠️ <span className="font-semibold">@Alex</span>, your message was deleted for containing an unauthorized Discord invite link.
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="space-y-2">
-                    <p className="text-[10px] font-mono uppercase text-gray-400 font-bold">2. Logged to #mod-logs:</p>
-                    <div className="rounded-xl bg-[#2b2d31] border-l-4 border-red-500 p-3.5 space-y-1.5 text-xs">
-                      <p className="font-bold text-white">🛡️ Auto-Mod Triggered: Discord Invite Blocked</p>
-                      <p className="text-gray-300"><strong>User:</strong> @Alex <span className="text-gray-500 text-[10px]">(ID: 981273)</span></p>
-                      <p className="text-gray-300"><strong>Channel:</strong> #general</p>
-                      <p className="text-gray-300"><strong>Payload:</strong> <code className="text-red-300 font-mono text-[10px]">https://discord.gg/nitro-2026</code></p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+            <AutoModDefenseSimulator
+              antiInvite={antiInvite}
+              setAntiInvite={setAntiInvite}
+              antiSpam={antiSpam}
+              setAntiSpam={setAntiSpam}
+              antiBadWords={antiBadWords}
+              setAntiBadWords={setAntiBadWords}
+              antiLinks={antiLinks}
+              setAntiLinks={setAntiLinks}
+              antiCaps={antiCaps}
+              setAntiCaps={setAntiCaps}
+            />
           )}
 
           {/* ═══════════════════════════════════════════════════════════════════
-              8. MUSIC & 24/7 VOICE STAY (HYDRA CHARGES $5/MO, FREE HERE)
+              8. MUSIC & 24/7 VOICE STAY (INTERACTIVE DJ DECK & EQUALIZER)
           ═══════════════════════════════════════════════════════════════════ */}
           {activeTab === "music" && (
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start w-full">
-              <div className="lg:col-span-7 space-y-6">
-                <div className="p-6 sm:p-7 rounded-2xl bg-[#15161c] border border-white/5 space-y-5">
-                  <div>
-                    <div className="flex items-center gap-2">
-                      <h3 className="text-base font-bold text-white flex items-center gap-2">
-                        <Music className="w-5 h-5 text-indigo-400" />
-                        <span>Music Playback & 24/7 Radio</span>
-                      </h3>
-                      <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-indigo-500/20 text-indigo-300 font-bold border border-indigo-500/30">
-                        24/7 Stay Free
-                      </span>
-                    </div>
-                    <p className="text-xs text-gray-400 mt-1">
-                      Lavalink lossless 24-bit audio playback with 24/7 stay mode enabled for free.
-                    </p>
-                  </div>
-
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1">
-                    <div>
-                      <label className="text-xs font-semibold uppercase text-gray-400 tracking-wider mb-1.5 block">
-                        Designated DJ Role
-                      </label>
-                      <select
-                        value={djRole}
-                        onChange={(e) => setDjRole(e.target.value)}
-                        className="w-full bg-[#1c1d24] border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white outline-none focus:border-indigo-500/50"
-                      >
-                        <option value="">Everyone (No Role Required)</option>
-                        {guild?.roles
-                          ?.filter((r) => r.name !== "@everyone")
-                          .map((r) => (
-                            <option key={r.id} value={r.id}>
-                              {r.name}
-                            </option>
-                          ))}
-                      </select>
-                    </div>
-
-                    <div>
-                      <label className="text-xs font-semibold uppercase text-gray-400 tracking-wider mb-1.5 block">
-                        Default Playback Volume ({defaultVolume}%)
-                      </label>
-                      <div className="flex items-center gap-3 bg-[#1c1d24] border border-white/10 rounded-xl px-4 py-2">
-                        <Volume2 className="w-4 h-4 text-gray-400 shrink-0" />
-                        <input
-                          type="range"
-                          min="10"
-                          max="150"
-                          step="5"
-                          value={defaultVolume}
-                          onChange={(e) => setDefaultVolume(Number(e.target.value))}
-                          className="w-full accent-indigo-500 cursor-pointer"
-                        />
-                        <span className="text-xs font-mono text-gray-300 w-10 text-right">{defaultVolume}%</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* 24/7 Mode Switch */}
-                  <div className="p-4 rounded-xl bg-[#1c1d24] border border-white/5 flex items-center justify-between">
-                    <div>
-                      <p className="font-bold text-xs text-white flex items-center gap-1.5">
-                        <span>24/7 Voice Channel Stay Mode</span>
-                        <span className="text-[10px] text-emerald-400 font-mono">(Normally Paid)</span>
-                      </p>
-                      <p className="text-[11px] text-gray-400 mt-0.5">
-                        Bot stays connected in voice channel 24/7 even when music ends or channel is empty.
-                      </p>
-                    </div>
-
-                    <input
-                      type="checkbox"
-                      checked={stay247}
-                      onChange={(e) => setStay247(e.target.checked)}
-                      className="w-5 h-5 accent-indigo-500 cursor-pointer"
-                    />
-                  </div>
-                </div>
-              </div>
-
-              {/* Right Output Visualizer: Discord /nowplaying Card */}
-              <div className="lg:col-span-5 space-y-3 sticky top-20">
-                <div className="flex items-center justify-between text-xs text-gray-400 px-1">
-                  <span className="font-semibold uppercase text-[10px] tracking-wider">Discord Output Visualizer</span>
-                  <span className="text-[10px] font-mono text-indigo-400">#music-chat</span>
-                </div>
-
-                <div className="rounded-2xl bg-[#313338] border border-black/30 p-5 font-sans text-xs shadow-2xl space-y-3">
-                  <div className="flex items-start gap-3">
-                    <div className="w-10 h-10 rounded-full bg-indigo-600 flex items-center justify-center font-bold text-white text-xs shrink-0 overflow-hidden shadow-lg">
-                      <img src="/vp-logo-icon.png" alt="VP" className="w-full h-full object-cover" />
-                    </div>
-                    <div className="flex-1 space-y-2">
-                      <div className="flex items-center gap-2">
-                        <span className="font-bold text-white text-sm">VePlexity Music</span>
-                        <span className="px-1.5 py-0.2 rounded bg-[#5865F2] text-white text-[9px] font-extrabold">BOT</span>
-                      </div>
-
-                      <div className="rounded-xl bg-[#2b2d31] border-l-4 border-indigo-500 p-4 space-y-3">
-                        <div className="flex items-center justify-between">
-                          <span className="text-xs font-bold text-white">🎵 Now Playing</span>
-                          <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-indigo-500/20 text-indigo-300">
-                            Vol: {defaultVolume}% {stay247 && "• 24/7 Active"}
-                          </span>
-                        </div>
-
-                        <div>
-                          <p className="font-bold text-sm text-white">Blinding Lights</p>
-                          <p className="text-xs text-gray-400">The Weeknd • After Hours</p>
-                        </div>
-
-                        <div className="space-y-1 font-mono text-[10px] text-gray-400">
-                          <p className="text-indigo-400">🔘▬▬▬▬▬▬▬▬▬▬▬▬▬▬ 01:24 / 03:20</p>
-                        </div>
-
-                        <div className="pt-2 border-t border-white/5 flex items-center gap-1.5 text-xs">
-                          <span className="px-2 py-1 rounded bg-[#383a40] text-gray-200">⏸️ Pause</span>
-                          <span className="px-2 py-1 rounded bg-[#383a40] text-gray-200">⏭️ Skip</span>
-                          <span className="px-2 py-1 rounded bg-[#383a40] text-gray-200">🔀 Shuffle</span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+            <MusicDjStudio
+              djRole={djRole}
+              setDjRole={setDjRole}
+              defaultVolume={defaultVolume}
+              setDefaultVolume={setDefaultVolume}
+              stay247={stay247}
+              setStay247={setStay247}
+              roles={guild?.roles || []}
+            />
           )}
 
           {/* ═══════════════════════════════════════════════════════════════════
