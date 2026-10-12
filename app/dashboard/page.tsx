@@ -5,7 +5,7 @@ import { useSession, signIn, signOut } from "next-auth/react";
 import Link from "next/link";
 import { 
   Server, Plus, ArrowRight, RefreshCw, 
-  ExternalLink, LogOut, CheckCircle2, ChevronRight, Bot, Heart 
+  ExternalLink, LogOut, CheckCircle2, ChevronRight, Bot, Heart, AlertCircle 
 } from "lucide-react";
 
 interface GuildItem {
@@ -26,6 +26,15 @@ export default function DashboardPage() {
   const [toast, setToast] = useState<string | null>(null);
   const [search, setSearch] = useState("");
   const [error, setError] = useState<string | null>(null);
+  const [authError, setAuthError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const params = new URLSearchParams(window.location.search);
+      const err = params.get("error");
+      if (err) setAuthError(err);
+    }
+  }, []);
 
   const fetchGuilds = async (showSpinner = true) => {
     try {
@@ -132,6 +141,20 @@ export default function DashboardPage() {
               Sign in with your Discord account to manage servers, assign roles, and configure bot settings.
             </p>
           </div>
+
+          {authError && (
+            <div className="p-4 rounded-xl bg-red-500/10 border border-red-500/30 text-left text-xs space-y-2">
+              <div className="flex items-center gap-2 font-bold text-red-400">
+                <AlertCircle className="w-4 h-4 shrink-0" />
+                <span>Discord Sign-In Error ({authError})</span>
+              </div>
+              <p className="text-[11px] text-gray-300 leading-relaxed">
+                {authError === "Configuration" 
+                  ? "OAuth handshake could not be completed. Please ensure Discord Redirect URIs (https://veplexity.dev/api/auth/callback/discord) are registered in the Discord Developer Portal."
+                  : `Authentication encountered an issue (${authError}). Please try logging in again.`}
+              </p>
+            </div>
+          )}
 
           <button
             onClick={() => signIn("discord")}

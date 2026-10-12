@@ -1,13 +1,45 @@
 import NextAuth from "next-auth";
 import Discord from "next-auth/providers/discord";
 
+// Sanitize localhost URL if accidentally set in production environment variables
+if (process.env.NODE_ENV === "production") {
+  if (process.env.NEXTAUTH_URL && process.env.NEXTAUTH_URL.includes("localhost")) {
+    delete process.env.NEXTAUTH_URL;
+  }
+  if (process.env.AUTH_URL && process.env.AUTH_URL.includes("localhost")) {
+    delete process.env.AUTH_URL;
+  }
+}
+
+const DISCORD_CLIENT_ID = (
+  process.env.DISCORD_CLIENT_ID ||
+  process.env.AUTH_DISCORD_ID ||
+  "1556640364448714752"
+).replace(/['"]/g, "").trim();
+
+const DISCORD_CLIENT_SECRET = (
+  process.env.DISCORD_CLIENT_SECRET ||
+  process.env.AUTH_DISCORD_SECRET ||
+  "zDTFcD9GugsF9N4IBZooMkHUjg9L2Izd"
+).replace(/['"]/g, "").trim();
+
+const AUTH_SECRET = (
+  process.env.AUTH_SECRET ||
+  process.env.NEXTAUTH_SECRET ||
+  "ea716b7701b241a98f812aa9c53f624ae870ac6917ca63f031ed8049a1ec61b5"
+).trim();
+
 export const { handlers, auth, signIn, signOut } = NextAuth({
   trustHost: true,
-  secret: process.env.AUTH_SECRET || process.env.NEXTAUTH_SECRET || "ea716b7701b241a98f812aa9c53f624ae870ac6917ca63f031ed8049a1ec61b5",
+  secret: AUTH_SECRET,
+  pages: {
+    signIn: "/dashboard",
+    error: "/dashboard",
+  },
   providers: [
     Discord({
-      clientId: (process.env.DISCORD_CLIENT_ID || process.env.AUTH_DISCORD_ID || "").replace(/['"]/g, "").trim(),
-      clientSecret: (process.env.DISCORD_CLIENT_SECRET || process.env.AUTH_DISCORD_SECRET || "").replace(/['"]/g, "").trim(),
+      clientId: DISCORD_CLIENT_ID,
+      clientSecret: DISCORD_CLIENT_SECRET,
       authorization: {
         params: {
           scope: "identify guilds email",
