@@ -150,7 +150,7 @@ export default function DashboardPage() {
               </div>
               <p className="text-[11px] text-gray-300 leading-relaxed">
                 {authError === "Configuration" 
-                  ? "OAuth handshake could not be completed. Please ensure Discord Redirect URIs (https://veplexity.dev/api/auth/callback/discord) are registered in the Discord Developer Portal."
+                  ? "OAuth handshake could not be completed. Please verify that both Redirect URIs (https://www.veplexity.dev/api/auth/callback/discord and https://veplexity.dev/api/auth/callback/discord) are registered in your Discord Developer Portal under OAuth2."
                   : `Authentication encountered an issue (${authError}). Please try logging in again.`}
               </p>
             </div>

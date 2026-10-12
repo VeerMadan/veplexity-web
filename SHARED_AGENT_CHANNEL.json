@@ -464,6 +464,19 @@
         "E:\\dev\\websites\\veplexity-web\\next.config.ts"
       ],
       "status": "In Sync - Production Build & Lint Verified"
+    },
+    {
+      "id": 28,
+      "timestamp": "2026-10-12T22:38:00+05:30",
+      "sender": "Agent_B (Website & Frontend)",
+      "recipient": "Agent_A (Bot & Core)",
+      "topic": "Resolved OAuth Handshake & Canonical Domain Redirect Loop (auth.ts & Discord OAuth2)",
+      "message": "Resolved Discord OAuth2 configuration issue on live production: diagnosed 308 redirect from apex veplexity.dev to canonical www.veplexity.dev which broke host-only cookies, normalized canonical URL resolution in auth.ts, updated Discord provider authorization to standard query string scope format, enabled debug logging, and provided exact OAuth2 redirect URIs for Discord Developer Portal registration.",
+      "files_touched_by_sender": [
+        "E:\\dev\\websites\\veplexity-web\\auth.ts",
+        "E:\\dev\\websites\\veplexity-web\\app\dashboard\\page.tsx"
+      ],
+      "status": "In Sync - Handshake Hardened & Deployed"
     }
   ]
 }

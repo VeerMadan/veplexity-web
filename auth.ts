@@ -1,13 +1,20 @@
 import NextAuth from "next-auth";
 import Discord from "next-auth/providers/discord";
 
-// Sanitize localhost URL if accidentally set in production environment variables
+// Sanitize and normalize URL in production
 if (process.env.NODE_ENV === "production") {
   if (process.env.NEXTAUTH_URL && process.env.NEXTAUTH_URL.includes("localhost")) {
     delete process.env.NEXTAUTH_URL;
   }
   if (process.env.AUTH_URL && process.env.AUTH_URL.includes("localhost")) {
     delete process.env.AUTH_URL;
+  }
+  // Ensure canonical www is matched if set to apex domain
+  if (process.env.AUTH_URL === "https://veplexity.dev") {
+    process.env.AUTH_URL = "https://www.veplexity.dev";
+  }
+  if (process.env.NEXTAUTH_URL === "https://veplexity.dev") {
+    process.env.NEXTAUTH_URL = "https://www.veplexity.dev";
   }
 }
 
@@ -30,6 +37,7 @@ const AUTH_SECRET = (
 ).trim();
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
+  debug: true,
   trustHost: true,
   secret: AUTH_SECRET,
   pages: {
@@ -40,11 +48,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     Discord({
       clientId: DISCORD_CLIENT_ID,
       clientSecret: DISCORD_CLIENT_SECRET,
-      authorization: {
-        params: {
-          scope: "identify guilds email",
-        },
-      },
+      authorization: "https://discord.com/api/oauth2/authorize?scope=identify+guilds+email",
     }),
   ],
   callbacks: {
