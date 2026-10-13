@@ -34,20 +34,21 @@ export default function Navbar() {
   };
 
   return (
-    <header className="sticky top-0 z-50 w-full bg-[#070308]/90 backdrop-blur-xl border-b border-white/5">
-      <div className="max-w-7xl mx-auto px-5 sm:px-8 h-20 flex items-center justify-between">
+    <header className="sticky top-0 z-50 w-full bg-[#070308]/75 backdrop-blur-2xl border-b border-white/[0.08] shadow-[0_4px_30px_rgba(0,0,0,0.5)] transition-all">
+      <div className="max-w-[1720px] mx-auto px-5 sm:px-8 h-20 flex items-center justify-between">
         
         {/* Brand Lockup */}
         <div className="flex items-center gap-8">
-          <Link href="/" className="flex items-center gap-3.5 group">
-            <div className="relative w-12 h-12 flex items-center justify-center rounded-2xl bg-gradient-to-br from-orange-500/20 via-pink-500/10 to-fuchsia-500/20 p-1 border border-orange-500/30 transition-transform group-hover:scale-105 shadow-[0_0_20px_rgba(249,115,22,0.25)]">
+          <Link href="/" className="flex items-center gap-3 group">
+            {/* Unboxed Crisp Logo */}
+            <div className="relative shrink-0 flex items-center transition-transform duration-200 group-hover:scale-105">
               <Image
                 src="/vp-no-bg.png"
                 alt="VePlexity Brand Logo"
-                width={48}
-                height={48}
+                width={50}
+                height={50}
                 priority
-                className="w-full h-full object-contain filter drop-shadow-[0_0_8px_rgba(249,115,22,0.6)]"
+                className="h-11 sm:h-12 w-auto object-contain filter drop-shadow-[0_8px_18px_rgba(0,0,0,0.6)]"
               />
             </div>
             <div className="flex flex-col">
@@ -70,7 +71,7 @@ export default function Navbar() {
                   href={item.href}
                   className={`px-4 py-2 text-xs font-bold uppercase tracking-wider rounded-xl transition-all ${
                     active
-                      ? "text-white bg-white/10 border border-white/10 font-black shadow-[0_0_15px_rgba(217,70,239,0.2)]"
+                      ? "text-white bg-white/10 border border-white/15 font-black shadow-[inset_0_1px_0_rgba(255,255,255,0.15)]"
                       : "text-zinc-400 hover:text-white hover:bg-white/5"
                   }`}
                 >
@@ -95,7 +96,7 @@ export default function Navbar() {
 
           <Link
             href="/discord-bot"
-            className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-orange-500 via-rose-500 to-fuchsia-600 hover:from-orange-400 hover:to-rose-500 text-white font-bold text-xs rounded-xl shadow-[0_0_20px_rgba(244,63,94,0.3)] transition"
+            className="inline-flex items-center gap-2 px-4 py-2 bg-white/[0.08] hover:bg-white/[0.14] border border-white/15 hover:border-white/25 text-white font-bold text-xs rounded-xl shadow-[inset_0_1px_0_rgba(255,255,255,0.2),0_8px_20px_rgba(0,0,0,0.35)] backdrop-blur-md transition active:scale-95"
           >
             <DiscordLogo className="w-3.5 h-3.5" fill="#ffffff" />
             <span>Discord Bots</span>

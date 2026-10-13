@@ -14,6 +14,47 @@ export function DiscordLogo({ className = "w-5 h-5", fill = "currentColor" }: { 
   );
 }
 
+/**
+ * Official Discord Verified Bot Checkmark Badge
+ * Blue scalloped polygon with white checkmark
+ */
+export function DiscordVerifiedBadge({ className = "w-4 h-4" }: { className?: string }) {
+  return (
+    <svg
+      className={className}
+      viewBox="0 0 16 15"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      aria-label="Verified Bot"
+      title="Verified Discord Application"
+    >
+      <path
+        d="M7.436.425a.8.8 0 0 1 1.128 0l1.242 1.2a.8.8 0 0 0 .744.204l1.696-.347a.8.8 0 0 1 .927.652l.278 1.708a.8.8 0 0 0 .548.643l1.64.55a.8.8 0 0 1 .521 1.008l-.517 1.65a.8.8 0 0 0 .193.818l1.22 1.223a.8.8 0 0 1 0 1.132l-1.22 1.223a.8.8 0 0 0-.193.818l.517 1.65a.8.8 0 0 1-.52 1.008l-1.641.55a.8.8 0 0 0-.548.643l-.278 1.708a.8.8 0 0 1-.927.652l-1.696-.347a.8.8 0 0 0-.744.204l-1.242 1.2a.8.8 0 0 1-1.128 0l-1.242-1.2a.8.8 0 0 0-.744-.204l-1.696.347a.8.8 0 0 1-.927-.652l-.278-1.708a.8.8 0 0 0-.548-.643l-1.64-.55a.8.8 0 0 1-.521-1.008l.517-1.65a.8.8 0 0 0-.193-.818L.425 8.564a.8.8 0 0 1 0-1.132l1.22-1.223a.8.8 0 0 0 .193-.818L1.32 3.74a.8.8 0 0 1 .52-1.008l1.641-.55a.8.8 0 0 0 .548-.643l.278-1.708a.8.8 0 0 1 .927-.652l1.696.347a.8.8 0 0 0 .744-.204L7.436.425z"
+        fill="#5865F2"
+      />
+      <path
+        d="M11.5 5.25 6.7 10.05 4.5 7.85"
+        stroke="#ffffff"
+        strokeWidth="1.6"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+/**
+ * Official Discord App Tag pill (like Discord's [APP] badge)
+ */
+export function DiscordAppPill({ className = "" }: { className?: string }) {
+  return (
+    <span className={`inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-[#5865F2] text-white text-[10px] font-mono font-bold uppercase tracking-wider leading-none shadow-sm ${className}`}>
+      <DiscordVerifiedBadge className="w-3 h-3" />
+      <span>APP</span>
+    </span>
+  );
+}
+
 export function BmcLogo({ className = "w-5 h-5", fill = "currentColor" }: { className?: string; fill?: string }) {
   return (
     <svg 

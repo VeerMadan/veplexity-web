@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useSession, signIn, signOut } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -10,9 +10,9 @@ import {
   Search, Shield, ArrowLeft, ExternalLink, Music, Award, Lock, 
   Users, Bot, Mic, Zap, Play, Pause, Volume2, Sparkles, Terminal,
   Sliders, MessageSquare, AlertTriangle, ShieldCheck, Heart, Radio,
-  Copy, Check, Hash, Bell, User, Clock, AlertCircle
+  Copy, Check, Hash, Bell, User, Clock, AlertCircle, Send
 } from "lucide-react";
-import { DiscordLogo, BmcCupIcon } from "@/app/components/BrandIcons";
+import { DiscordLogo, DiscordVerifiedBadge, DiscordAppPill } from "@/app/components/BrandIcons";
 import Navbar from "@/app/components/Navbar";
 import Footer from "@/app/components/Footer";
 import { dashboardAudio } from "@/lib/dashboardAudio";
@@ -44,6 +44,8 @@ interface CommandSpec {
     embedTitle: string;
     embedColor: string;
     embedDesc: string;
+    albumArt?: string;
+    spotifyUrl?: string;
     fields?: Array<{ name: string; value: string; inline?: boolean }>;
     footer?: string;
     buttons?: string[];
@@ -64,8 +66,6 @@ export default function VePlexityBotLandingPage() {
   const [guilds, setGuilds] = useState<GuildItem[]>([]);
   const [loadingGuilds, setLoadingGuilds] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
-  const [pendingGuildId, setPendingGuildId] = useState<string | null>(null);
-  const [toast, setToast] = useState<string | null>(null);
   const [serverSearch, setServerSearch] = useState("");
   const [serverFilter, setServerFilter] = useState<"all" | "active" | "uninvited">("all");
   const [serverError, setServerError] = useState<string | null>(null);
@@ -84,30 +84,32 @@ export default function VePlexityBotLandingPage() {
   const [commandSearch, setCommandSearch] = useState<string>("");
   const [copiedCmd, setCopiedCmd] = useState<boolean>(false);
 
-  // Lossless Player state in Hero
-  const [isPlaying, setIsPlaying] = useState<boolean>(true);
-  const [bassBoost, setBassBoost] = useState<boolean>(true);
-  const [volume, setVolume] = useState<number>(85);
+  // Live Typing & Sending Simulation State Machine
+  const [simStep, setSimStep] = useState<"idle" | "typing" | "sent" | "bot_thinking" | "bot_responded">("bot_responded");
+  const [typedInputText, setTypedInputText] = useState<string>("");
+  const simTimeoutRef = useRef<NodeJS.Timeout[]>([]);
 
   const commandSpecs: CommandSpec[] = [
     {
       name: "/play",
       category: "music",
       syntax: "/play <query_or_url>",
-      userCommand: "/play query: Synthwave Sunset 2026",
+      userCommand: "/play query: Aisi Tu - Tanvik x VeeRM",
       description: "Streams lossless audio directly into your current voice channel with hardware-accelerated 48kHz VOIP DSP.",
       badge: "48kHz Lossless",
       botResponse: {
         embedTitle: "🎵 Now Streaming in #music-lounge",
         embedColor: "#f97316",
-        embedDesc: "**Track:** Synthwave Sunset 2026\n**Artist:** VePlexity Masters • **Duration:** 3:45\n**Status:** 24/7 Channel Lock Active • Buffer: 0ms",
+        embedDesc: "**Track:** Aisi Tu\n**Artists:** Tanvik x VeeRM\n**Production & Mastering:** Veer Madan\n**Specs:** 320kbps Master • 48kHz Lossless VOIP DSP\n**Status:** 24/7 Channel Lock Active • Buffer: 0ms",
+        albumArt: "/music/aisi-tu-cover.png",
+        spotifyUrl: "https://open.spotify.com/search/Aisi%20Tu%20Tanvik",
         fields: [
           { name: "Requested By", value: "<@Veer>", inline: true },
-          { name: "Audio DSP", value: "Bass Boost +12dB", inline: true },
-          { name: "Volume", value: "85% Master", inline: true }
+          { name: "Producer", value: "Veer Madan", inline: true },
+          { name: "Audio Engine", value: "48kHz Lossless VOIP", inline: true }
         ],
-        footer: "VePlexity 48kHz Audio Engine • 24/7 Voice Retention",
-        buttons: ["Pause ⏸️", "Skip ⏭️", "Loop 🔁", "Lyrics 📜"]
+        footer: "VePlexity 48kHz Audio Engine • Stream 'Aisi Tu' Globally on Spotify",
+        buttons: ["Pause ⏸️", "Skip ⏭️", "Loop 🔁", "🎧 Open on Spotify"]
       }
     },
     {
@@ -138,14 +140,15 @@ export default function VePlexityBotLandingPage() {
       description: "Queries Google Gemini 2.5 multi-modal conversational intelligence with contextual reasoning and memory.",
       badge: "Gemini 2.5",
       botResponse: {
-        embedTitle: "✨ Google Gemini Intelligence",
-        embedColor: "#d946ef",
-        embedDesc: "Quantum computers don't just calculate with normal 1s and 0s (bits). Instead, they use **qubits**, which can exist as both a 1 and a 0 at the same time—a phenomenon called **superposition**.\n\nThis lets a quantum computer test millions of possible solutions simultaneously, making problems like molecular simulation, route optimization, and code breaking exponentially faster than classical supercomputers.",
+        embedTitle: "🤖 Google Gemini 2.5 Intelligence",
+        embedColor: "#a855f7",
+        embedDesc: "**Quantum Computing Simplified:**\nThink of a normal computer bit like a light switch—it is either ON (1) or OFF (0). A quantum bit (qubit) is like a spinning coin that can be heads and tails at the same time (superposition).\n\nThis allows quantum computers to analyze billions of possibilities simultaneously rather than checking them one by one.",
         fields: [
           { name: "Model", value: "Gemini 2.5 Flash", inline: true },
-          { name: "Latency", value: "412ms", inline: true }
+          { name: "Tokens Processed", value: "318", inline: true },
+          { name: "Context Retention", value: "Guild Active", inline: true }
         ],
-        footer: "Powered by Google Gemini Multi-Modal API"
+        footer: "VePlexity Multi-Modal AI Interface • Google Deepmind Core"
       }
     },
     {
@@ -153,94 +156,63 @@ export default function VePlexityBotLandingPage() {
       category: "xp",
       syntax: "/rank [user]",
       userCommand: "/rank user: @Veer",
-      description: "Generates custom visual XP rank card displaying level, tier, and server leaderboard position.",
-      badge: "Rich Visual",
+      description: "Displays your personalized dynamic XP progression card, current server level, and global leaderboard standing.",
+      badge: "XP Leveling",
       botResponse: {
-        embedTitle: "🏆 Server XP Progression Card",
-        embedColor: "#f97316",
-        embedDesc: "Member: **Veer Madan**\nRole: **Server Founder & VIP Elite**",
+        embedTitle: "🏆 Member Experience Card",
+        embedColor: "#fbbf24",
+        embedDesc: "Displaying progression stats for **Veer** in this server:",
         rankCardData: {
-          level: 42,
+          level: 24,
           rank: 1,
-          currentXp: 12450,
-          nextXp: 15000
+          currentXp: 8420,
+          nextXp: 10000
         },
         fields: [
-          { name: "Leaderboard", value: "Rank #1 (Top 1%)", inline: true },
-          { name: "Level", value: "Level 42", inline: true },
-          { name: "Total XP", value: "12,450 / 15,000 XP", inline: true }
+          { name: "Voice Hours", value: "128h 45m", inline: true },
+          { name: "Messages Sent", value: "4,192", inline: true },
+          { name: "Multiplier", value: "1.5x Active", inline: true }
         ],
-        footer: "VePlexity XP Leveling • Voice & Text Rewards"
+        footer: "Encrypted MongoDB XP Progression Matrix"
       }
     },
     {
-      name: "/ban",
-      category: "moderation",
-      syntax: "/ban <user> [reason] [purge_days]",
-      userCommand: "/ban user: @RaidBot reason: Automated malicious link spam",
-      description: "Bans a malicious member, purges previous message history, and stores indexed case audit logs.",
-      badge: "100% Free",
-      permissions: "Ban Members",
-      botResponse: {
-        embedTitle: "🔨 Member Banned — Case #492",
-        embedColor: "#ef4444",
-        embedDesc: "**Target:** `RaidBot#9921` (`148902847192841`)\n**Reason:** Automated malicious link spam\n**Purged Messages:** 7 days history wiped.",
-        fields: [
-          { name: "Moderator", value: "<@Veer>", inline: true },
-          { name: "Action", value: "Permanent Guild Ban", inline: true }
-        ],
-        footer: "VePlexity ModLogs • Indexed Incident Storage"
-      }
-    },
-    {
-      name: "/tempvc",
+      name: "/tempvc setup",
       category: "tempvc",
-      syntax: "/tempvc setup",
-      userCommand: "/tempvc setup hub_channel: ➕ Join to Create",
-      description: "Deploys automated join-to-create voice channels that spawn dynamically and self-delete when empty.",
-      badge: "Dynamic Hub",
+      syntax: "/tempvc setup <hub_channel>",
+      userCommand: "/tempvc setup channel: ➕ Join to Create",
+      description: "Deploys a zero-clutter dynamic voice system where clicking creates a private channel with custom user controls.",
+      badge: "Dynamic VC",
       permissions: "Manage Channels",
       botResponse: {
-        embedTitle: "🎙️ Dynamic Temp Voice Hub Active",
+        embedTitle: "🎙️ Dynamic Voice Hub Activated",
+        embedColor: "#06b6d4",
+        embedDesc: "Members joining **➕ Join to Create** will automatically receive an isolated private channel with rename, lock, and limit controls.",
+        fields: [
+          { name: "Parent Category", value: "Voice Lounges", inline: true },
+          { name: "Auto-Deletion", value: "When Empty (0s)", inline: true }
+        ],
+        footer: "VePlexity Voice Dispatcher"
+      }
+    },
+    {
+      name: "/automod shield",
+      category: "moderation",
+      syntax: "/automod shield <level>",
+      userCommand: "/automod shield level: Maximum",
+      description: "Engages automated raid suppression, anti-invite filtering, and link screening with instant audit log dispatch.",
+      badge: "Proactive Defense",
+      permissions: "Administrator",
+      botResponse: {
+        embedTitle: "🛡️ AutoMod Fortress Shield: Engaged",
         embedColor: "#10b981",
-        embedDesc: "Hub channel **➕ Join to Create** is operational. Whenever a member joins, VePlexity creates a private temporary room with lock/limit controls.",
+        embedDesc: "Server protection matrix initialized at **MAXIMUM SECURITY**.\nAnti-Raid join throttling, discord.gg invite filters, and mass mention suppression are now operating in real-time.",
         fields: [
-          { name: "Active Rooms", value: "🔊 Veer's Lounge (3/4)", inline: true },
-          { name: "Auto-Cleanup", value: "Instant on empty", inline: true }
+          { name: "Anti-Invite", value: "Strict Block", inline: true },
+          { name: "Mass Mention", value: "Max 3 Pings", inline: true },
+          { name: "Spam Throttling", value: "5 msgs / 3s", inline: true }
         ],
-        footer: "VePlexity Voice Systems • Zero Clutter"
-      }
-    },
-    {
-      name: ".afk",
-      category: "prefix",
-      syntax: ".afk [reason]",
-      userCommand: ".afk Coding new Next.js features",
-      description: "Sets your AFK status and automatically replies with your note whenever someone mentions you in chat.",
-      badge: "Dual-Engine",
-      botResponse: {
-        embedTitle: "💤 AFK Status Configured",
-        embedColor: "#f59e0b",
-        embedDesc: "You are now AFK: **Coding new Next.js features**.\nAnyone mentioning you will be politely notified.",
-        footer: "Type any message in chat to remove AFK status."
-      }
-    },
-    {
-      name: "/247",
-      category: "music",
-      syntax: "/247 [toggle]",
-      userCommand: "/247 toggle: ON",
-      description: "Locks VePlexity Bot permanently inside your voice channel for uninterrupted 24/7 radio or lofi music.",
-      badge: "Free 24/7",
-      botResponse: {
-        embedTitle: "🔁 24/7 Mode Enabled",
-        embedColor: "#f97316",
-        embedDesc: "VePlexity will remain connected to **#lofi-room** even when queue finishes or members disconnect.",
-        fields: [
-          { name: "Channel", value: "#lofi-room", inline: true },
-          { name: "Auto-Reconnect", value: "Active (0ms delay)", inline: true }
-        ],
-        footer: "Lossless VOIP Streaming Nodes"
+        footer: "VePlexity Security Sentinel • Zero Configuration Required"
       }
     }
   ];
@@ -255,6 +227,49 @@ export default function VePlexityBotLandingPage() {
   });
 
   const activeCmd = commandSpecs[selectedCommandIdx] || commandSpecs[0];
+
+  // Trigger simulated live typing -> sending -> bot thinking -> bot embed
+  const runLiveCommandSimulation = (targetCmd: CommandSpec) => {
+    // Clear any previous running simulation timeouts
+    simTimeoutRef.current.forEach(clearTimeout);
+    simTimeoutRef.current = [];
+
+    setSimStep("typing");
+    setTypedInputText("");
+
+    const fullStr = targetCmd.userCommand;
+    let curr = 0;
+
+    const intervalId = setInterval(() => {
+      curr++;
+      setTypedInputText(fullStr.slice(0, curr));
+      if (curr >= fullStr.length) {
+        clearInterval(intervalId);
+        // Step to 'sent'
+        const t1 = setTimeout(() => {
+          setSimStep("sent");
+          setTypedInputText("");
+          // Step to 'bot_thinking'
+          const t2 = setTimeout(() => {
+            setSimStep("bot_thinking");
+            // Step to 'bot_responded'
+            const t3 = setTimeout(() => {
+              setSimStep("bot_responded");
+            }, 500);
+            simTimeoutRef.current.push(t3);
+          }, 350);
+          simTimeoutRef.current.push(t2);
+        }, 220);
+        simTimeoutRef.current.push(t1);
+      }
+    }, 20);
+  };
+
+  const handleSelectCommand = (idx: number) => {
+    dashboardAudio.playClick();
+    setSelectedCommandIdx(idx);
+    runLiveCommandSimulation(commandSpecs[idx]);
+  };
 
   const fetchGuilds = async (showSpinner = true) => {
     try {
@@ -290,26 +305,8 @@ export default function VePlexityBotLandingPage() {
     if (status !== "authenticated") {
       signIn("discord");
     } else {
-      const rect = e.currentTarget.getBoundingClientRect();
-      setZoomRect({
-        top: rect.top,
-        left: rect.left,
-        width: rect.width,
-        height: rect.height,
-      });
-      setZoomBot({
-        name: "VePlexity Server Console",
-        avatarUrl: "/bots/veplexity-avatar.png",
-        tagline: "Launching Server Management Deck...",
-        accentColor: "orange",
-      });
-
-      setTimeout(() => {
-        setZoomRect(null);
-        setZoomBot(null);
-        const el = document.getElementById("server-console");
-        if (el) el.scrollIntoView({ behavior: "smooth" });
-      }, 480);
+      const el = document.getElementById("server-management-deck");
+      if (el) el.scrollIntoView({ behavior: "smooth" });
     }
   };
 
@@ -365,22 +362,18 @@ export default function VePlexityBotLandingPage() {
         <ServerFlightCanvas startRect={flightRect} guild={flightGuild} />
       )}
 
-      {/* Zoom Reveal Overlay for Launch Dashboard */}
-      {zoomRect && zoomBot && (
-        <CardZoomRevealCanvas rect={zoomRect} bot={zoomBot} />
-      )}
+      {/* Atmospheric GTA 6 Sunset Ambient Hues */}
+      <div className="fixed top-0 left-1/4 w-[700px] h-[700px] bg-gradient-to-br from-orange-600/10 via-rose-600/5 to-transparent rounded-full blur-[170px] pointer-events-none" />
+      <div className="fixed top-1/2 right-1/4 w-[700px] h-[700px] bg-gradient-to-bl from-fuchsia-600/10 via-purple-600/5 to-transparent rounded-full blur-[170px] pointer-events-none" />
 
-      {/* Ambient GTA 6 Sunset Glows */}
-      <div className="fixed top-0 left-1/3 w-[600px] h-[600px] bg-gradient-to-br from-orange-600/15 via-rose-600/10 to-transparent rounded-full blur-[160px] pointer-events-none" />
-      <div className="fixed top-1/2 right-1/4 w-[600px] h-[600px] bg-gradient-to-bl from-fuchsia-600/15 via-purple-600/10 to-transparent rounded-full blur-[160px] pointer-events-none" />
-
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-16 space-y-24 relative z-10">
+      {/* WIDESCREEN CONTAINER: Maximize space across the full display */}
+      <main className="flex-1 w-full max-w-[1720px] mx-auto px-4 sm:px-8 lg:px-12 py-8 sm:py-12 space-y-16 sm:space-y-20 relative z-10">
         
-        {/* ─── HERO INTRODUCTION SECTION ─────────────────────────────────── */}
-        <section className="relative pt-4 pb-12 sm:pb-20 border-b border-zinc-800/80">
+        {/* ─── HERO & TOP SERVER MANAGEMENT DECK (WIDESCREEN 2-COLUMN) ───────── */}
+        <section className="relative pb-10 border-b border-white/[0.07]">
           
-          {/* Breadcrumb */}
-          <div className="flex items-center gap-2 text-xs font-mono text-zinc-400 mb-8">
+          {/* Breadcrumb Navigation */}
+          <div className="flex items-center gap-2 text-xs font-mono text-zinc-400 mb-6">
             <Link href="/discord-bot" className="hover:text-white transition-colors flex items-center gap-1.5">
               <ArrowLeft className="w-3.5 h-3.5" />
               <span>Discord Bots</span>
@@ -389,204 +382,260 @@ export default function VePlexityBotLandingPage() {
             <span className="text-orange-400 font-bold">VePlexity Bot</span>
           </div>
 
-          <div className="flex flex-col lg:flex-row items-center lg:items-start justify-between gap-12">
+          <div className="grid grid-cols-1 xl:grid-cols-12 gap-8 lg:gap-12 items-stretch">
             
-            {/* Left Column: Official Logo + Intro + Dual CTAs */}
+            {/* LEFT COLUMN: BRAND LOCKUP + OVERVIEW (7 Cols on XL) */}
             <motion.div 
-              initial={{ opacity: 0, y: 30 }}
+              initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: false, amount: 0.2 }}
-              transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-              className="flex-1 space-y-6 text-center lg:text-left"
+              transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
+              className="xl:col-span-7 flex flex-col justify-between space-y-6"
             >
-              
-              {/* Official Logo Header Lockup */}
-              <div className="flex flex-col sm:flex-row items-center gap-5 justify-center lg:justify-start">
-                <div className="relative group">
-                  <div className="absolute -inset-2 rounded-3xl bg-gradient-to-r from-orange-500 via-rose-500 to-fuchsia-600 opacity-70 blur-xl group-hover:opacity-100 transition duration-500" />
-                  <div className="relative w-24 h-24 sm:w-28 sm:h-28 rounded-3xl overflow-hidden border-2 border-orange-500/70 shadow-2xl bg-[#12081f] p-2 flex items-center justify-center">
-                    <img 
-                      src="/bots/veplexity-avatar.png" 
-                      alt="VePlexity Official Logo" 
-                      className="w-full h-full object-contain filter drop-shadow-[0_0_12px_rgba(249,115,22,0.6)] group-hover:scale-105 transition-transform"
-                      onError={(e) => { e.currentTarget.src = "/vp-no-bg.png"; }}
-                    />
-                    <div className="absolute bottom-1 right-1 w-4 h-4 rounded-full bg-emerald-500 border-2 border-[#12081f]" title="24/7 Lossless Online" />
-                  </div>
+              {/* Official Unboxed Logo + Title */}
+              <div className="flex flex-col sm:flex-row items-center sm:items-start gap-5">
+                {/* Unboxed Crisp Logo with zero artificial container box */}
+                <div className="relative shrink-0 flex items-center justify-center">
+                  <img 
+                    src="/bots/veplexity-avatar.png" 
+                    alt="VePlexity Official Logo" 
+                    className="w-24 h-24 sm:w-28 sm:h-28 object-contain filter drop-shadow-[0_12px_28px_rgba(0,0,0,0.7)] group-hover:scale-105 transition-transform"
+                    onError={(e) => { e.currentTarget.src = "/vp-no-bg.png"; }}
+                  />
                 </div>
 
-                <div className="space-y-1.5 text-center sm:text-left">
-                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-gradient-to-r from-orange-500/20 to-rose-500/20 border border-orange-500/40 text-orange-300 font-mono text-xs font-bold">
-                    <Sparkles className="w-3.5 h-3.5 text-orange-400" />
-                    <span>VERIFIED DISCORD ALL-IN-ONE ENGINE</span>
+                <div className="space-y-2 text-center sm:text-left">
+                  <div className="flex items-center gap-2 justify-center sm:justify-start flex-wrap">
+                    <span className="text-xs font-mono px-3 py-1 rounded-full bg-white/[0.05] border border-white/10 text-orange-300 font-bold uppercase tracking-wider backdrop-blur-md">
+                      ALL-IN-ONE ENGINE • v2.0
+                    </span>
+                    <span className="text-xs font-mono text-emerald-400 font-bold flex items-center gap-1">
+                      <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                      <span>24/7 Lossless Online</span>
+                    </span>
                   </div>
-                  <h1 className="text-4xl sm:text-6xl font-black text-white tracking-tight uppercase">
-                    VEPLEXITY BOT
-                  </h1>
+
+                  <div className="flex items-center gap-3 justify-center sm:justify-start flex-wrap">
+                    <h1 className="text-3xl sm:text-5xl font-black text-white tracking-tight uppercase leading-none">
+                      VEPLEXITY BOT
+                    </h1>
+                    <DiscordVerifiedBadge className="w-6 h-6 shrink-0" />
+                    <DiscordAppPill />
+                  </div>
+
                   <p className="text-xs font-mono text-zinc-400">
-                    Application ID: <span className="text-zinc-200">1556640364448714752</span> • Version 2.0
+                    Application ID: <span className="text-zinc-200">1556640364448714752</span> • Slash &amp; Dual Prefix (. / ? / !)
                   </p>
                 </div>
               </div>
 
-              {/* Subtitle / Intro */}
-              <p className="text-base sm:text-lg text-zinc-300 max-w-2xl leading-relaxed font-normal">
-                Elevate your Discord server with enterprise-grade community infrastructure. Featuring <strong>24/7 Lossless Audio DSP</strong>, <strong>Proactive AutoMod Defense</strong>, <strong>Google Gemini Multi-Modal AI</strong>, <strong>Custom XP Leveling Rank Cards</strong>, and <strong>Dynamic Temp Voice Hubs</strong> — 100% free with zero paywalls.
+              {/* Subtitle / Overview */}
+              <p className="text-sm sm:text-base text-zinc-300 leading-relaxed font-normal">
+                Enterprise community infrastructure engineered with zero compromises. Features hardware-accelerated <strong>24/7 Lossless VOIP Audio</strong>, <strong>Proactive AutoMod Shield</strong>, <strong>Google Gemini Multi-Modal AI</strong>, <strong>XP Leveling &amp; Rank Cards</strong>, and <strong>Dynamic Temp Voice Hubs</strong> — 100% free with no paywalls.
               </p>
 
-              {/* Feature Highlights Pills */}
-              <div className="flex flex-wrap gap-2 justify-center lg:justify-start pt-1">
+              {/* Capability Badges */}
+              <div className="flex flex-wrap gap-2 pt-1">
                 {[
-                  "48kHz VOIP Lossless Audio",
-                  "100% Free Moderation & Logs",
-                  "Dual-Engine Rapid . / ? / ! Prefixes",
+                  "48kHz VOIP Lossless Audio DSP",
+                  "100% Free Moderation & Audit Logs",
+                  "Google Gemini 2.5 Multi-Modal AI",
                   "XP Leveling & Rank Cards",
-                  "Google Gemini 2.5 AI Assistant",
-                  "Temp Join-to-Create Voice Hubs"
+                  "Temp Join-to-Create Voice Hubs",
+                  "Reaction Role Embed Menus"
                 ].map((pill, idx) => (
-                  <span key={idx} className="px-3 py-1 rounded-lg bg-zinc-900 border border-zinc-800 text-[11px] font-mono text-zinc-300 font-semibold">
+                  <span key={idx} className="px-3 py-1 rounded-xl bg-white/[0.04] border border-white/[0.08] text-[11px] font-mono text-zinc-300 font-semibold shadow-sm">
                     ✓ {pill}
                   </span>
                 ))}
               </div>
 
-              {/* Direct Buttons */}
-              <div className="flex flex-col sm:flex-row items-center gap-4 pt-3 justify-center lg:justify-start">
+              {/* Action Buttons & Legal Links */}
+              <div className="flex flex-col sm:flex-row items-center gap-4 pt-2">
                 <a
                   href="/invite"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-full sm:w-auto px-8 py-4 rounded-2xl bg-gradient-to-r from-orange-500 via-rose-500 to-fuchsia-600 hover:from-orange-400 hover:to-rose-500 text-white font-black text-sm tracking-wide uppercase transition-all flex items-center justify-center gap-2.5 shadow-xl shadow-orange-500/25 active:scale-95 group"
+                  className="w-full sm:w-auto px-7 py-3.5 rounded-xl bg-white/[0.12] hover:bg-white/[0.18] border border-white/20 hover:border-white/35 text-white font-black text-xs tracking-wider uppercase transition-all flex items-center justify-center gap-2.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.25),0_10px_25px_rgba(0,0,0,0.4)] backdrop-blur-xl active:scale-95"
                 >
-                  <DiscordLogo className="w-5 h-5" fill="#ffffff" />
+                  <DiscordLogo className="w-4 h-4" fill="#ffffff" />
                   <span>Add to Server</span>
-                  <ExternalLink className="w-4 h-4 transition-transform group-hover:translate-x-0.5" />
+                  <ExternalLink className="w-3.5 h-3.5 text-zinc-400" />
                 </a>
 
-                <button
-                  onClick={handleLaunchDashboardClick}
-                  className="w-full sm:w-auto px-8 py-4 rounded-2xl bg-[#140b20] hover:bg-[#1a0e2a] border border-orange-500/40 hover:border-orange-500/70 text-white font-black text-sm tracking-wide uppercase transition-all flex items-center justify-center gap-2.5 shadow-lg active:scale-95 cursor-pointer"
+                <a
+                  href="#command-console"
+                  className="w-full sm:w-auto px-6 py-3.5 rounded-xl bg-transparent hover:bg-white/[0.05] border border-white/10 text-zinc-300 hover:text-white font-bold text-xs tracking-wider uppercase transition-all flex items-center justify-center gap-2 backdrop-blur-xl"
                 >
-                  <Server className="w-5 h-5 text-orange-400" />
-                  <span>{status === "authenticated" ? "Launch Dashboard" : "Log In to Dashboard"}</span>
-                  <ChevronRight className="w-4 h-4 text-orange-400" />
-                </button>
+                  <span>Interactive Command Simulator ↓</span>
+                </a>
               </div>
 
-              {/* Legal Documents Direct Links */}
-              <div className="flex items-center gap-4 text-xs font-mono text-zinc-400 justify-center lg:justify-start pt-2">
-                <Link href="/discord-bot/veplexity/terms" className="hover:text-orange-400 transition-colors underline flex items-center gap-1">
-                  <span>Terms of Service</span>
+              {/* Legal Links Bar */}
+              <div className="flex items-center gap-3 text-xs font-mono text-zinc-400 pt-1">
+                <Link href="/discord-bot/veplexity/terms" className="hover:text-orange-400 transition-colors underline">
+                  Terms of Service
                 </Link>
                 <span>•</span>
-                <Link href="/discord-bot/veplexity/privacy" className="hover:text-orange-400 transition-colors underline flex items-center gap-1">
-                  <span>Privacy Policy</span>
+                <Link href="/discord-bot/veplexity/privacy" className="hover:text-orange-400 transition-colors underline">
+                  Privacy Policy
                 </Link>
                 <span>•</span>
-                <a href="#command-console" className="hover:text-white transition-colors">
-                  Interactive Command Visualizer ↓
-                </a>
+                <span className="text-zinc-500">100+ Free Slash &amp; Prefix Commands</span>
               </div>
             </motion.div>
 
-            {/* Right Column: Hero Live Interactive Audio DSP Widget */}
+            {/* RIGHT COLUMN: PROMINENT TOP SERVER LAUNCHER DECK (5 Cols on XL) */}
             <motion.div 
-              initial={{ opacity: 0, scale: 0.95 }}
+              initial={{ opacity: 0, scale: 0.98 }}
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: false, amount: 0.2 }}
-              transition={{ duration: 0.5, delay: 0.1 }}
-              className="w-full lg:w-[460px] rounded-3xl bg-gradient-to-b from-[#180d26] to-[#0f0719] border border-orange-500/30 p-6 shadow-2xl relative overflow-hidden"
+              transition={{ duration: 0.45, delay: 0.08 }}
+              id="server-management-deck"
+              className="xl:col-span-5 rounded-3xl bg-[#0e0717]/85 border border-white/[0.08] p-6 sm:p-7 shadow-[inset_0_1px_0_rgba(255,255,255,0.08),0_20px_50px_rgba(0,0,0,0.6)] backdrop-blur-2xl flex flex-col justify-between space-y-5"
             >
-              <div className="absolute top-0 right-0 w-48 h-48 bg-orange-500/10 rounded-full blur-3xl pointer-events-none" />
-
-              <div className="flex items-center justify-between pb-4 border-b border-zinc-800">
-                <div className="flex items-center gap-2">
-                  <div className="w-3 h-3 rounded-full bg-rose-500 animate-pulse" />
-                  <span className="text-xs font-mono font-bold uppercase tracking-wider text-orange-300">
-                    24/7 LOSSLESS VOIP DSP
+              {/* Header */}
+              <div className="flex items-center justify-between pb-3 border-b border-white/[0.07]">
+                <div className="flex items-center gap-2.5">
+                  <Server className="w-5 h-5 text-orange-400" />
+                  <span className="text-xs font-mono font-bold uppercase tracking-wider text-white">
+                    SERVER MANAGEMENT CONSOLE
                   </span>
                 </div>
-                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-orange-500/20 text-orange-300 border border-orange-500/30 font-bold">
-                  48kHz VOIP
-                </span>
+                {status === "authenticated" && (
+                  <button
+                    onClick={() => signOut()}
+                    className="text-[11px] font-mono text-zinc-400 hover:text-rose-400 transition flex items-center gap-1"
+                  >
+                    <LogOut className="w-3 h-3" />
+                    <span>Sign Out</span>
+                  </button>
+                )}
               </div>
 
-              <div className="py-6 space-y-4">
-                <div className="flex items-center gap-4">
-                  <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-orange-500/30 to-fuchsia-600/30 border border-orange-500/40 flex items-center justify-center text-orange-400 shrink-0">
-                    <Music className={`w-8 h-8 ${isPlaying ? "animate-bounce" : ""}`} />
+              {/* Body: Authenticated vs Unauthenticated */}
+              {status !== "authenticated" ? (
+                <div className="space-y-4 py-2">
+                  <p className="text-xs sm:text-sm text-zinc-300 leading-relaxed font-normal">
+                    Log in with Discord to view servers where you hold <strong>Manage Server</strong> or <strong>Administrator</strong> privileges and launch real-time config dashboards.
+                  </p>
+
+                  <div className="p-3.5 rounded-2xl bg-white/[0.03] border border-white/[0.06] space-y-1.5 text-xs font-mono text-zinc-400">
+                    <p className="text-white font-bold">⚡ What you can configure:</p>
+                    <p>• 24/7 Lossless voice channel lock &amp; volume presets</p>
+                    <p>• AutoMod shield raid thresholds &amp; link rules</p>
+                    <p>• Custom XP leveling rate &amp; role rewards</p>
                   </div>
-                  <div className="space-y-1 min-w-0">
-                    <p className="text-base font-bold text-white truncate">Synthwave Overdrive</p>
-                    <p className="text-xs font-mono text-zinc-400">VePlexity DJ • 320kbps Master</p>
-                    <div className="flex items-center gap-2 text-[10px] font-mono text-emerald-400">
-                      <span>● 24/7 Voice Lock: ON</span>
+
+                  <button
+                    onClick={() => signIn("discord")}
+                    className="w-full py-3.5 px-5 rounded-xl bg-white/[0.12] hover:bg-white/[0.18] border border-white/20 text-white font-bold text-xs tracking-wider uppercase transition flex items-center justify-center gap-2.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.2),0_8px_20px_rgba(0,0,0,0.35)] backdrop-blur-xl active:scale-95 cursor-pointer"
+                  >
+                    <DiscordLogo className="w-4 h-4" fill="#ffffff" />
+                    <span>Log In with Discord &amp; Launch</span>
+                  </button>
+
+                  <p className="text-[10px] font-mono text-zinc-500 text-center">
+                    Read-only server permissions • Zero private message access
+                  </p>
+                </div>
+              ) : (
+                /* Authenticated Server Selector inside Top Deck */
+                <div className="space-y-3.5 flex-1 flex flex-col justify-between">
+                  {/* Search & Filter Bar */}
+                  <div className="flex items-center gap-2">
+                    <div className="relative flex-1">
+                      <Search className="w-3.5 h-3.5 text-zinc-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+                      <input
+                        type="text"
+                        placeholder="Search your servers..."
+                        value={serverSearch}
+                        onChange={(e) => setServerSearch(e.target.value)}
+                        className="w-full pl-8 pr-3 py-1.5 rounded-xl bg-black/60 border border-white/10 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-orange-500/50"
+                      />
                     </div>
+
+                    <button
+                      onClick={() => fetchGuilds(false)}
+                      disabled={isRefreshing}
+                      className="p-2 rounded-xl bg-white/[0.04] border border-white/10 text-zinc-300 hover:text-white transition disabled:opacity-50"
+                      title="Refresh Servers"
+                    >
+                      <RefreshCw className={`w-3.5 h-3.5 ${isRefreshing ? "animate-spin" : ""}`} />
+                    </button>
                   </div>
-                </div>
 
-                <div className="space-y-1">
-                  <div className="h-2 w-full rounded-full bg-zinc-800 overflow-hidden">
-                    <motion.div 
-                      className="h-full bg-gradient-to-r from-orange-500 to-rose-500" 
-                      initial={{ width: "45%" }}
-                      animate={{ width: isPlaying ? "72%" : "45%" }}
-                      transition={{ duration: 1.5, repeat: isPlaying ? Infinity : 0, repeatType: "reverse" }}
-                    />
+                  {/* Servers List View */}
+                  <div className="max-h-56 overflow-y-auto space-y-2 pr-1 custom-scrollbar">
+                    {loadingGuilds ? (
+                      <div className="text-center py-8 space-y-2">
+                        <div className="w-6 h-6 rounded-full border-2 border-orange-500 border-t-transparent animate-spin mx-auto" />
+                        <p className="text-[11px] font-mono text-zinc-400">Loading Discord servers...</p>
+                      </div>
+                    ) : visibleGuilds.length === 0 ? (
+                      <p className="text-xs text-zinc-500 text-center py-6">No managed servers found.</p>
+                    ) : (
+                      visibleGuilds.map((guild) => {
+                        const isJoined = Boolean(guild.bots?.veplexity);
+                        return (
+                          <div
+                            key={guild.id}
+                            className="p-3 rounded-xl bg-white/[0.03] border border-white/[0.06] hover:border-orange-500/30 transition flex items-center justify-between gap-3 group"
+                          >
+                            <div className="flex items-center gap-3 min-w-0">
+                              <div className="w-9 h-9 rounded-xl bg-zinc-900 border border-white/10 overflow-hidden flex items-center justify-center font-bold text-xs text-zinc-400 shrink-0">
+                                {guild.iconUrl ? (
+                                  <img src={guild.iconUrl} alt={guild.name} className="w-full h-full object-cover" />
+                                ) : (
+                                  guild.name.substring(0, 2).toUpperCase()
+                                )}
+                              </div>
+                              <div className="min-w-0">
+                                <p className="text-xs font-bold text-white truncate group-hover:text-orange-400 transition-colors">
+                                  {guild.name}
+                                </p>
+                                <p className="text-[10px] font-mono text-zinc-500">
+                                  {isJoined ? "● VePlexity Active" : "Not Invited"}
+                                </p>
+                              </div>
+                            </div>
+
+                            {isJoined ? (
+                              <button
+                                onClick={(e) => handleManageServerFlight(e, guild)}
+                                className="px-3 py-1.5 rounded-lg bg-white/[0.12] hover:bg-white/[0.2] border border-white/20 text-white font-bold text-[11px] transition flex items-center gap-1 shrink-0 cursor-pointer active:scale-95"
+                              >
+                                <span>Dashboard</span>
+                                <ChevronRight className="w-3.5 h-3.5 text-orange-400" />
+                              </button>
+                            ) : (
+                              <a
+                                href={`https://discord.com/api/oauth2/authorize?client_id=1556640364448714752&permissions=8&scope=bot%20applications.commands&guild_id=${guild.id}&disable_guild_select=true`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="px-3 py-1.5 rounded-lg bg-orange-500/20 hover:bg-orange-500/30 border border-orange-500/40 text-orange-300 font-bold text-[11px] transition flex items-center gap-1 shrink-0"
+                              >
+                                <Plus className="w-3.5 h-3.5" />
+                                <span>Invite</span>
+                              </a>
+                            )}
+                          </div>
+                        );
+                      })
+                    )}
                   </div>
-                  <div className="flex justify-between text-[10px] font-mono text-zinc-500">
-                    <span>2:18</span>
-                    <span>3:45</span>
-                  </div>
-                </div>
 
-                <div className="flex items-center justify-between pt-2">
-                  <button
-                    onClick={() => {
-                      dashboardAudio.playClick();
-                      setIsPlaying(!isPlaying);
-                    }}
-                    className="p-3 rounded-2xl bg-gradient-to-r from-orange-500 to-rose-500 hover:from-orange-400 hover:to-rose-400 text-white shadow-lg shadow-orange-500/20 transition active:scale-95 flex items-center gap-2 text-xs font-bold"
-                  >
-                    {isPlaying ? <Pause className="w-4 h-4 fill-white" /> : <Play className="w-4 h-4 fill-white" />}
-                    <span>{isPlaying ? "Pause Stream" : "Play Stream"}</span>
-                  </button>
-
-                  <button
-                    onClick={() => {
-                      dashboardAudio.playClick();
-                      setBassBoost(!bassBoost);
-                    }}
-                    className={`px-3.5 py-2.5 rounded-xl border text-xs font-mono font-bold transition flex items-center gap-1.5 ${
-                      bassBoost
-                        ? "bg-orange-500/20 border-orange-500/50 text-orange-300"
-                        : "bg-zinc-900 border-zinc-800 text-zinc-400 hover:text-white"
-                    }`}
-                  >
-                    <Zap className="w-3.5 h-3.5" />
-                    <span>Bass Boost +12dB</span>
-                  </button>
+                  <p className="text-[10px] font-mono text-zinc-500 text-center">
+                    Select a server to open dedicated 24/7 music &amp; automod configuration
+                  </p>
                 </div>
-
-                <div className="pt-2 flex items-center gap-3 bg-[#0c0614] p-3 rounded-xl border border-zinc-800">
-                  <Volume2 className="w-4 h-4 text-orange-400 shrink-0" />
-                  <input
-                    type="range"
-                    min="0"
-                    max="100"
-                    value={volume}
-                    onChange={(e) => setVolume(Number(e.target.value))}
-                    className="w-full accent-orange-500 h-1 bg-zinc-700 rounded-lg cursor-pointer"
-                  />
-                  <span className="text-xs font-mono text-zinc-300 w-8 text-right">{volume}%</span>
-                </div>
-              </div>
+              )}
             </motion.div>
           </div>
         </section>
 
-        {/* ─── INTERACTIVE COMMAND CONSOLE & DISCORD BOT VISUALIZER ──────── */}
-        <section id="command-console" className="space-y-6 pt-4 scroll-mt-24">
+        {/* ─── INTERACTIVE LIVE TYPING COMMAND VISUALIZER ───────────────────── */}
+        <section id="command-console" className="space-y-6 pt-2 scroll-mt-24">
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -594,27 +643,22 @@ export default function VePlexityBotLandingPage() {
             className="text-center space-y-2 max-w-2xl mx-auto"
           >
             <span className="text-xs font-mono text-orange-400 font-bold uppercase tracking-wider">
-              INTERACTIVE DISCORD SIMULATOR
+              HIGH-FIDELITY DISCORD SIMULATOR
             </span>
-            <h2 className="text-3xl sm:text-5xl font-black text-white uppercase tracking-tight">
-              COMMAND CONSOLE &amp; VISUALIZER
+            <h2 className="text-2xl sm:text-4xl font-black text-white uppercase tracking-tight">
+              LIVE COMMAND VISUALIZER
             </h2>
             <p className="text-xs sm:text-sm text-zinc-400">
-              Select any command from the sidebar below to render a live, high-fidelity visualization of VePlexity Bot executing inside Discord.
+              Select any command to watch simulated live character typing, Discord message dispatch, bot thinking states, and rich responses.
             </p>
           </motion.div>
 
-          {/* Category Filter Pills with Reversible Scroll Animation */}
-          <motion.div 
-            initial={{ opacity: 0, y: 15 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: false, amount: 0.4 }}
-            className="flex flex-wrap justify-center gap-2 max-w-3xl mx-auto"
-          >
+          {/* Category Filter Pills */}
+          <div className="flex flex-wrap justify-center gap-2 max-w-3xl mx-auto">
             {[
               { id: "all", label: "All Commands" },
               { id: "music", label: "🎵 Lossless Audio" },
-              { id: "moderation", label: "🛡️ AutoMod & Shield" },
+              { id: "moderation", label: "🛡️ AutoMod Defense" },
               { id: "ai", label: "🤖 Gemini Multi-Modal" },
               { id: "xp", label: "🏆 XP Progression" },
               { id: "tempvc", label: "🎙️ Temp Voice Hub" },
@@ -626,60 +670,58 @@ export default function VePlexityBotLandingPage() {
                   dashboardAudio.playClick();
                   setCommandCategory(cat.id);
                 }}
-                className={`px-3.5 py-1.5 rounded-xl text-xs font-mono font-bold transition-all ${
+                className={`px-3 py-1.5 rounded-xl text-xs font-mono font-bold transition-all ${
                   commandCategory === cat.id
-                    ? "bg-gradient-to-r from-orange-500 to-rose-600 text-white shadow-md shadow-orange-500/20"
-                    : "bg-zinc-900/80 border border-zinc-800 text-zinc-400 hover:text-white"
+                    ? "bg-white/15 border border-white/25 text-white shadow-sm"
+                    : "bg-white/[0.04] border border-white/[0.08] text-zinc-400 hover:text-white"
                 }`}
               >
                 {cat.label}
               </button>
             ))}
-          </motion.div>
+          </div>
 
-          {/* Workbench Grid: Left Scrollable Sidebar + Right Live Discord Chat Visualizer */}
+          {/* Workbench Grid: Left Command Selector + Right Live Discord Chat Visualizer */}
           <motion.div 
-            initial={{ opacity: 0, y: 30 }}
+            initial={{ opacity: 0, y: 25 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: false, amount: 0.15 }}
-            transition={{ duration: 0.55 }}
+            transition={{ duration: 0.45 }}
             className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start"
           >
             
-            {/* ── LEFT: SCROLLABLE COMMAND EXPLORER SIDEBAR ── */}
-            <div className="lg:col-span-5 rounded-3xl bg-[#0e0717] border border-zinc-800/80 p-4 sm:p-5 flex flex-col space-y-4 shadow-xl max-h-[640px]">
-              
+            {/* ── LEFT: SCROLLABLE COMMAND LIST (4 Cols) ── */}
+            <div className="lg:col-span-4 rounded-3xl bg-[#0e0717]/85 border border-white/[0.08] p-4 sm:p-5 flex flex-col space-y-3.5 shadow-xl backdrop-blur-2xl max-h-[620px]">
               {/* Search Bar */}
               <div className="relative">
-                <Search className="w-4 h-4 text-zinc-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                <Search className="w-3.5 h-3.5 text-zinc-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
                 <input
                   type="text"
-                  placeholder="Filter commands (e.g. play, purge, gemini)..."
+                  placeholder="Filter commands (play, purge, gemini)..."
                   value={commandSearch}
                   onChange={(e) => setCommandSearch(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-black border border-zinc-800 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-orange-500/50"
+                  className="w-full pl-8 pr-3 py-2 rounded-xl bg-black/60 border border-white/10 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-orange-500/50"
                 />
               </div>
 
-              {/* Scrollable Command List */}
+              {/* Command Items */}
               <div className="flex-1 overflow-y-auto space-y-2 pr-1 custom-scrollbar">
                 {filteredCommands.length === 0 ? (
                   <p className="text-xs text-zinc-500 text-center py-8">No commands matching query.</p>
                 ) : (
-                  filteredCommands.map((cmd, idx) => {
+                  filteredCommands.map((cmd) => {
                     const isSelected = activeCmd.name === cmd.name;
                     return (
                       <button
                         key={cmd.name}
                         onClick={() => {
-                          dashboardAudio.playClick();
                           const originalIdx = commandSpecs.findIndex(c => c.name === cmd.name);
-                          setSelectedCommandIdx(originalIdx >= 0 ? originalIdx : 0);
+                          handleSelectCommand(originalIdx >= 0 ? originalIdx : 0);
                         }}
-                        className={`w-full text-left p-3.5 rounded-2xl border transition-all flex items-center justify-between group cursor-pointer ${
+                        className={`w-full text-left p-3 rounded-2xl border transition-all flex items-center justify-between group cursor-pointer ${
                           isSelected
-                            ? "bg-gradient-to-r from-orange-500/20 via-rose-500/15 to-transparent border-orange-500/70 shadow-md shadow-orange-500/10"
-                            : "bg-[#0a0413] border-zinc-800/80 hover:border-zinc-700 hover:bg-zinc-900/40"
+                            ? "bg-white/[0.10] border-white/25 shadow-sm"
+                            : "bg-white/[0.03] border-white/[0.06] hover:border-white/15 hover:bg-white/[0.05]"
                         }`}
                       >
                         <div className="space-y-1 min-w-0 pr-2">
@@ -690,7 +732,7 @@ export default function VePlexityBotLandingPage() {
                               {cmd.name}
                             </span>
                             {cmd.badge && (
-                              <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-orange-500/15 border border-orange-500/30 text-orange-300 font-bold shrink-0">
+                              <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-white/[0.06] border border-white/10 text-zinc-300 font-bold shrink-0">
                                 {cmd.badge}
                               </span>
                             )}
@@ -710,8 +752,8 @@ export default function VePlexityBotLandingPage() {
               </div>
             </div>
 
-            {/* ── RIGHT: LIVE DISCORD BOT SIMULATION STAGE ── */}
-            <div className="lg:col-span-7 rounded-3xl bg-[#1e1f22] border border-zinc-700/60 shadow-2xl overflow-hidden flex flex-col font-sans">
+            {/* ── RIGHT: LIVE DISCORD CHAT SCREEN WITH LIVE TYPING (8 Cols) ── */}
+            <div className="lg:col-span-8 rounded-3xl bg-[#1e1f22] border border-zinc-700/60 shadow-2xl overflow-hidden flex flex-col font-sans">
               
               {/* Discord Channel Header Bar */}
               <div className="h-12 px-5 bg-[#2b2d31] border-b border-zinc-800 flex items-center justify-between shrink-0">
@@ -720,10 +762,10 @@ export default function VePlexityBotLandingPage() {
                   <span className="font-bold text-xs">bot-commands</span>
                   <span className="text-zinc-500 text-xs hidden sm:inline">|</span>
                   <span className="text-[11px] text-zinc-400 font-mono hidden sm:inline">
-                    Simulated VePlexity Sandbox Feed
+                    Simulated VePlexity Sandbox Channel
                   </span>
                 </div>
-                <div className="flex items-center gap-3 text-zinc-400 text-xs font-mono">
+                <div className="flex items-center gap-2 text-zinc-400 text-xs font-mono">
                   <span className="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 font-bold text-[10px]">
                     ● BOT ONLINE
                   </span>
@@ -731,123 +773,212 @@ export default function VePlexityBotLandingPage() {
               </div>
 
               {/* Discord Chat Area */}
-              <div className="p-5 sm:p-6 space-y-6 flex-1 min-h-[440px]">
+              <div className="p-5 sm:p-6 space-y-6 flex-1 min-h-[460px] bg-[#313338]/40">
                 
                 {/* 1. User Message (Trigger) */}
-                <div className="flex items-start gap-3.5">
-                  <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-orange-500 to-rose-500 p-0.5 shrink-0">
-                    <div className="w-full h-full rounded-full bg-[#180a22] flex items-center justify-center font-bold text-xs text-white">
-                      VM
+                {simStep !== "typing" && (
+                  <motion.div 
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.2 }}
+                    className="flex items-start gap-3.5"
+                  >
+                    <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-orange-500 to-rose-500 p-0.5 shrink-0">
+                      <div className="w-full h-full rounded-full bg-[#180a22] flex items-center justify-center font-bold text-xs text-white">
+                        VM
+                      </div>
                     </div>
-                  </div>
-                  <div className="space-y-1 min-w-0">
+                    <div className="space-y-1 min-w-0">
+                      <div className="flex items-center gap-2">
+                        <span className="text-xs font-bold text-white">Veer</span>
+                        <span className="text-[10px] text-zinc-400">Today at 8:45 PM</span>
+                      </div>
+                      {/* User Command Bubble */}
+                      <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-[#2b2d31] border border-zinc-700 text-orange-300 font-mono text-xs">
+                        <span>{activeCmd.userCommand}</span>
+                      </div>
+                    </div>
+                  </motion.div>
+                )}
+
+                {/* 2. Bot Thinking Indicator (Animated Typing Dots) */}
+                {simStep === "bot_thinking" && (
+                  <motion.div 
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    className="flex items-center gap-3 pl-2 text-xs text-zinc-400 font-mono"
+                  >
+                    <div className="w-8 h-8 rounded-full overflow-hidden bg-[#12081f] p-1 shrink-0">
+                      <img src="/bots/veplexity-avatar.png" alt="VePlexity" className="w-full h-full object-contain" />
+                    </div>
                     <div className="flex items-center gap-2">
-                      <span className="text-xs font-bold text-white">Veer</span>
-                      <span className="text-[10px] text-zinc-400">Today at 8:45 PM</span>
+                      <span className="font-bold text-white text-[11px]">VePlexity Bot is thinking</span>
+                      <div className="flex gap-1 items-center">
+                        <span className="w-1.5 h-1.5 rounded-full bg-zinc-400 animate-bounce" style={{ animationDelay: "0ms" }} />
+                        <span className="w-1.5 h-1.5 rounded-full bg-zinc-400 animate-bounce" style={{ animationDelay: "150ms" }} />
+                        <span className="w-1.5 h-1.5 rounded-full bg-zinc-400 animate-bounce" style={{ animationDelay: "300ms" }} />
+                      </div>
                     </div>
-                    {/* User Command Bubble */}
-                    <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-[#2b2d31] border border-zinc-700 text-orange-300 font-mono text-xs">
-                      <span>{activeCmd.userCommand}</span>
-                    </div>
-                  </div>
-                </div>
+                  </motion.div>
+                )}
 
-                {/* 2. Bot Response Message (Embed) */}
-                <div className="flex items-start gap-3.5 pl-2">
-                  <div className="w-10 h-10 rounded-full overflow-hidden bg-[#12081f] border border-orange-500/50 shrink-0 p-1">
-                    <img 
-                      src="/bots/veplexity-avatar.png" 
-                      alt="VePlexity" 
-                      className="w-full h-full object-contain"
-                    />
-                  </div>
-
-                  <div className="space-y-2 flex-1 min-w-0">
-                    <div className="flex items-center gap-2">
-                      <span className="text-xs font-black text-white">VePlexity Bot</span>
-                      <span className="text-[9px] px-1 py-0.2 rounded bg-[#5865F2] text-white font-bold font-mono">
-                        APP
-                      </span>
-                      <span className="text-[10px] text-zinc-400">Today at 8:45 PM</span>
+                {/* 3. Bot Response Message (Embed Pop-in) */}
+                {simStep === "bot_responded" && (
+                  <motion.div 
+                    initial={{ opacity: 0, y: 15 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+                    className="flex items-start gap-3.5 pl-2"
+                  >
+                    <div className="w-10 h-10 rounded-full overflow-hidden bg-[#12081f] border border-orange-500/50 shrink-0 p-1">
+                      <img 
+                        src="/bots/veplexity-avatar.png" 
+                        alt="VePlexity" 
+                        className="w-full h-full object-contain"
+                      />
                     </div>
 
-                    {/* Rich Discord Embed */}
-                    <div 
-                      className="rounded-lg bg-[#2b2d31] p-4 space-y-3 text-xs border-l-4 shadow-xl"
-                      style={{ borderLeftColor: activeCmd.botResponse.embedColor }}
-                    >
-                      <h4 className="font-bold text-sm text-white">
-                        {activeCmd.botResponse.embedTitle}
-                      </h4>
+                    <div className="space-y-2 flex-1 min-w-0">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <span className="text-xs font-black text-white">VePlexity Bot</span>
+                        <DiscordVerifiedBadge className="w-3.5 h-3.5" />
+                        <span className="text-[9px] px-1 py-0.2 rounded bg-[#5865F2] text-white font-bold font-mono">
+                          APP
+                        </span>
+                        <span className="text-[10px] text-zinc-400">Today at 8:45 PM</span>
+                      </div>
 
-                      <p className="text-zinc-200 leading-relaxed whitespace-pre-line text-xs font-normal">
-                        {activeCmd.botResponse.embedDesc}
-                      </p>
+                      {/* Rich Discord Embed */}
+                      <div 
+                        className="rounded-lg bg-[#2b2d31] p-4 space-y-3 text-xs border-l-4 shadow-xl"
+                        style={{ borderLeftColor: activeCmd.botResponse.embedColor }}
+                      >
+                        <div className="flex items-start justify-between gap-4">
+                          <div className="space-y-1.5 flex-1 min-w-0">
+                            <h4 className="font-bold text-sm text-white">
+                              {activeCmd.botResponse.embedTitle}
+                            </h4>
 
-                      {/* Rank Card Visualization if /rank */}
-                      {activeCmd.botResponse.rankCardData && (
-                        <div className="p-4 rounded-xl bg-[#1e1f22] border border-zinc-700 space-y-2.5 my-2">
-                          <div className="flex justify-between items-center text-xs">
-                            <span className="font-mono text-orange-400 font-bold">LVL {activeCmd.botResponse.rankCardData.level}</span>
-                            <span className="font-mono text-zinc-400">RANK #{activeCmd.botResponse.rankCardData.rank}</span>
+                            <p className="text-zinc-200 leading-relaxed whitespace-pre-line text-xs font-normal">
+                              {activeCmd.botResponse.embedDesc}
+                            </p>
                           </div>
-                          <div className="h-2.5 w-full rounded-full bg-black/60 overflow-hidden">
-                            <div className="h-full bg-gradient-to-r from-orange-500 to-rose-500 w-[83%]" />
-                          </div>
-                          <div className="flex justify-between text-[10px] font-mono text-zinc-400">
-                            <span>{activeCmd.botResponse.rankCardData.currentXp} XP</span>
-                            <span>{activeCmd.botResponse.rankCardData.nextXp} XP (83%)</span>
-                          </div>
-                        </div>
-                      )}
 
-                      {/* Embed Fields */}
-                      {activeCmd.botResponse.fields && (
-                        <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 pt-1 border-t border-zinc-700/60">
-                          {activeCmd.botResponse.fields.map((field, i) => (
-                            <div key={i} className="space-y-0.5">
-                              <span className="text-[10px] font-mono text-zinc-400 font-bold uppercase">
-                                {field.name}
+                          {/* SPECIAL SHOWCASE: "Aisi Tu" Official Cover Art Thumbnail for /play */}
+                          {activeCmd.botResponse.albumArt && (
+                            <div className="shrink-0 space-y-1.5 text-center">
+                              <img 
+                                src={activeCmd.botResponse.albumArt} 
+                                alt="Aisi Tu Cover Art - Tanvik x VeeRM" 
+                                className="w-20 h-20 sm:w-24 sm:h-24 rounded-xl object-cover shadow-2xl border border-white/15"
+                              />
+                              <span className="block text-[9px] font-mono text-zinc-400 font-bold uppercase">
+                                Tanvik x VeeRM
                               </span>
-                              <p className="text-xs font-mono text-white font-semibold">
-                                {field.value}
-                              </p>
                             </div>
-                          ))}
+                          )}
                         </div>
-                      )}
 
-                      {/* Simulated Interactive Button Components */}
-                      {activeCmd.botResponse.buttons && (
-                        <div className="flex flex-wrap gap-2 pt-2 border-t border-zinc-700/60">
-                          {activeCmd.botResponse.buttons.map((btnLabel, idx) => (
-                            <button
-                              key={idx}
-                              onClick={() => dashboardAudio.playClick()}
-                              className="px-3 py-1.5 rounded-md bg-[#383a40] hover:bg-[#474950] text-zinc-200 text-[11px] font-bold font-mono transition"
-                            >
-                              {btnLabel}
-                            </button>
-                          ))}
-                        </div>
-                      )}
+                        {/* Rank Card Visualization if /rank */}
+                        {activeCmd.botResponse.rankCardData && (
+                          <div className="p-4 rounded-xl bg-[#1e1f22] border border-zinc-700 space-y-2.5 my-2">
+                            <div className="flex justify-between items-center text-xs">
+                              <span className="font-mono text-orange-400 font-bold">LVL {activeCmd.botResponse.rankCardData.level}</span>
+                              <span className="font-mono text-zinc-400">RANK #{activeCmd.botResponse.rankCardData.rank}</span>
+                            </div>
+                            <div className="h-2.5 w-full rounded-full bg-black/60 overflow-hidden">
+                              <div className="h-full bg-gradient-to-r from-orange-500 to-rose-500 w-[84%]" />
+                            </div>
+                            <div className="flex justify-between text-[10px] font-mono text-zinc-400">
+                              <span>{activeCmd.botResponse.rankCardData.currentXp} XP</span>
+                              <span>{activeCmd.botResponse.rankCardData.nextXp} XP (84%)</span>
+                            </div>
+                          </div>
+                        )}
 
-                      {/* Embed Footer */}
-                      {activeCmd.botResponse.footer && (
-                        <div className="pt-2 text-[10px] font-mono text-zinc-400 border-t border-zinc-700/40">
-                          {activeCmd.botResponse.footer}
-                        </div>
-                      )}
+                        {/* Embed Fields */}
+                        {activeCmd.botResponse.fields && (
+                          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 pt-1 border-t border-zinc-700/60">
+                            {activeCmd.botResponse.fields.map((field, i) => (
+                              <div key={i} className="space-y-0.5">
+                                <span className="text-[10px] font-mono text-zinc-400 font-bold uppercase">
+                                  {field.name}
+                                </span>
+                                <p className="text-xs font-mono text-white font-semibold">
+                                  {field.value}
+                                </p>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+
+                        {/* Simulated Interactive Button Components */}
+                        {activeCmd.botResponse.buttons && (
+                          <div className="flex flex-wrap gap-2 pt-2 border-t border-zinc-700/60">
+                            {activeCmd.botResponse.buttons.map((btnLabel, idx) => {
+                              const isSpotifyBtn = btnLabel.includes("Spotify");
+                              if (isSpotifyBtn && activeCmd.botResponse.spotifyUrl) {
+                                return (
+                                  <a
+                                    key={idx}
+                                    href={activeCmd.botResponse.spotifyUrl}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="px-3 py-1.5 rounded-md bg-[#1DB954] hover:bg-[#1ed760] text-black text-[11px] font-bold font-mono transition flex items-center gap-1 shadow-sm"
+                                  >
+                                    <span>{btnLabel}</span>
+                                    <ExternalLink className="w-3 h-3" />
+                                  </a>
+                                );
+                              }
+                              return (
+                                <button
+                                  key={idx}
+                                  onClick={() => dashboardAudio.playClick()}
+                                  className="px-3 py-1.5 rounded-md bg-[#383a40] hover:bg-[#474950] text-zinc-200 text-[11px] font-bold font-mono transition cursor-pointer"
+                                >
+                                  {btnLabel}
+                                </button>
+                              );
+                            })}
+                          </div>
+                        )}
+
+                        {/* Embed Footer */}
+                        {activeCmd.botResponse.footer && (
+                          <div className="pt-2 text-[10px] font-mono text-zinc-400 border-t border-zinc-700/40">
+                            {activeCmd.botResponse.footer}
+                          </div>
+                        )}
+                      </div>
                     </div>
-                  </div>
-                </div>
+                  </motion.div>
+                )}
               </div>
 
-              {/* Bottom Quick-Action Toolbar */}
-              <div className="p-3 bg-[#2b2d31] border-t border-zinc-800 flex items-center justify-between text-xs font-mono">
-                <span className="text-zinc-400 text-[11px]">
-                  Syntax: <code className="text-orange-300 font-bold">{activeCmd.syntax}</code>
-                </span>
+              {/* Bottom Simulated Discord Input Bar (Renders Live Character Typing) */}
+              <div className="p-3.5 bg-[#2b2d31] border-t border-zinc-800 flex items-center gap-3">
+                <div className="flex-1 h-10 px-4 rounded-lg bg-[#383a40] flex items-center justify-between text-xs font-mono">
+                  <div className="flex items-center gap-1 text-zinc-200 min-w-0">
+                    {simStep === "typing" ? (
+                      <>
+                        <span className="text-white font-bold">{typedInputText}</span>
+                        <span className="w-1.5 h-4 bg-orange-400 animate-pulse inline-block" />
+                      </>
+                    ) : (
+                      <span className="text-zinc-500">Message #bot-commands</span>
+                    )}
+                  </div>
+
+                  <button
+                    onClick={() => runLiveCommandSimulation(activeCmd)}
+                    className="text-zinc-400 hover:text-white transition flex items-center gap-1 text-[11px] font-bold"
+                    title="Re-run Live Typing"
+                  >
+                    <Send className="w-3.5 h-3.5" />
+                    <span className="hidden sm:inline">Send</span>
+                  </button>
+                </div>
 
                 <button
                   onClick={() => {
@@ -856,7 +987,7 @@ export default function VePlexityBotLandingPage() {
                     setCopiedCmd(true);
                     setTimeout(() => setCopiedCmd(false), 2000);
                   }}
-                  className="px-3 py-1.5 rounded-lg bg-black/60 border border-zinc-700 text-zinc-300 hover:text-white flex items-center gap-1.5 text-xs font-bold"
+                  className="px-3 py-2 rounded-lg bg-black/60 border border-zinc-700 text-zinc-300 hover:text-white flex items-center gap-1.5 text-xs font-bold shrink-0 font-mono"
                 >
                   {copiedCmd ? (
                     <>
@@ -875,207 +1006,42 @@ export default function VePlexityBotLandingPage() {
           </motion.div>
         </section>
 
-        {/* ─── INTEGRATED SERVER MANAGEMENT CONSOLE ──────────────────────── */}
-        <section id="server-console" className="space-y-6 pt-8 border-t border-zinc-800/80 scroll-mt-24">
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: false, amount: 0.3 }}
-            className="text-center space-y-2 max-w-2xl mx-auto"
-          >
-            <span className="text-xs font-mono text-orange-400 font-bold uppercase tracking-wider">
-              SERVER MANAGEMENT CONSOLE
-            </span>
-            <h2 className="text-3xl sm:text-4xl font-black text-white uppercase tracking-tight">
-              LAUNCH YOUR SERVER DASHBOARD
-            </h2>
-            <p className="text-xs sm:text-sm text-zinc-400">
-              Select your Discord server below to configure 24/7 music settings, AutoMod rules, XP rewards, and bot roles with real-time sync.
-            </p>
-          </motion.div>
-
-          {/* Unauthenticated View */}
-          {status !== "authenticated" ? (
-            <motion.div 
-              initial={{ opacity: 0, scale: 0.96 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: false, amount: 0.3 }}
-              className="max-w-xl mx-auto p-8 rounded-3xl bg-gradient-to-b from-[#140b20] to-[#0a0512] border border-orange-500/30 text-center space-y-6 shadow-2xl"
-            >
-              <div className="w-16 h-16 rounded-2xl bg-orange-500/10 border-2 border-orange-500/40 flex items-center justify-center text-orange-400 mx-auto">
-                <Server className="w-8 h-8" />
-              </div>
-
-              <div className="space-y-2">
-                <h3 className="text-2xl font-black text-white uppercase">Connect Your Discord Account</h3>
-                <p className="text-xs sm:text-sm text-zinc-400">
-                  Authenticate with Discord to view servers where you hold <strong>Manage Server</strong> or <strong>Administrator</strong> privileges.
-                </p>
-              </div>
-
-              <button
-                onClick={() => signIn("discord")}
-                className="w-full py-4 px-6 rounded-2xl bg-gradient-to-r from-orange-500 via-rose-500 to-fuchsia-600 hover:from-orange-400 hover:to-rose-500 text-white font-black text-sm tracking-wide uppercase transition-all flex items-center justify-center gap-3 shadow-xl shadow-orange-500/25 active:scale-95 cursor-pointer"
-              >
-                <DiscordLogo className="w-5 h-5" fill="#ffffff" />
-                <span>Log In with Discord</span>
-              </button>
-
-              <p className="text-[11px] font-mono text-zinc-500">
-                VePlexity only reads your server list to identify managed guilds. We never request message history or payment permissions.
-              </p>
-            </motion.div>
-          ) : (
-            /* Authenticated Server Deck View */
-            <div className="space-y-6 max-w-5xl mx-auto">
-              {/* Controls */}
-              <div className="flex flex-col sm:flex-row items-center justify-between gap-4 p-4 rounded-2xl bg-[#0f0718] border border-zinc-800">
-                <div className="flex items-center gap-3 w-full sm:w-auto">
-                  <div className="relative flex-1 sm:w-64">
-                    <Search className="w-3.5 h-3.5 text-zinc-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
-                    <input
-                      type="text"
-                      placeholder="Search servers..."
-                      value={serverSearch}
-                      onChange={(e) => setServerSearch(e.target.value)}
-                      className="w-full pl-9 pr-3 py-2 rounded-xl bg-black border border-zinc-800 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-orange-500/50"
-                    />
-                  </div>
-
-                  <div className="flex gap-1 bg-black p-1 rounded-xl border border-zinc-800 text-xs">
-                    {(["all", "active", "uninvited"] as const).map((mode) => (
-                      <button
-                        key={mode}
-                        onClick={() => setServerFilter(mode)}
-                        className={`px-3 py-1 rounded-lg font-mono capitalize transition ${
-                          serverFilter === mode ? "bg-orange-500 text-white font-bold" : "text-zinc-400 hover:text-white"
-                        }`}
-                      >
-                        {mode}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                <div className="flex items-center gap-3">
-                  <button
-                    onClick={() => fetchGuilds(false)}
-                    disabled={isRefreshing}
-                    className="p-2.5 rounded-xl bg-zinc-900 border border-zinc-800 text-zinc-300 hover:text-white transition disabled:opacity-50"
-                    title="Refresh Servers"
-                  >
-                    <RefreshCw className={`w-4 h-4 ${isRefreshing ? "animate-spin" : ""}`} />
-                  </button>
-
-                  <button
-                    onClick={() => signOut()}
-                    className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-zinc-900 border border-zinc-800 text-xs text-zinc-400 hover:text-rose-400 transition"
-                  >
-                    <LogOut className="w-3.5 h-3.5" />
-                    <span>Sign Out</span>
-                  </button>
-                </div>
-              </div>
-
-              {/* Guilds Grid */}
-              {loadingGuilds ? (
-                <div className="text-center py-16 space-y-3">
-                  <div className="w-8 h-8 rounded-full border-2 border-orange-500 border-t-transparent animate-spin mx-auto" />
-                  <p className="text-xs font-mono text-zinc-400">Loading your Discord servers...</p>
-                </div>
-              ) : visibleGuilds.length === 0 ? (
-                <div className="text-center py-12 p-8 rounded-2xl bg-[#0f0718] border border-zinc-800 space-y-2">
-                  <p className="text-sm font-bold text-white">No servers matching criteria</p>
-                  <p className="text-xs text-zinc-400">Ensure you have Manage Server permissions or clear your search query.</p>
-                </div>
-              ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {visibleGuilds.map((guild) => {
-                    const isJoined = Boolean(guild.bots?.veplexity);
-                    return (
-                      <div
-                        key={guild.id}
-                        className="p-5 rounded-2xl bg-[#0f0718] border border-zinc-800 hover:border-orange-500/40 transition flex flex-col justify-between space-y-4 shadow-lg group"
-                      >
-                        <div className="flex items-center gap-3.5">
-                          <div className="w-12 h-12 rounded-2xl bg-zinc-900 border border-zinc-800 overflow-hidden flex items-center justify-center font-bold text-sm text-zinc-400 shrink-0">
-                            {guild.iconUrl ? (
-                              <img src={guild.iconUrl} alt={guild.name} className="w-full h-full object-cover" />
-                            ) : (
-                              guild.name.substring(0, 2).toUpperCase()
-                            )}
-                          </div>
-                          <div className="min-w-0">
-                            <h4 className="text-sm font-bold text-white truncate group-hover:text-orange-400 transition-colors">
-                              {guild.name}
-                            </h4>
-                            <div className="flex items-center gap-2 text-[10px] font-mono text-zinc-500">
-                              <span>ID: {guild.id.substring(0, 8)}...</span>
-                              {guild.owner && <span className="text-orange-400 font-bold">Owner</span>}
-                            </div>
-                          </div>
-                        </div>
-
-                        {/* Action CTA with Zoom-in Flight Canvas */}
-                        {isJoined ? (
-                          <button
-                            onClick={(e) => handleManageServerFlight(e, guild)}
-                            className="w-full py-2.5 px-4 rounded-xl bg-gradient-to-r from-orange-500 to-rose-600 hover:from-orange-400 hover:to-rose-500 text-white text-xs font-black transition flex items-center justify-between active:scale-95 shadow-md shadow-orange-500/20 cursor-pointer"
-                          >
-                            <span>LAUNCH DASHBOARD</span>
-                            <ChevronRight className="w-4 h-4" />
-                          </button>
-                        ) : (
-                          <a
-                            href={`https://discord.com/api/oauth2/authorize?client_id=1556640364448714752&permissions=8&scope=bot%20applications.commands&guild_id=${guild.id}&disable_guild_select=true`}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="w-full py-2.5 px-4 rounded-xl bg-white/10 hover:bg-white/15 border border-white/10 text-white text-xs font-black transition flex items-center justify-between active:scale-95"
-                          >
-                            <span>INVITE VEPLEXITY</span>
-                            <Plus className="w-4 h-4 text-orange-400" />
-                          </a>
-                        )}
-                      </div>
-                    );
-                  })}
-                </div>
-              )}
-            </div>
-          )}
-        </section>
-
-        {/* ─── ENLISTED LEGAL ARCHITECTURE SECTION ───────────────────────── */}
-        <section className="pt-10 border-t border-zinc-800/80 space-y-6">
+        {/* ─── ENLISTED LEGAL DOCUMENTS DIRECTORY ─────────────────────────── */}
+        <section className="pt-8 border-t border-white/[0.07] space-y-6">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: false, amount: 0.3 }}
             className="text-center space-y-2 max-w-xl mx-auto"
           >
-            <span className="text-xs font-mono text-rose-400 font-bold uppercase tracking-wider">
-              LEGAL &amp; COMPLIANCE DIRECTORY
+            <span className="text-xs font-mono text-orange-400 font-bold uppercase tracking-wider">
+              LEGAL &amp; COMPLIANCE POLICIES
             </span>
             <h2 className="text-2xl sm:text-3xl font-black text-white uppercase tracking-tight">
-              ENLISTED LEGAL DOCUMENTS
+              TERMS &amp; PRIVACY COMPLIANCE
             </h2>
             <p className="text-xs text-zinc-400">
-              Complete transparent terms of service, privacy policies, and developer guidelines for VePlexity Bot.
+              Complete transparent legal documents directly codified for VePlexity Bot operations.
             </p>
           </motion.div>
 
-          <div className="p-6 sm:p-8 rounded-3xl bg-[#0e0717] border border-zinc-800 grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div className="p-6 sm:p-8 rounded-3xl bg-[#0e0717]/85 border border-white/[0.08] grid grid-cols-1 md:grid-cols-2 gap-8 backdrop-blur-2xl">
             <div className="space-y-3">
               <div className="flex items-center gap-2">
                 <ShieldCheck className="w-5 h-5 text-orange-400" />
-                <h4 className="text-base font-bold text-white uppercase">Official Terms of Service</h4>
+                <h4 className="text-base font-bold text-white uppercase">Terms of Service</h4>
               </div>
               <p className="text-xs text-zinc-400 leading-relaxed">
-                By adding VePlexity Bot to your Discord server or using its slash &amp; prefix commands, you agree to comply with Discord Developer Terms of Service and VePlexity acceptable use policies.
+                By adding VePlexity Bot to your Discord server or invoking its slash &amp; prefix commands, you agree to comply with Discord Developer Terms of Service and acceptable audio streaming rules. Lossless VOIP DSP nodes are reserved for non-abusive community voice channels.
               </p>
+              <div className="space-y-1 text-xs font-mono text-zinc-400">
+                <p>• Zero commercial resale of bot privileges</p>
+                <p>• Respect for fair-use streaming rate limits</p>
+                <p>• Administrator discretion on channel moderation commands</p>
+              </div>
               <Link
                 href="/discord-bot/veplexity/terms"
-                className="inline-flex items-center gap-1.5 text-xs font-mono font-bold text-orange-400 hover:text-orange-300 transition-colors underline"
+                className="inline-flex items-center gap-1.5 text-xs font-mono font-bold text-orange-400 hover:text-orange-300 transition-colors underline pt-1"
               >
                 <span>Read Full Terms of Service</span>
                 <ChevronRight className="w-3.5 h-3.5" />
@@ -1085,14 +1051,19 @@ export default function VePlexityBotLandingPage() {
             <div className="space-y-3">
               <div className="flex items-center gap-2">
                 <Lock className="w-5 h-5 text-rose-400" />
-                <h4 className="text-base font-bold text-white uppercase">Privacy &amp; Data Protection</h4>
+                <h4 className="text-base font-bold text-white uppercase">Privacy Policy</h4>
               </div>
               <p className="text-xs text-zinc-400 leading-relaxed">
-                We never log message contents or personal user communications. Only guild IDs, channel routing pointers, and XP progression values are stored within encrypted database clusters.
+                We strictly adhere to privacy-by-design principles. VePlexity Bot never logs private chat messages, voice transcripts, or user passwords. Only guild configuration IDs, custom role pointers, and encrypted XP leveling points are retained in MongoDB Atlas clusters.
               </p>
+              <div className="space-y-1 text-xs font-mono text-zinc-400">
+                <p>• Zero private message storage or harvesting</p>
+                <p>• Ephemeral Google Gemini 2.5 context handling</p>
+                <p>• Complete right to data erasure upon bot removal</p>
+              </div>
               <Link
                 href="/discord-bot/veplexity/privacy"
-                className="inline-flex items-center gap-1.5 text-xs font-mono font-bold text-rose-400 hover:text-rose-300 transition-colors underline"
+                className="inline-flex items-center gap-1.5 text-xs font-mono font-bold text-rose-400 hover:text-rose-300 transition-colors underline pt-1"
               >
                 <span>Read Full Privacy Policy</span>
                 <ChevronRight className="w-3.5 h-3.5" />

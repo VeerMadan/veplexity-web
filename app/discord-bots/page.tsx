@@ -8,7 +8,7 @@ import {
   ChevronRight, ExternalLink, Music, 
   Award, Lock, Users, Bot, Mic, Zap, ArrowLeft, Radio, Bell, Shield, Sparkles, CheckCircle2
 } from "lucide-react";
-import { DiscordLogo, BmcCupIcon } from "@/app/components/BrandIcons";
+import { DiscordLogo, DiscordVerifiedBadge, DiscordAppPill } from "@/app/components/BrandIcons";
 import Navbar from "@/app/components/Navbar";
 import Footer from "@/app/components/Footer";
 import { dashboardAudio } from "@/lib/dashboardAudio";
@@ -26,19 +26,19 @@ export default function DiscordBotsHubPage() {
     e.preventDefault();
     dashboardAudio.playClick();
 
-    // Get the card rect or button rect for zoom expansion
+    // Get the card rect for zoom expansion
     const targetElement = e.currentTarget.closest(".bot-card-container") || e.currentTarget;
     const rect = targetElement.getBoundingClientRect();
 
     const botData: ZoomRevealBotData = botType === "veplexity" ? {
       name: "VePlexity Bot",
       avatarUrl: "/bots/veplexity-avatar.png",
-      tagline: "Launching All-In-One Powerhouse...",
+      tagline: "VePlexity All-In-One",
       accentColor: "orange",
     } : {
       name: "PingPlex",
       avatarUrl: "/bots/pingplex-avatar.png",
-      tagline: "Launching Creator Alerts Studio...",
+      tagline: "PingPlex Creator Alerts",
       accentColor: "fuchsia",
     };
 
@@ -52,279 +52,263 @@ export default function DiscordBotsHubPage() {
 
     setTimeout(() => {
       router.push(`/discord-bot/${botType}`);
-    }, 480);
+    }, 450);
   };
 
   return (
     <div className="min-h-screen bg-[#07030a] text-zinc-100 flex flex-col font-sans relative selection:bg-rose-500/30 overflow-x-hidden">
       <Navbar />
 
-      {/* Hardware-Accelerated Zoom-in Card Expansion Overlay */}
+      {/* Pure Cinematic Zoom-in Card Dissolve Overlay (No box, no borders) */}
       {zoomRect && zoomBot && (
         <CardZoomRevealCanvas rect={zoomRect} bot={zoomBot} />
       )}
 
-      {/* Atmospheric GTA 6 Sunset Glows */}
-      <div className="fixed top-0 left-1/4 w-[600px] h-[600px] bg-gradient-to-br from-orange-600/15 via-rose-600/10 to-transparent rounded-full blur-[160px] pointer-events-none" />
-      <div className="fixed top-1/3 right-1/4 w-[600px] h-[600px] bg-gradient-to-bl from-fuchsia-600/15 via-purple-600/10 to-transparent rounded-full blur-[160px] pointer-events-none" />
+      {/* Atmospheric GTA 6 Sunset Ambient Hues */}
+      <div className="fixed top-0 left-1/4 w-[600px] h-[600px] bg-gradient-to-br from-orange-600/10 via-rose-600/5 to-transparent rounded-full blur-[160px] pointer-events-none" />
+      <div className="fixed top-1/3 right-1/4 w-[600px] h-[600px] bg-gradient-to-bl from-fuchsia-600/10 via-purple-600/5 to-transparent rounded-full blur-[160px] pointer-events-none" />
 
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-20 relative z-10 flex flex-col justify-center space-y-16">
+      <main className="flex-1 w-full max-w-[1720px] mx-auto px-4 sm:px-8 lg:px-12 py-8 sm:py-12 relative z-10 flex flex-col justify-center space-y-10 sm:space-y-12">
         
-        {/* Header Hero Section with Scroll Reversible Animations */}
+        {/* Header Hero Section: Compact and fits above the fold */}
         <motion.div 
-          initial={{ opacity: 0, y: 30, scale: 0.98 }}
-          whileInView={{ opacity: 1, y: 0, scale: 1 }}
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: false, amount: 0.3 }}
-          transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-          className="text-center space-y-4 max-w-3xl mx-auto"
+          transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
+          className="text-center space-y-3 max-w-3xl mx-auto"
         >
-          {/* Pulsing Pill Reveal */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.8 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: false, amount: 0.5 }}
-            transition={{ duration: 0.4, delay: 0.05 }}
-            className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-gradient-to-r from-orange-500/15 via-rose-500/15 to-fuchsia-500/15 border border-rose-500/30 text-xs font-mono text-rose-300 font-bold uppercase tracking-wider shadow-lg shadow-rose-500/10"
-          >
-            <span className="w-2.5 h-2.5 rounded-full bg-rose-500 animate-ping" />
+          {/* Subtle Pill */}
+          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-white/[0.05] border border-white/10 text-xs font-mono text-zinc-300 font-bold uppercase tracking-wider backdrop-blur-md shadow-sm">
+            <span className="w-2 h-2 rounded-full bg-rose-400 animate-ping" />
             <span>DUAL DISCORD BOT PLATFORM</span>
-          </motion.div>
+          </div>
 
-          <h1 className="text-4xl sm:text-6xl font-black text-white tracking-tight uppercase leading-[1.05]">
-            CHOOSE YOUR <br className="hidden sm:inline" />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 via-rose-500 to-fuchsia-500 drop-shadow-[0_0_25px_rgba(244,63,94,0.35)]">
+          <h1 className="text-3xl sm:text-5xl font-black text-white tracking-tight uppercase leading-none">
+            CHOOSE YOUR{" "}
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 via-rose-400 to-fuchsia-400">
               DISCORD BOT
             </span>
           </h1>
 
-          <p className="text-xs sm:text-base text-zinc-400 leading-relaxed font-normal max-w-2xl mx-auto">
-            Explore dedicated command consoles, interactive Discord simulators, full legal documentation, and launch server dashboards with seamless zoom reveal transitions.
+          <p className="text-xs sm:text-sm text-zinc-400 leading-relaxed max-w-xl mx-auto">
+            Explore dedicated command consoles, live typing simulators, full legal terms, and launch your server dashboard with seamless liquid transitions.
           </p>
         </motion.div>
 
-        {/* Dual Bot Showcase Deck (Cinematic Wide Placement) */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-10 w-full items-stretch">
+        {/* Dual Bot Showcase Deck: Sleek, Compact Cards that fit comfortably on 1080p */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 w-full max-w-6xl mx-auto items-stretch">
           
           {/* ── CARD 1: VEPLEXITY BOT ── */}
           <motion.div
-            initial={{ opacity: 0, y: 40, scale: 0.96 }}
+            initial={{ opacity: 0, y: 25, scale: 0.98 }}
             whileInView={{ opacity: 1, y: 0, scale: 1 }}
             viewport={{ once: false, amount: 0.2 }}
-            transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
-            whileHover={{ y: -6, transition: { duration: 0.25 } }}
-            className="bot-card-container rounded-[2.5rem] bg-[#10071a]/95 border-2 border-orange-500/30 hover:border-orange-500/80 transition-all duration-300 shadow-2xl hover:shadow-[0_0_50px_rgba(249,115,22,0.25)] flex flex-col justify-between overflow-hidden relative group backdrop-blur-xl"
+            transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
+            whileHover={{ y: -4, transition: { duration: 0.2 } }}
+            className="bot-card-container rounded-3xl bg-[#0d0714]/85 border border-white/[0.08] hover:border-orange-500/40 transition-all duration-300 shadow-[inset_0_1px_0_rgba(255,255,255,0.08),0_20px_50px_rgba(0,0,0,0.6)] flex flex-col justify-between overflow-hidden relative group backdrop-blur-2xl p-6 sm:p-7 space-y-6"
           >
-            {/* Top Atmospheric Gradient Accent */}
-            <div className="h-40 bg-gradient-to-b from-[#28102d] via-[#160a20] to-transparent p-6 sm:p-8 flex items-start justify-between relative overflow-hidden border-b border-orange-500/20">
-              <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_left,rgba(249,115,22,0.35),transparent_70%)] pointer-events-none" />
-              
-              {/* Real VePlexity Logo (from E:\VePlexity\vp no bg.png) */}
-              <div className="relative group/logo">
-                <div className="absolute -inset-2 rounded-3xl bg-gradient-to-r from-orange-500 to-rose-600 opacity-60 blur-lg group-hover/logo:opacity-100 transition duration-300" />
-                <div className="relative w-20 h-20 sm:w-24 sm:h-24 rounded-3xl overflow-hidden border-2 border-orange-500/60 shadow-2xl bg-[#12081f] p-2 flex items-center justify-center">
+            {/* Top Row: Unboxed Logo + Verified Title + Status */}
+            <div className="flex items-start justify-between gap-4">
+              <div className="flex items-center gap-4">
+                {/* Unboxed Crisp Logo (Zero enclosing box) */}
+                <div className="relative shrink-0 flex items-center justify-center">
                   <img 
                     src="/bots/veplexity-avatar.png" 
-                    alt="VePlexity Official Logo" 
-                    className="w-full h-full object-contain filter drop-shadow-[0_0_10px_rgba(249,115,22,0.6)] group-hover/logo:scale-110 transition-transform duration-300"
+                    alt="VePlexity Bot Logo" 
+                    className="w-16 h-16 sm:w-20 sm:h-20 object-contain filter drop-shadow-[0_10px_20px_rgba(0,0,0,0.7)] group-hover:scale-105 transition-transform duration-300"
                     onError={(e) => { e.currentTarget.src = "/vp-no-bg.png"; }}
                   />
-                  <div className="absolute bottom-1 right-1 w-3.5 h-3.5 rounded-full bg-emerald-500 border-2 border-[#10071a]" title="24/7 Lossless Online" />
+                </div>
+
+                <div className="space-y-1">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <h2 className="text-2xl sm:text-3xl font-black text-white group-hover:text-orange-400 transition-colors">
+                      VePlexity
+                    </h2>
+                    <DiscordVerifiedBadge className="w-4 h-4 sm:w-5 sm:h-5 shrink-0" />
+                    <DiscordAppPill />
+                  </div>
+                  <p className="text-xs font-mono text-zinc-400">
+                    All-in-One Community Engine • v2.0
+                  </p>
                 </div>
               </div>
 
-              <div className="flex flex-col items-end gap-2">
-                <span className="text-[11px] font-mono px-3.5 py-1 rounded-full bg-gradient-to-r from-orange-500/20 to-rose-500/20 border border-orange-500/40 text-orange-300 font-bold uppercase tracking-wider shadow-sm">
-                  ALL-IN-ONE POWERHOUSE
+              <div className="hidden sm:flex flex-col items-end shrink-0">
+                <span className="text-[10px] font-mono px-2.5 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/25 text-emerald-400 font-bold uppercase tracking-wider flex items-center gap-1.5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                  <span>Lossless VOIP Online</span>
                 </span>
-                <span className="text-[10px] font-mono text-zinc-500">ID: 1556640364448714752</span>
               </div>
             </div>
 
-            {/* Content Body */}
-            <div className="p-6 sm:p-8 flex-1 flex flex-col justify-between space-y-6">
-              <div className="space-y-3">
-                <div className="flex items-center gap-3">
-                  <h2 className="text-3xl font-black text-white group-hover:text-orange-400 transition-colors">
-                    VePlexity Bot
-                  </h2>
-                  <span className="text-xs px-2.5 py-0.5 rounded-md bg-zinc-900 border border-zinc-800 font-mono text-orange-400 font-bold">
-                    v2.0
+            {/* Description */}
+            <div className="space-y-3">
+              <p className="text-xs sm:text-sm text-zinc-300 leading-relaxed font-normal">
+                Enterprise community powerhouse featuring <strong>24/7 lossless music streaming</strong>, proactive <strong>AutoMod security</strong>, XP leveling &amp; rank cards, and <strong>Google Gemini multi-modal AI</strong>.
+              </p>
+
+              {/* 3 Sleek Pill Tags */}
+              <div className="flex flex-wrap gap-2 pt-1">
+                {[
+                  { icon: Music, label: "24/7 Lossless Audio DJ" },
+                  { icon: Lock, label: "AutoMod & Security Logs" },
+                  { icon: Bot, label: "Google Gemini 2.5 AI" },
+                ].map((feat, idx) => (
+                  <span 
+                    key={idx} 
+                    className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-white/[0.04] border border-white/[0.08] text-[11px] font-mono text-zinc-300 shadow-sm"
+                  >
+                    <feat.icon className="w-3.5 h-3.5 text-orange-400 shrink-0" />
+                    <span>{feat.label}</span>
                   </span>
-                </div>
+                ))}
+              </div>
+            </div>
 
-                <p className="text-xs sm:text-sm text-zinc-300 leading-relaxed font-normal">
-                  The complete community powerhouse. Features <strong>24/7 lossless music streaming</strong>, proactive <strong>AutoMod security</strong>, XP leveling &amp; rank cards, <strong>Google Gemini AI multi-modal chatbot</strong>, and dynamic temp voice hubs.
-                </p>
+            {/* Neo-Skeuomorphic Liquid Glass Action Buttons */}
+            <div className="space-y-3 pt-1">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <button
+                  onClick={(e) => handleExploreBot(e, "veplexity")}
+                  className="w-full py-3 px-5 rounded-xl bg-white/[0.10] hover:bg-white/[0.16] border border-white/20 hover:border-white/30 text-white text-xs font-bold transition-all flex items-center justify-center gap-2 shadow-[inset_0_1px_0_rgba(255,255,255,0.25),0_8px_20px_rgba(0,0,0,0.35)] backdrop-blur-xl active:scale-[0.98] cursor-pointer group/btn"
+                >
+                  <span className="tracking-wider uppercase">Explore Bot</span>
+                  <ChevronRight className="w-4 h-4 transition-transform group-hover/btn:translate-x-1 text-orange-400" />
+                </button>
 
-                {/* Capability Pills with Reverse Scroll Animation */}
-                <div className="grid grid-cols-2 gap-2.5 pt-2">
-                  {[
-                    { icon: Music, label: "24/7 Lossless Audio DJ" },
-                    { icon: Lock, label: "100% Free Moderation & Logs" },
-                    { icon: Award, label: "XP Leveling & Rank Cards" },
-                    { icon: Bot, label: "Google Gemini 2.5 AI" },
-                    { icon: Mic, label: "Dynamic Temp Voice Hubs" },
-                    { icon: Users, label: "Reaction Role Menus" },
-                  ].map((feat, idx) => (
-                    <div 
-                      key={idx} 
-                      className="flex items-center gap-2 p-2.5 rounded-xl bg-[#0a0413] border border-zinc-800/80 text-[11px] font-mono text-zinc-300 group-hover:border-orange-500/20 transition-colors"
-                    >
-                      <feat.icon className="w-3.5 h-3.5 text-orange-400 shrink-0" />
-                      <span className="truncate">{feat.label}</span>
-                    </div>
-                  ))}
-                </div>
+                <a
+                  href="/invite"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full py-3 px-5 rounded-xl bg-transparent hover:bg-white/[0.06] border border-white/10 hover:border-white/20 text-zinc-300 hover:text-white text-xs font-bold transition-all flex items-center justify-center gap-2 shadow-[inset_0_1px_0_rgba(255,255,255,0.08)] backdrop-blur-xl active:scale-[0.98]"
+                >
+                  <DiscordLogo className="w-4 h-4" fill="#ffffff" />
+                  <span className="tracking-wider uppercase">Add to Server</span>
+                  <ExternalLink className="w-3 h-3 text-zinc-400" />
+                </a>
               </div>
 
-              {/* Action Buttons with Hardware Zoom-In Reveal */}
-              <div className="space-y-4 pt-2">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-                  <button
-                    onClick={(e) => handleExploreBot(e, "veplexity")}
-                    className="w-full py-4 px-5 rounded-2xl bg-gradient-to-r from-orange-500 via-rose-500 to-fuchsia-600 hover:from-orange-400 hover:to-rose-500 text-white text-xs font-black transition-all flex items-center justify-center gap-2.5 shadow-xl shadow-orange-500/25 active:scale-95 group/btn cursor-pointer"
-                  >
-                    <span className="tracking-wider uppercase">Explore Bot</span>
-                    <ChevronRight className="w-4 h-4 transition-transform group-hover/btn:translate-x-1" />
-                  </button>
-
-                  <a
-                    href="/invite"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="w-full py-4 px-5 rounded-2xl bg-white/10 hover:bg-white/15 border border-white/10 text-white text-xs font-black transition-all flex items-center justify-center gap-2 hover:border-orange-500/40 active:scale-95"
-                  >
-                    <DiscordLogo className="w-4 h-4" fill="#ffffff" />
-                    <span className="tracking-wider uppercase">Add to Server</span>
-                    <ExternalLink className="w-3.5 h-3.5 text-zinc-400" />
-                  </a>
+              {/* Legal Documents Bar */}
+              <div className="flex items-center justify-between text-[11px] font-mono pt-2 text-zinc-500 border-t border-white/[0.06]">
+                <div className="flex items-center gap-3">
+                  <Link href="/discord-bot/veplexity/terms" className="hover:text-orange-400 transition-colors underline">
+                    Terms of Service
+                  </Link>
+                  <span>•</span>
+                  <Link href="/discord-bot/veplexity/privacy" className="hover:text-orange-400 transition-colors underline">
+                    Privacy Policy
+                  </Link>
                 </div>
-
-                {/* Legal Documents Bar */}
-                <div className="flex items-center justify-between text-[11px] font-mono pt-2 text-zinc-500 border-t border-zinc-800/80">
-                  <div className="flex items-center gap-3">
-                    <Link href="/discord-bot/veplexity/terms" className="hover:text-orange-400 transition-colors underline">
-                      Terms of Service
-                    </Link>
-                    <span>•</span>
-                    <Link href="/discord-bot/veplexity/privacy" className="hover:text-orange-400 transition-colors underline">
-                      Privacy Policy
-                    </Link>
-                  </div>
-                  <span className="text-zinc-600 font-semibold">100+ Commands</span>
-                </div>
+                <span className="text-zinc-500 font-medium">100+ Free Commands</span>
               </div>
             </div>
           </motion.div>
 
           {/* ── CARD 2: PINGPLEX ── */}
           <motion.div
-            initial={{ opacity: 0, y: 40, scale: 0.96 }}
+            initial={{ opacity: 0, y: 25, scale: 0.98 }}
             whileInView={{ opacity: 1, y: 0, scale: 1 }}
             viewport={{ once: false, amount: 0.2 }}
-            transition={{ duration: 0.55, delay: 0.08, ease: [0.16, 1, 0.3, 1] }}
-            whileHover={{ y: -6, transition: { duration: 0.25 } }}
-            className="bot-card-container rounded-[2.5rem] bg-[#0c0716]/95 border-2 border-fuchsia-500/30 hover:border-fuchsia-500/80 transition-all duration-300 shadow-2xl hover:shadow-[0_0_50px_rgba(217,70,239,0.25)] flex flex-col justify-between overflow-hidden relative group backdrop-blur-xl"
+            transition={{ duration: 0.45, delay: 0.08, ease: [0.16, 1, 0.3, 1] }}
+            whileHover={{ y: -4, transition: { duration: 0.2 } }}
+            className="bot-card-container rounded-3xl bg-[#0c0716]/85 border border-white/[0.08] hover:border-fuchsia-500/40 transition-all duration-300 shadow-[inset_0_1px_0_rgba(255,255,255,0.08),0_20px_50px_rgba(0,0,0,0.6)] flex flex-col justify-between overflow-hidden relative group backdrop-blur-2xl p-6 sm:p-7 space-y-6"
           >
-            {/* Top Atmospheric Gradient Accent */}
-            <div className="h-40 bg-gradient-to-b from-[#240b2d] via-[#14081c] to-transparent p-6 sm:p-8 flex items-start justify-between relative overflow-hidden border-b border-fuchsia-500/20">
-              <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(217,70,239,0.35),transparent_70%)] pointer-events-none" />
-              
-              {/* Real PingPlex Logo (from E:\VePlexity\PP.png) */}
-              <div className="relative group/logo">
-                <div className="absolute -inset-2 rounded-3xl bg-gradient-to-r from-fuchsia-600 to-purple-600 opacity-60 blur-lg group-hover/logo:opacity-100 transition duration-300" />
-                <div className="relative w-20 h-20 sm:w-24 sm:h-24 rounded-3xl overflow-hidden border-2 border-fuchsia-500/60 shadow-2xl bg-[#12081f] p-2 flex items-center justify-center">
+            {/* Top Row: Unboxed Logo + Verified Title + Status */}
+            <div className="flex items-start justify-between gap-4">
+              <div className="flex items-center gap-4">
+                {/* Unboxed Crisp Logo (Zero enclosing box) */}
+                <div className="relative shrink-0 flex items-center justify-center">
                   <img 
                     src="/bots/pingplex-avatar.png" 
-                    alt="PingPlex Official Logo" 
-                    className="w-full h-full object-contain filter drop-shadow-[0_0_10px_rgba(217,70,239,0.6)] group-hover/logo:scale-110 transition-transform duration-300"
+                    alt="PingPlex Bot Logo" 
+                    className="w-16 h-16 sm:w-20 sm:h-20 object-contain filter drop-shadow-[0_10px_20px_rgba(0,0,0,0.7)] group-hover:scale-105 transition-transform duration-300"
                     onError={(e) => { e.currentTarget.src = "/bots/pp.png"; }}
                   />
-                  <div className="absolute bottom-1 right-1 w-3.5 h-3.5 rounded-full bg-emerald-500 border-2 border-[#0c0716]" title="Render Cluster Online" />
+                </div>
+
+                <div className="space-y-1">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <h2 className="text-2xl sm:text-3xl font-black text-white group-hover:text-fuchsia-400 transition-colors">
+                      PingPlex
+                    </h2>
+                    <DiscordVerifiedBadge className="w-4 h-4 sm:w-5 sm:h-5 shrink-0" />
+                    <DiscordAppPill />
+                  </div>
+                  <p className="text-xs font-mono text-zinc-400">
+                    Creator Alerts Studio Engine
+                  </p>
                 </div>
               </div>
 
-              <div className="flex flex-col items-end gap-2">
-                <span className="text-[11px] font-mono px-3.5 py-1 rounded-full bg-fuchsia-500/15 border border-fuchsia-500/40 text-fuchsia-300 font-bold uppercase tracking-wider shadow-sm">
-                  CREATOR STREAM ALERTS
+              <div className="hidden sm:flex flex-col items-end shrink-0">
+                <span className="text-[10px] font-mono px-2.5 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/25 text-emerald-400 font-bold uppercase tracking-wider flex items-center gap-1.5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                  <span>Render Cluster Live</span>
                 </span>
-                <span className="text-[10px] font-mono text-zinc-500">ID: 1559520031916687430</span>
               </div>
             </div>
 
-            {/* Content Body */}
-            <div className="p-6 sm:p-8 flex-1 flex flex-col justify-between space-y-6">
-              <div className="space-y-3">
-                <div className="flex items-center gap-3">
-                  <h2 className="text-3xl font-black text-white group-hover:text-fuchsia-400 transition-colors">
-                    PingPlex
-                  </h2>
-                  <span className="text-xs px-2.5 py-0.5 rounded-md bg-zinc-900 border border-zinc-800 font-mono text-fuchsia-400 font-bold">
-                    Live Studio
+            {/* Description */}
+            <div className="space-y-3">
+              <p className="text-xs sm:text-sm text-zinc-300 leading-relaxed font-normal">
+                Sub-second creator alerts dispatches for <strong>YouTube uploads &amp; shorts</strong>, <strong>Twitch live streams</strong>, <strong>TikTok</strong>, <strong>X (Twitter)</strong>, and <strong>Reddit</strong> with zero paywalls.
+              </p>
+
+              {/* 3 Sleek Pill Tags */}
+              <div className="flex flex-wrap gap-2 pt-1">
+                {[
+                  { icon: Radio, label: "YouTube & Shorts Alerts" },
+                  { icon: Radio, label: "Twitch Live EventSub" },
+                  { icon: Zap, label: "100% Free Unlimited Feeds" },
+                ].map((feat, idx) => (
+                  <span 
+                    key={idx} 
+                    className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-white/[0.04] border border-white/[0.08] text-[11px] font-mono text-zinc-300 shadow-sm"
+                  >
+                    <feat.icon className="w-3.5 h-3.5 text-fuchsia-400 shrink-0" />
+                    <span>{feat.label}</span>
                   </span>
-                </div>
+                ))}
+              </div>
+            </div>
 
-                <p className="text-xs sm:text-sm text-zinc-300 leading-relaxed font-normal">
-                  The zero-delay creator alert engine. Dispatches real-time webhooks for <strong>YouTube uploads &amp; shorts</strong>, <strong>Twitch live streams</strong>, <strong>TikToks</strong>, <strong>X (Twitter)</strong>, and <strong>Reddit</strong> with zero paywalls.
-                </p>
+            {/* Neo-Skeuomorphic Liquid Glass Action Buttons */}
+            <div className="space-y-3 pt-1">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <button
+                  onClick={(e) => handleExploreBot(e, "pingplex")}
+                  className="w-full py-3 px-5 rounded-xl bg-white/[0.10] hover:bg-white/[0.16] border border-white/20 hover:border-white/30 text-white text-xs font-bold transition-all flex items-center justify-center gap-2 shadow-[inset_0_1px_0_rgba(255,255,255,0.25),0_8px_20px_rgba(0,0,0,0.35)] backdrop-blur-xl active:scale-[0.98] cursor-pointer group/btn"
+                >
+                  <span className="tracking-wider uppercase">Explore Bot</span>
+                  <ChevronRight className="w-4 h-4 transition-transform group-hover/btn:translate-x-1 text-fuchsia-400" />
+                </button>
 
-                {/* Capability Pills with Reverse Scroll Animation */}
-                <div className="grid grid-cols-2 gap-2.5 pt-2">
-                  {[
-                    { icon: Radio, label: "YouTube Upload & Shorts" },
-                    { icon: Radio, label: "Twitch Live Webhooks" },
-                    { icon: Radio, label: "TikTok Video Alerts" },
-                    { icon: Radio, label: "X (Twitter) Feed Sync" },
-                    { icon: Radio, label: "Subreddit Monitors" },
-                    { icon: Zap, label: "100% Free Unlimited Feeds" },
-                  ].map((feat, idx) => (
-                    <div 
-                      key={idx} 
-                      className="flex items-center gap-2 p-2.5 rounded-xl bg-[#090412] border border-zinc-800/80 text-[11px] font-mono text-zinc-300 group-hover:border-fuchsia-500/20 transition-colors"
-                    >
-                      <feat.icon className="w-3.5 h-3.5 text-fuchsia-400 shrink-0" />
-                      <span className="truncate">{feat.label}</span>
-                    </div>
-                  ))}
-                </div>
+                <a
+                  href="/invite/pingplex"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full py-3 px-5 rounded-xl bg-transparent hover:bg-white/[0.06] border border-white/10 hover:border-white/20 text-zinc-300 hover:text-white text-xs font-bold transition-all flex items-center justify-center gap-2 shadow-[inset_0_1px_0_rgba(255,255,255,0.08)] backdrop-blur-xl active:scale-[0.98]"
+                >
+                  <DiscordLogo className="w-4 h-4" fill="#ffffff" />
+                  <span className="tracking-wider uppercase">Add to Server</span>
+                  <ExternalLink className="w-3 h-3 text-zinc-400" />
+                </a>
               </div>
 
-              {/* Action Buttons with Hardware Zoom-In Reveal */}
-              <div className="space-y-4 pt-2">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-                  <button
-                    onClick={(e) => handleExploreBot(e, "pingplex")}
-                    className="w-full py-4 px-5 rounded-2xl bg-gradient-to-r from-fuchsia-600 via-purple-600 to-rose-600 hover:from-fuchsia-500 hover:to-purple-500 text-white text-xs font-black transition-all flex items-center justify-center gap-2.5 shadow-xl shadow-fuchsia-600/25 active:scale-95 group/btn cursor-pointer"
-                  >
-                    <span className="tracking-wider uppercase">Explore Bot</span>
-                    <ChevronRight className="w-4 h-4 transition-transform group-hover/btn:translate-x-1" />
-                  </button>
-
-                  <a
-                    href="/invite/pingplex"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="w-full py-4 px-5 rounded-2xl bg-white/10 hover:bg-white/15 border border-white/10 text-white text-xs font-black transition-all flex items-center justify-center gap-2 hover:border-fuchsia-500/40 active:scale-95"
-                  >
-                    <DiscordLogo className="w-4 h-4" fill="#ffffff" />
-                    <span className="tracking-wider uppercase">Add to Server</span>
-                    <ExternalLink className="w-3.5 h-3.5 text-zinc-400" />
-                  </a>
+              {/* Legal Documents Bar */}
+              <div className="flex items-center justify-between text-[11px] font-mono pt-2 text-zinc-500 border-t border-white/[0.06]">
+                <div className="flex items-center gap-3">
+                  <Link href="/discord-bot/pingplex/terms" className="hover:text-fuchsia-400 transition-colors underline">
+                    Terms of Service
+                  </Link>
+                  <span>•</span>
+                  <Link href="/discord-bot/pingplex/privacy" className="hover:text-fuchsia-400 transition-colors underline">
+                    Privacy Policy
+                  </Link>
                 </div>
-
-                {/* Legal Documents Bar */}
-                <div className="flex items-center justify-between text-[11px] font-mono pt-2 text-zinc-500 border-t border-zinc-800/80">
-                  <div className="flex items-center gap-3">
-                    <Link href="/discord-bot/pingplex/terms" className="hover:text-fuchsia-400 transition-colors underline">
-                      Terms of Service
-                    </Link>
-                    <span>•</span>
-                    <Link href="/discord-bot/pingplex/privacy" className="hover:text-fuchsia-400 transition-colors underline">
-                      Privacy Policy
-                    </Link>
-                  </div>
-                  <span className="text-zinc-600 font-semibold">Free Multi-Feed</span>
-                </div>
+                <span className="text-zinc-500 font-medium">Free Multi-Feed</span>
               </div>
             </div>
           </motion.div>
@@ -332,19 +316,19 @@ export default function DiscordBotsHubPage() {
 
         {/* Global Legal Documents Card Overview */}
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: false, amount: 0.25 }}
-          transition={{ duration: 0.5 }}
-          className="p-6 sm:p-8 rounded-3xl bg-[#0c0514]/90 border border-zinc-800 grid grid-cols-1 md:grid-cols-2 gap-6 relative overflow-hidden"
+          viewport={{ once: false, amount: 0.2 }}
+          transition={{ duration: 0.45 }}
+          className="max-w-6xl mx-auto w-full p-6 sm:p-7 rounded-3xl bg-[#0c0514]/75 border border-white/[0.07] grid grid-cols-1 md:grid-cols-2 gap-6 relative overflow-hidden backdrop-blur-xl shadow-lg"
         >
           <div className="space-y-2">
-            <div className="flex items-center gap-2 text-orange-400 text-sm font-bold uppercase font-mono">
+            <div className="flex items-center gap-2 text-orange-400 text-xs font-bold uppercase font-mono">
               <Shield className="w-4 h-4" />
               <span>VEPLEXITY LEGAL ARCHITECTURE</span>
             </div>
             <p className="text-xs text-zinc-400 leading-relaxed">
-              Full terms governing lossless VOIP DSP usage, Google Gemini multi-modal conversational AI, and encrypted MongoDB Atlas XP progression retention.
+              Full terms governing 24/7 lossless audio streaming, Google Gemini multi-modal conversational AI, AutoMod moderation, and encrypted database retention.
             </p>
             <div className="flex gap-4 pt-1 text-xs font-mono">
               <Link href="/discord-bot/veplexity/terms" className="text-orange-400 hover:text-orange-300 underline font-bold">
@@ -357,7 +341,7 @@ export default function DiscordBotsHubPage() {
           </div>
 
           <div className="space-y-2">
-            <div className="flex items-center gap-2 text-fuchsia-400 text-sm font-bold uppercase font-mono">
+            <div className="flex items-center gap-2 text-fuchsia-400 text-xs font-bold uppercase font-mono">
               <Radio className="w-4 h-4" />
               <span>PINGPLEX LEGAL ARCHITECTURE</span>
             </div>
@@ -377,15 +361,15 @@ export default function DiscordBotsHubPage() {
 
         {/* Bottom BMC Support Banner */}
         <motion.div 
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 15 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: false, amount: 0.3 }}
           transition={{ duration: 0.45 }}
-          className="p-5 sm:p-6 rounded-2xl bg-[#0d0716] border border-[#FFDD00]/25 flex flex-col sm:flex-row items-center justify-between gap-4"
+          className="max-w-6xl mx-auto w-full p-4 sm:p-5 rounded-2xl bg-white/[0.03] border border-white/[0.08] flex flex-col sm:flex-row items-center justify-between gap-4 backdrop-blur-xl"
         >
           <div className="flex items-center gap-3 text-center sm:text-left">
-            <div className="w-10 h-10 rounded-xl bg-[#FFDD00]/10 border border-[#FFDD00]/30 flex items-center justify-center shrink-0">
-              <img src="/bmc/SVG Files/bmc-logo.svg" alt="BMC" className="w-5 h-5 object-contain" />
+            <div className="w-9 h-9 rounded-xl bg-[#FFDD00]/10 border border-[#FFDD00]/30 flex items-center justify-center shrink-0">
+              <img src="/bmc/SVG Files/bmc-logo.svg" alt="BMC" className="w-4 h-4 object-contain" />
             </div>
             <div>
               <p className="text-xs font-bold text-white">Support 24/7 Hosting Nodes &amp; Zero Paywall Feeds</p>
@@ -398,7 +382,7 @@ export default function DiscordBotsHubPage() {
             rel="noopener noreferrer"
             className="hover:scale-105 transition-transform shrink-0"
           >
-            <img src="/bmc/SVG Files/bmc-button.svg" alt="Buy Me A Coffee" className="h-9 w-auto rounded-lg" />
+            <img src="/bmc/SVG Files/bmc-button.svg" alt="Buy Me A Coffee" className="h-8 w-auto rounded-lg" />
           </a>
         </motion.div>
       </main>
