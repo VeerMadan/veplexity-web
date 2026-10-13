@@ -257,8 +257,8 @@ export default function VePlexityBotServerSelectPage() {
 
       {/* Toast Alert */}
       {toast && (
-        <div className="fixed top-5 right-5 z-50 px-4 py-2.5 rounded-xl border bg-zinc-900 border-emerald-500/50 text-emerald-300 text-xs font-bold flex items-center gap-2 shadow-xl">
-          <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+        <div className="fixed top-5 right-5 z-50 px-4 py-2.5 rounded-xl border bg-zinc-900 border-rose-500/50 text-rose-300 text-xs font-bold flex items-center gap-2 shadow-xl">
+          <CheckCircle2 className="w-4 h-4 text-rose-400 shrink-0" />
           <span>{toast}</span>
         </div>
       )}
@@ -390,13 +390,13 @@ export default function VePlexityBotServerSelectPage() {
                           handleManageClick(e, guild);
                         }
                       }}
-                      className={`rounded-2xl bg-[#0d0f17] overflow-hidden flex flex-col justify-between group border border-zinc-800/80 hover:border-blue-500/50 hover:shadow-2xl hover:shadow-blue-500/10 transition-all duration-300 relative ${
+                      className={`rounded-2xl bg-[#0e0817] overflow-hidden flex flex-col justify-between group border border-zinc-800/80 hover:border-rose-500/50 hover:shadow-2xl hover:shadow-rose-500/10 transition-all duration-300 relative ${
                         isConnected ? "cursor-pointer" : ""
                       }`}
                     >
                       {/* Top Ambient Backdrop */}
-                      <div className="h-24 bg-gradient-to-b from-[#101426] via-[#0d101e] to-[#0d0f17] border-b border-zinc-800/50 relative overflow-hidden">
-                        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(59,130,246,0.18),transparent_70%)] pointer-events-none" />
+                      <div className="h-24 bg-gradient-to-b from-[#221028] via-[#160b1e] to-[#0e0817] border-b border-zinc-800/50 relative overflow-hidden">
+                        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(244,63,94,0.18),transparent_70%)] pointer-events-none" />
                         
                         <div className="absolute top-3 inset-x-3.5 flex items-center justify-between z-10">
                           <span className="text-[10px] font-mono uppercase tracking-wider text-zinc-500 font-bold">
@@ -404,8 +404,8 @@ export default function VePlexityBotServerSelectPage() {
                           </span>
                           
                           {isConnected ? (
-                            <span className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-blue-500/15 border border-blue-500/40 text-blue-400 font-mono text-[10px] font-black shadow-xs">
-                              <span className="w-1.5 h-1.5 rounded-full bg-blue-400 animate-pulse" />
+                            <span className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-gradient-to-r from-orange-500/15 to-rose-500/15 border border-rose-500/40 text-rose-300 font-mono text-[10px] font-black shadow-xs">
+                              <span className="w-1.5 h-1.5 rounded-full bg-rose-400 animate-pulse" />
                               VEPLEXITY ACTIVE
                             </span>
                           ) : (
@@ -419,7 +419,7 @@ export default function VePlexityBotServerSelectPage() {
                       {/* Avatar Bezel */}
                       <div className="relative z-10 flex flex-col items-center px-5 pb-5 pt-0 -mt-12 text-center flex-1 justify-between gap-4">
                         <div className="flex flex-col items-center gap-3 w-full">
-                          <div className="w-20 h-20 sm:w-22 sm:h-22 rounded-2xl bg-[#121522] border-2 border-zinc-700/80 group-hover:border-blue-500/70 shadow-2xl overflow-hidden flex items-center justify-center font-bold text-xl text-zinc-200 shrink-0 relative z-20 group-hover:scale-105 transition-all duration-300 p-1">
+                          <div className="w-20 h-20 sm:w-22 sm:h-22 rounded-2xl bg-[#190f26] border-2 border-zinc-700/80 group-hover:border-rose-500/70 shadow-2xl overflow-hidden flex items-center justify-center font-bold text-xl text-zinc-200 shrink-0 relative z-20 group-hover:scale-105 transition-all duration-300 p-1">
                             {guild.iconUrl ? (
                               <img
                                 src={guild.iconUrl}
@@ -438,7 +438,7 @@ export default function VePlexityBotServerSelectPage() {
 
                           <div className="space-y-1.5 w-full">
                             <h3
-                              className="font-black text-base text-white group-hover:text-blue-300 transition-colors truncate max-w-full tracking-tight"
+                              className="font-black text-base text-white group-hover:text-rose-300 transition-colors truncate max-w-full tracking-tight"
                               title={guild.name}
                             >
                               {guild.name}
@@ -452,7 +452,7 @@ export default function VePlexityBotServerSelectPage() {
                           </div>
 
                           {/* Features */}
-                          <div className="w-full py-2 px-3 rounded-xl bg-[#090b12] border border-zinc-800/60 flex items-center justify-around text-[11px] font-mono text-zinc-400">
+                          <div className="w-full py-2 px-3 rounded-xl bg-[#0a0512] border border-zinc-800/60 flex items-center justify-around text-[11px] font-mono text-zinc-400">
                             <span title="24/7 Lossless Audio">🎵 Audio</span>
                             <span className="text-zinc-700">•</span>
                             <span title="AutoMod Security">🛡️ Mod</span>
@@ -468,7 +468,7 @@ export default function VePlexityBotServerSelectPage() {
                           {isConnected ? (
                             <button
                               onClick={(e) => handleManageClick(e, guild)}
-                              className="w-full py-2.5 px-4 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-black transition-all flex items-center justify-between cursor-pointer shadow-lg hover:shadow-blue-500/25 active:scale-98 group/btn"
+                              className="w-full py-2.5 px-4 rounded-xl bg-gradient-to-r from-orange-500 via-rose-500 to-fuchsia-600 hover:from-orange-400 hover:to-rose-500 text-white text-xs font-black transition-all flex items-center justify-between cursor-pointer shadow-lg hover:shadow-rose-500/25 active:scale-98 group/btn"
                             >
                               <span className="tracking-wider uppercase">LAUNCH CONSOLE</span>
                               <div className="w-6 h-6 rounded-full bg-white/20 flex items-center justify-center transition-transform group-hover/btn:translate-x-1">
@@ -483,18 +483,18 @@ export default function VePlexityBotServerSelectPage() {
                               onClick={() => handleInviteClick(guild.id, guild.name)}
                               className={`w-full py-2.5 px-4 rounded-xl text-xs font-black transition-all flex items-center justify-between cursor-pointer ${
                                 pendingGuildId === guild.id
-                                  ? "bg-zinc-900 border border-[#5865F2] text-[#5865F2] animate-pulse"
-                                  : "bg-blue-600/20 hover:bg-blue-600/30 text-blue-300 border border-blue-500/40 shadow-sm"
+                                  ? "bg-zinc-900 border border-rose-500 text-rose-400 animate-pulse"
+                                  : "bg-rose-500/15 hover:bg-rose-500/25 text-rose-300 border border-rose-500/40 shadow-sm"
                               }`}
                             >
                               <span className="tracking-wider uppercase">
                                 {pendingGuildId === guild.id ? "DETECTING BOT..." : "INVITE VEPLEXITY BOT"}
                               </span>
-                              <div className="w-6 h-6 rounded-full bg-blue-500/20 flex items-center justify-center">
+                              <div className="w-6 h-6 rounded-full bg-rose-500/20 flex items-center justify-center">
                                 {pendingGuildId === guild.id ? (
-                                  <RefreshCw className="w-3 h-3 animate-spin text-blue-300" />
+                                  <RefreshCw className="w-3 h-3 animate-spin text-rose-300" />
                                 ) : (
-                                  <Plus className="w-3.5 h-3.5 text-blue-300 stroke-[3]" />
+                                  <Plus className="w-3.5 h-3.5 text-rose-300 stroke-[3]" />
                                 )}
                               </div>
                             </a>

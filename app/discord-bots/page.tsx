@@ -13,17 +13,17 @@ export default function DiscordBotsHubPage() {
   const { data: session } = useSession();
 
   return (
-    <main className="min-h-screen bg-[#090a0f] text-zinc-100 flex flex-col font-sans relative overflow-hidden">
+    <main className="min-h-screen bg-[#0a0512] text-zinc-100 flex flex-col font-sans relative overflow-hidden">
       {/* Background Ambient Glows */}
-      <div className="absolute top-0 left-1/4 w-96 h-96 bg-blue-600/10 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute top-20 right-1/4 w-96 h-96 bg-fuchsia-600/10 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute top-0 left-1/4 w-96 h-96 bg-orange-600/10 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute top-20 right-1/4 w-96 h-96 bg-rose-600/10 rounded-full blur-3xl pointer-events-none" />
 
       {/* Top Header */}
-      <header className="border-b border-zinc-800/80 bg-[#0c0d14]/90 backdrop-blur-md sticky top-0 z-40">
+      <header className="border-b border-zinc-800/80 bg-[#0c0714]/90 backdrop-blur-md sticky top-0 z-40">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <Link href="/" className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-lg bg-[#141620] border border-zinc-700/60 p-1 flex items-center justify-center">
+              <div className="w-8 h-8 rounded-lg bg-[#140b20] border border-orange-500/30 p-1 flex items-center justify-center">
                 <img 
                   src="/vp-logo-icon.png" 
                   alt="VP" 
@@ -71,7 +71,7 @@ export default function DiscordBotsHubPage() {
         {/* Title & Directive */}
         <div className="text-center space-y-3 max-w-2xl mx-auto">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-zinc-900 border border-zinc-800 text-xs font-mono text-zinc-300">
-            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+            <span className="w-2 h-2 rounded-full bg-rose-400 animate-pulse" />
             <span>DUAL DISCORD ECOSYSTEM</span>
           </div>
           <h1 className="text-3xl sm:text-5xl font-black text-white tracking-tight uppercase">
@@ -90,17 +90,17 @@ export default function DiscordBotsHubPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
             whileHover={{ y: -6, transition: { duration: 0.2 } }}
-            className="rounded-3xl bg-[#0d0f17] border border-zinc-800 hover:border-blue-500/50 flex flex-col justify-between overflow-hidden relative shadow-2xl group transition-all"
+            className="rounded-3xl bg-[#120a1d] border border-zinc-800/80 hover:border-rose-500/50 flex flex-col justify-between overflow-hidden relative shadow-2xl group transition-all"
           >
             {/* Top Accent Backdrop */}
-            <div className="h-32 bg-gradient-to-b from-blue-950/40 via-blue-950/10 to-transparent p-6 flex items-start justify-between relative overflow-hidden border-b border-zinc-800/50">
-              <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_left,rgba(59,130,246,0.2),transparent_70%)] pointer-events-none" />
+            <div className="h-32 bg-gradient-to-b from-[#221028] via-[#160b1e] to-transparent p-6 flex items-start justify-between relative overflow-hidden border-b border-zinc-800/50">
+              <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_left,rgba(244,63,94,0.22),transparent_70%)] pointer-events-none" />
               
-              <div className="w-14 h-14 rounded-2xl bg-blue-500/10 border-2 border-blue-500/30 flex items-center justify-center text-blue-400 shadow-xl group-hover:scale-105 transition-transform">
+              <div className="w-14 h-14 rounded-2xl bg-rose-500/10 border-2 border-rose-500/30 flex items-center justify-center text-rose-400 shadow-xl group-hover:scale-105 transition-transform">
                 <Shield className="w-7 h-7" />
               </div>
 
-              <span className="text-[10px] font-mono px-3 py-1 rounded-full bg-blue-500/15 border border-blue-500/40 text-blue-300 font-bold uppercase tracking-wider">
+              <span className="text-[10px] font-mono px-3 py-1 rounded-full bg-gradient-to-r from-orange-500/20 to-rose-500/20 border border-rose-500/40 text-rose-300 font-bold uppercase tracking-wider">
                 ALL-IN-ONE POWERHOUSE
               </span>
             </div>
@@ -109,7 +109,7 @@ export default function DiscordBotsHubPage() {
             <div className="p-6 sm:p-8 flex-1 flex flex-col justify-between space-y-6">
               <div className="space-y-3">
                 <div className="flex items-center gap-2">
-                  <h2 className="text-2xl font-black text-white group-hover:text-blue-300 transition-colors">
+                  <h2 className="text-2xl font-black text-white group-hover:text-rose-300 transition-colors">
                     VePlexity Bot
                   </h2>
                   <span className="text-xs px-2 py-0.5 rounded bg-zinc-900 border border-zinc-800 font-mono text-zinc-400 font-semibold">
@@ -130,8 +130,8 @@ export default function DiscordBotsHubPage() {
                     { icon: Bot, label: "Gemini AI Chatbot" },
                     { icon: Mic, label: "Dynamic Temp Voice Hubs" },
                   ].map((feat, idx) => (
-                    <div key={idx} className="flex items-center gap-2 p-2 rounded-xl bg-[#090b12] border border-zinc-800/80 text-[11px] font-mono text-zinc-300">
-                      <feat.icon className="w-3.5 h-3.5 text-blue-400 shrink-0" />
+                    <div key={idx} className="flex items-center gap-2 p-2 rounded-xl bg-[#0a0512] border border-zinc-800/80 text-[11px] font-mono text-zinc-300">
+                      <feat.icon className="w-3.5 h-3.5 text-orange-400 shrink-0" />
                       <span className="truncate">{feat.label}</span>
                     </div>
                   ))}
@@ -142,7 +142,7 @@ export default function DiscordBotsHubPage() {
               <div className="space-y-3 pt-2">
                 <Link
                   href="/discord-bots/veplexity"
-                  className="w-full py-3.5 px-5 rounded-2xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-black transition-all flex items-center justify-between shadow-lg shadow-blue-600/25 active:scale-98 group/btn"
+                  className="w-full py-3.5 px-5 rounded-2xl bg-gradient-to-r from-orange-500 via-rose-500 to-fuchsia-600 hover:from-orange-400 hover:to-rose-500 text-white text-xs font-black transition-all flex items-center justify-between shadow-lg shadow-rose-500/25 active:scale-98 group/btn"
                 >
                   <span className="tracking-wider uppercase">MANAGE VEPLEXITY BOT</span>
                   <div className="w-7 h-7 rounded-full bg-white/20 flex items-center justify-center transition-transform group-hover/btn:translate-x-1">
@@ -155,7 +155,7 @@ export default function DiscordBotsHubPage() {
                     href="/invite"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-zinc-500 hover:text-blue-400 transition-colors font-mono font-semibold flex items-center gap-1"
+                    className="text-zinc-500 hover:text-rose-400 transition-colors font-mono font-semibold flex items-center gap-1"
                   >
                     <span>Direct Bot Invite</span>
                     <ExternalLink className="w-3 h-3" />
@@ -224,7 +224,7 @@ export default function DiscordBotsHubPage() {
               <div className="space-y-3 pt-2">
                 <Link
                   href="/discord-bots/pingplex"
-                  className="w-full py-3.5 px-5 rounded-2xl bg-fuchsia-600 hover:bg-fuchsia-500 text-white text-xs font-black transition-all flex items-center justify-between shadow-lg shadow-fuchsia-600/25 active:scale-98 group/btn"
+                  className="w-full py-3.5 px-5 rounded-2xl bg-gradient-to-r from-fuchsia-600 via-purple-600 to-rose-600 hover:from-fuchsia-500 hover:to-purple-500 text-white text-xs font-black transition-all flex items-center justify-between shadow-lg shadow-fuchsia-600/25 active:scale-98 group/btn"
                 >
                   <span className="tracking-wider uppercase">MANAGE PINGPLEX</span>
                   <div className="w-7 h-7 rounded-full bg-white/20 flex items-center justify-center transition-transform group-hover/btn:translate-x-1">

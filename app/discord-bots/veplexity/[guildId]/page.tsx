@@ -18,7 +18,6 @@ import { AutoModDefenseSimulator } from "@/app/dashboard/[guildId]/components/Au
 import { MusicDjStudio } from "@/app/dashboard/[guildId]/components/MusicDjStudio";
 import { RankCardStudio } from "@/app/dashboard/[guildId]/components/RankCardStudio";
 import { ServerDestinationReveal } from "@/app/components/ServerRevealTransition";
-import { SocialAlertsStudio, NotificationsConfig, SocialPlatformConfig } from "@/app/dashboard/[guildId]/components/SocialAlertsStudio";
 import { ServerOverviewTab, OverviewModuleItem } from "@/app/dashboard/[guildId]/components/ServerOverviewTab";
 import { dashboardAudio } from "@/lib/dashboardAudio";
 import { DiscordLogo, BmcCupIcon } from "@/app/components/BrandIcons";
@@ -162,7 +161,6 @@ interface GuildConfig {
   birthday?: {
     channelId?: string | null;
   } | null;
-  notifications?: NotificationsConfig;
 }
 
 interface GuildDetails {
@@ -190,7 +188,6 @@ interface GuildDetails {
 
 type TabType = 
   | "overview" 
-  | "notifications"
   | "moderation" 
   | "logging" 
   | "automod" 
@@ -225,54 +222,12 @@ function GuildDashboardInner({ params }: { params: Promise<{ guildId: string }> 
   const [toast, setToast] = useState<{ message: string; type: "success" | "error" } | null>(null);
   const [soundOn, setSoundOn] = useState(dashboardAudio.enabled);
 
-  // Gating & PingPlex mode states
+  // Gating & Error states
   const [notInvited, setNotInvited] = useState(false);
   const [fetchError, setFetchError] = useState<string | null>(null);
-  const [forceBotMode, setForceBotMode] = useState<"veplexity" | "pingplex" | null>(null);
 
-  const isPingPlexOnlyServer = Boolean(guild?.bots?.pingplex && !guild?.bots?.veplexity);
-  const isPingPlexMode = isPingPlexOnlyServer || (forceBotMode ? forceBotMode === "pingplex" : botParam === "pingplex");
-
-  useEffect(() => {
-    if (botParam === "pingplex") {
-      setActiveTab("notifications");
-    }
-  }, [botParam]);
-
-  // Smooth Reveal Pill Animation State
+  // Smooth Reveal Animation State
   const [revealActive, setRevealActive] = useState(true);
-
-  // Social Media Alerts (Pingcord) State
-  const [notificationsConfig, setNotificationsConfig] = useState<NotificationsConfig>({
-    enabled: true,
-    channelId: null,
-    pingRole: "@everyone",
-    youtube: {
-      enabled: true,
-      target: "https://youtube.com/@VePlexity",
-      message: "🔴 **{author}** just uploaded a new video: **{title}**!\nWatch here: {url}",
-    },
-    twitch: {
-      enabled: true,
-      target: "veplexity_live",
-      message: "🟣 **{author}** is now LIVE on Twitch streaming **{game}**!\nWatch stream: {url}",
-    },
-    tiktok: {
-      enabled: false,
-      target: "@veplexity",
-      message: "🎵 New TikTok from **{author}**!\nCheck it out: {url}",
-    },
-    twitter: {
-      enabled: false,
-      target: "@VePlexityBot",
-      message: "🐦 **{author}** just posted on X:\n\n{title}\n{url}",
-    },
-    reddit: {
-      enabled: false,
-      target: "r/discordapp",
-      message: "🤖 New post in **{subreddit}** by **{author}**:\n**{title}**\n{url}",
-    },
-  });
 
   // Form State
   const [modRoles, setModRoles] = useState<string[]>([]);
@@ -610,10 +565,6 @@ function GuildDashboardInner({ params }: { params: Promise<{ guildId: string }> 
     setRewardsNotificationType(rNotifType);
     setRewardsChannel(rNotifCh);
 
-    if (cfg.notifications) {
-      setNotificationsConfig(cfg.notifications);
-    }
-
     const snap = JSON.stringify({
       mRoles, mLog, logChans, suggChan,
       levEn, levCh, levMsg, levXp,
@@ -637,8 +588,7 @@ function GuildDashboardInner({ params }: { params: Promise<{ guildId: string }> 
       trCd,
       trMinLen,
       rNotifType,
-      rNotifCh,
-      notifCfg: cfg.notifications || notificationsConfig
+      rNotifCh
     });
     setInitialSnapshot(snap);
   };
@@ -697,8 +647,7 @@ function GuildDashboardInner({ params }: { params: Promise<{ guildId: string }> 
       trCd: textCooldownSeconds,
       trMinLen: minMessageLength,
       rNotifType: rewardsNotificationType,
-      rNotifCh: rewardsChannel,
-      notifCfg: notificationsConfig
+      rNotifCh: rewardsChannel
     });
   }, [
     modRoles, modLogChannel, loggingChannels, suggestionsChannel,
@@ -715,8 +664,7 @@ function GuildDashboardInner({ params }: { params: Promise<{ guildId: string }> 
     autoResponders,
     rewardsEnabled, voiceRewardsEnabled, voiceMilestones, voiceMinMembers, ignoreDeafMute,
     textRewardsEnabled, textMilestones, textCooldownSeconds, minMessageLength,
-    rewardsNotificationType, rewardsChannel,
-    notificationsConfig
+    rewardsNotificationType, rewardsChannel
   ]);
 
   const hasUnsavedChanges = useMemo(() => {
@@ -859,8 +807,7 @@ function GuildDashboardInner({ params }: { params: Promise<{ guildId: string }> 
           style: rrStyle,
           items: rrItems.filter((i) => i.roleId)
         },
-        autoResponders: autoResponders,
-        notifications: notificationsConfig
+        autoResponders: autoResponders
       };
 
       const res = await fetch(`/api/bot/guilds/${guildId}`, {
@@ -880,20 +827,6 @@ function GuildDashboardInner({ params }: { params: Promise<{ guildId: string }> 
       showToast(err.message || "Failed to save configuration", "error");
     } finally {
       setSaving(false);
-    }
-  };
-
-  const handleSendTestNotification = async (platform: string, channelId: string) => {
-    try {
-      const res = await fetch(`/api/bot/guilds/${guildId}/notifications/test`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ platform, channelId }),
-      });
-      const data = await res.json();
-      showToast(data.message || `Test alert dispatched to #${channelId}!`);
-    } catch (e: any) {
-      showToast(e.message || "Failed to dispatch test notification", "error");
     }
   };
 
@@ -1114,7 +1047,6 @@ function GuildDashboardInner({ params }: { params: Promise<{ guildId: string }> 
   // Active module labels mapping
   const MODULE_TITLES: Record<TabType, string> = {
     overview: "Server Overview",
-    notifications: "Social Media Alerts & Streams (Pingcord)",
     moderation: "Bot Masters & Moderator Roles",
     logging: "Audit & Logging Channels",
     automod: "Auto-Mod Security Shield",
@@ -1141,9 +1073,9 @@ function GuildDashboardInner({ params }: { params: Promise<{ guildId: string }> 
       desc: "Custom welcome cards, join announcements, departure logs, and instant auto-roles.",
       category: "essentials",
       categoryLabel: "Essentials",
-      accentColor: "emerald",
+      accentColor: "rose",
       icon: Bell,
-      bgColor: "bg-emerald-500/10 text-emerald-400 border-emerald-500/20",
+      bgColor: "bg-rose-500/10 text-rose-400 border-rose-500/20",
       active: welcomeEnabled,
       onToggle: (val: boolean) => setWelcomeEnabled(val),
     },
@@ -1285,20 +1217,6 @@ function GuildDashboardInner({ params }: { params: Promise<{ guildId: string }> 
       onToggle: () => setActiveTab("logging"),
     },
     {
-      id: "notifications",
-      name: "Social Alerts (Pingcord)",
-      desc: "Automated stream alerts for YouTube, Twitch, TikTok, X, and Reddit.",
-      category: "social",
-      categoryLabel: "Social Alerts",
-      accentColor: "purple",
-      icon: Radio,
-      bgColor: "bg-purple-500/10 text-purple-400 border-purple-500/20",
-      active: notificationsConfig.enabled,
-      onToggle: (val: boolean) => {
-        setNotificationsConfig({ ...notificationsConfig, enabled: val });
-      },
-    },
-    {
       id: "music",
       name: "Music & DJ Audio (24/7)",
       desc: "Lossless 24/7 high-fidelity music streaming, equalizers, and DJ controls.",
@@ -1316,9 +1234,9 @@ function GuildDashboardInner({ params }: { params: Promise<{ guildId: string }> 
       desc: "Dynamic join-to-create temporary voice channels that automatically delete when empty.",
       category: "utilities",
       categoryLabel: "Utilities",
-      accentColor: "emerald",
+      accentColor: "rose",
       icon: Mic,
-      bgColor: "bg-emerald-500/10 text-emerald-400 border-emerald-500/20",
+      bgColor: "bg-rose-500/10 text-rose-400 border-rose-500/20",
       active: Boolean(tempVcHub),
       onToggle: () => setActiveTab("tempvc"),
     },
@@ -1349,11 +1267,11 @@ function GuildDashboardInner({ params }: { params: Promise<{ guildId: string }> 
         <div
           className={`fixed top-4 right-4 z-50 px-4 py-2.5 rounded-lg border text-xs font-semibold flex items-center gap-2.5 shadow-xl transition-all ${
             toast.type === "success"
-              ? "bg-[#0b1c14] border-emerald-500/40 text-emerald-300"
+              ? "bg-[#180a22] border-rose-500/40 text-rose-300"
               : "bg-[#240e13] border-rose-500/40 text-rose-300"
           }`}
         >
-          {toast.type === "success" ? <CheckCircle2 className="w-4 h-4 text-emerald-400" /> : <AlertCircle className="w-4 h-4 text-rose-400" />}
+          {toast.type === "success" ? <CheckCircle2 className="w-4 h-4 text-rose-400" /> : <AlertCircle className="w-4 h-4 text-rose-400" />}
           <span>{toast.message}</span>
         </div>
       )}
@@ -1410,7 +1328,7 @@ function GuildDashboardInner({ params }: { params: Promise<{ guildId: string }> 
             }`}
             title="Toggle Dashboard Sound Effects"
           >
-            {soundOn ? <Volume2 className="w-3.5 h-3.5 text-emerald-400" /> : <VolumeX className="w-3.5 h-3.5 text-zinc-500" />}
+            {soundOn ? <Volume2 className="w-3.5 h-3.5 text-rose-400" /> : <VolumeX className="w-3.5 h-3.5 text-zinc-500" />}
             <span className="hidden md:inline text-[11px] font-semibold">
               {soundOn ? "SFX ON" : "SFX MUTED"}
             </span>
@@ -1442,7 +1360,7 @@ function GuildDashboardInner({ params }: { params: Promise<{ guildId: string }> 
             disabled={saving || !hasUnsavedChanges}
             className={`py-1.5 px-3.5 sm:px-4 rounded-md font-semibold text-xs sm:text-sm transition flex items-center gap-2 ${
               hasUnsavedChanges
-                ? "bg-emerald-500 hover:bg-emerald-600 text-zinc-950 font-bold cursor-pointer shadow-sm"
+                ? "bg-gradient-to-r from-orange-500 via-rose-500 to-fuchsia-600 hover:from-orange-400 hover:to-rose-500 text-white font-bold cursor-pointer shadow-md shadow-rose-500/25 active:scale-98"
                 : "bg-zinc-800 text-zinc-500 border border-zinc-700/60 cursor-not-allowed opacity-60"
             }`}
           >
@@ -1465,15 +1383,15 @@ function GuildDashboardInner({ params }: { params: Promise<{ guildId: string }> 
                 }}
                 className={`w-full text-left px-3 py-2 rounded-lg text-xs font-semibold flex items-center justify-between transition-all cursor-pointer select-none ${
                   activeTab === "overview"
-                    ? "bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 shadow-xs"
+                    ? "bg-rose-500/15 text-rose-300 border border-rose-500/30 shadow-xs"
                     : "text-zinc-400 hover:text-white hover:bg-zinc-800/60 border border-transparent"
                 }`}
               >
                 <div className="flex items-center gap-2.5">
                   {activeTab === "overview" && (
-                    <span className="w-1 h-4 rounded-full bg-emerald-400 shrink-0" />
+                    <span className="w-1 h-4 rounded-full bg-rose-400 shrink-0" />
                   )}
-                  <Layers className={`w-4 h-4 shrink-0 ${activeTab === "overview" ? "text-emerald-400" : "text-zinc-500"}`} />
+                  <Layers className={`w-4 h-4 shrink-0 ${activeTab === "overview" ? "text-rose-400" : "text-zinc-500"}`} />
                   <span className="text-xs font-bold">Server Overview</span>
                 </div>
               </button>
@@ -1485,17 +1403,6 @@ function GuildDashboardInner({ params }: { params: Promise<{ guildId: string }> 
               </p>
               <nav className="space-y-0.5">
                 {[
-                  {
-                    id: "notifications",
-                    label: "Social Alerts (Pingcord)",
-                    icon: Radio,
-                    tag: "Live",
-                    activeBg: "bg-purple-500/15",
-                    activeText: "text-purple-300",
-                    activeBorder: "border-purple-500/30",
-                    activeIcon: "text-purple-400",
-                    indicator: "bg-purple-400",
-                  },
                   {
                     id: "moderation",
                     label: "Bot Masters & Roles",
@@ -1530,11 +1437,11 @@ function GuildDashboardInner({ params }: { params: Promise<{ guildId: string }> 
                     id: "welcome",
                     label: "Welcome & Goodbye",
                     icon: Bell,
-                    activeBg: "bg-emerald-500/15",
-                    activeText: "text-emerald-300",
-                    activeBorder: "border-emerald-500/30",
-                    activeIcon: "text-emerald-400",
-                    indicator: "bg-emerald-500",
+                    activeBg: "bg-orange-500/15",
+                    activeText: "text-orange-300",
+                    activeBorder: "border-orange-500/30",
+                    activeIcon: "text-orange-400",
+                    indicator: "bg-orange-400",
                   },
                   {
                     id: "leveling",
@@ -1780,17 +1687,7 @@ function GuildDashboardInner({ params }: { params: Promise<{ guildId: string }> 
           {/* ═══════════════════════════════════════════════════════════════════
               SOCIAL MEDIA ALERTS & STREAMS (PINGCORD SYSTEM)
           ═══════════════════════════════════════════════════════════════════ */}
-          {activeTab === "notifications" && (
-            <SocialAlertsStudio
-              channels={guild?.channels.text || []}
-              roles={guild?.roles || []}
-              guildId={guildId}
-              config={notificationsConfig}
-              onChange={setNotificationsConfig}
-              onSendTest={handleSendTestNotification}
-              isPingPlexMode={isPingPlexMode}
-            />
-          )}
+
 
 
 
@@ -2048,8 +1945,8 @@ function GuildDashboardInner({ params }: { params: Promise<{ guildId: string }> 
                           <div className="space-y-1.5 text-xs text-gray-300">
                             <p><strong>Author:</strong> @Veer <span className="text-gray-400 text-[10px]">(ID: 1469048463760036075)</span></p>
                             <div className="p-2.5 rounded bg-black/30 border border-white/5 space-y-1 font-mono text-[11px]">
-                              <p className="text-red-300 line-through">Before: hey guys check out my twitch stream</p>
-                              <p className="text-emerald-300">After: hey guys check out the new bot update!</p>
+                              <p className="text-red-300 line-through">Before: hey guys check out my other server</p>
+                              <p className="text-rose-300">After: hey guys check out the new bot update!</p>
                             </div>
                           </div>
                           <div className="pt-2 border-t border-white/5 text-[10px] text-gray-400 flex items-center justify-between">
@@ -2681,12 +2578,12 @@ function GuildDashboardInner({ params }: { params: Promise<{ guildId: string }> 
                           </div>
                         </div>
                       ) : (
-                        <div className="rounded-xl bg-[#2b2d31] border-l-4 border-emerald-500 p-4 space-y-3">
+                        <div className="rounded-xl bg-[#2b2d31] border-l-4 border-orange-500 p-4 space-y-3">
                           <div className="flex items-center justify-between">
                             <span className="font-bold text-white text-sm flex items-center gap-1.5">
                               <span>💬 CHAT MILESTONE UNLOCKED!</span>
                             </span>
-                            <span className="text-xs font-mono px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 font-bold">
+                            <span className="text-xs font-mono px-2 py-0.5 rounded-full bg-orange-500/20 text-orange-400 font-bold">
                               500 MSGS
                             </span>
                           </div>
@@ -2705,7 +2602,7 @@ function GuildDashboardInner({ params }: { params: Promise<{ guildId: string }> 
                               <span>Next Tier: 2,000 Msgs</span>
                             </div>
                             <div className="w-full h-2 rounded-full bg-black/50 overflow-hidden border border-white/5">
-                              <div className="h-full bg-emerald-500 rounded-full w-1/2" />
+                              <div className="h-full bg-gradient-to-r from-orange-500 to-rose-500 rounded-full w-1/2" />
                             </div>
                           </div>
 
@@ -2886,7 +2783,7 @@ function GuildDashboardInner({ params }: { params: Promise<{ guildId: string }> 
                   <div className="flex items-center justify-between">
                     <div>
                       <h3 className="text-base font-bold text-white flex items-center gap-2">
-                        <Bell className="w-5 h-5 text-emerald-400" />
+                        <Bell className="w-5 h-5 text-rose-400" />
                         <span>Welcome & Goodbye Messages</span>
                       </h3>
                       <p className="text-xs text-gray-400 mt-1">
@@ -2898,7 +2795,7 @@ function GuildDashboardInner({ params }: { params: Promise<{ guildId: string }> 
                       type="checkbox"
                       checked={welcomeEnabled}
                       onChange={(e) => setWelcomeEnabled(e.target.checked)}
-                      className="w-5 h-5 accent-emerald-500 cursor-pointer"
+                      className="w-5 h-5 accent-rose-500 cursor-pointer"
                     />
                   </div>
 
@@ -2912,7 +2809,7 @@ function GuildDashboardInner({ params }: { params: Promise<{ guildId: string }> 
                           <select
                             value={welcomeChannel}
                             onChange={(e) => setWelcomeChannel(e.target.value)}
-                            className="w-full bg-[#1c1d24] border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white outline-none focus:border-emerald-500/50"
+                            className="w-full bg-[#1c1d24] border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white outline-none focus:border-rose-500/50"
                           >
                             <option value="">Select a channel...</option>
                             {guild?.channels?.text?.map((c) => (
@@ -2930,7 +2827,7 @@ function GuildDashboardInner({ params }: { params: Promise<{ guildId: string }> 
                           <select
                             value={autoRoleId}
                             onChange={(e) => setAutoRoleId(e.target.value)}
-                            className="w-full bg-[#1c1d24] border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white outline-none focus:border-emerald-500/50"
+                            className="w-full bg-[#1c1d24] border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white outline-none focus:border-rose-500/50"
                           >
                             <option value="">None (No role assigned)</option>
                             {guild?.roles
@@ -2953,7 +2850,7 @@ function GuildDashboardInner({ params }: { params: Promise<{ guildId: string }> 
                           type="checkbox"
                           checked={dmWelcome}
                           onChange={(e) => setDmWelcome(e.target.checked)}
-                          className="w-4 h-4 accent-emerald-500 cursor-pointer"
+                          className="w-4 h-4 accent-rose-500 cursor-pointer"
                         />
                       </div>
 
@@ -2965,7 +2862,7 @@ function GuildDashboardInner({ params }: { params: Promise<{ guildId: string }> 
                           rows={3}
                           value={welcomeMessage}
                           onChange={(e) => setWelcomeMessage(e.target.value)}
-                          className="w-full bg-[#1c1d24] border border-white/10 rounded-xl p-3.5 text-xs text-white outline-none focus:border-emerald-500/50"
+                          className="w-full bg-[#1c1d24] border border-white/10 rounded-xl p-3.5 text-xs text-white outline-none focus:border-rose-500/50"
                           placeholder="Welcome to {server}, {user}! We're thrilled to have you here 🎉"
                         />
                         <div className="flex items-center gap-1.5 mt-2 text-xs text-gray-400">
@@ -2973,21 +2870,21 @@ function GuildDashboardInner({ params }: { params: Promise<{ guildId: string }> 
                           <button
                             type="button"
                             onClick={() => setWelcomeMessage((m) => m + " {user}")}
-                            className="px-2 py-0.5 rounded bg-white/5 hover:bg-emerald-500/20 text-emerald-400 text-[11px] font-mono transition"
+                            className="px-2 py-0.5 rounded bg-white/5 hover:bg-rose-500/20 text-rose-400 text-[11px] font-mono transition"
                           >
                             + &#123;user&#125;
                           </button>
                           <button
                             type="button"
                             onClick={() => setWelcomeMessage((m) => m + " {server}")}
-                            className="px-2 py-0.5 rounded bg-white/5 hover:bg-emerald-500/20 text-emerald-400 text-[11px] font-mono transition"
+                            className="px-2 py-0.5 rounded bg-white/5 hover:bg-rose-500/20 text-rose-400 text-[11px] font-mono transition"
                           >
                             + &#123;server&#125;
                           </button>
                           <button
                             type="button"
                             onClick={() => setWelcomeMessage((m) => m + " {memberCount}")}
-                            className="px-2 py-0.5 rounded bg-white/5 hover:bg-emerald-500/20 text-emerald-400 text-[11px] font-mono transition"
+                            className="px-2 py-0.5 rounded bg-white/5 hover:bg-rose-500/20 text-rose-400 text-[11px] font-mono transition"
                           >
                             + &#123;memberCount&#125;
                           </button>
@@ -3006,7 +2903,7 @@ function GuildDashboardInner({ params }: { params: Promise<{ guildId: string }> 
                     <button
                       type="button"
                       onClick={() => setWelcomePreviewMode("welcome")}
-                      className={`px-2 py-0.5 rounded ${welcomePreviewMode === "welcome" ? "bg-emerald-500/20 text-emerald-300 font-bold" : "text-gray-400"}`}
+                      className={`px-2 py-0.5 rounded ${welcomePreviewMode === "welcome" ? "bg-rose-500/20 text-rose-300 font-bold" : "text-gray-400"}`}
                     >
                       Welcome
                     </button>
@@ -4409,7 +4306,7 @@ function GuildDashboardInner({ params }: { params: Promise<{ guildId: string }> 
               <button
                 onClick={handleSave}
                 disabled={saving}
-                className="py-1 px-3.5 rounded-md bg-[#5865F2] hover:bg-[#4752c4] text-white font-semibold text-xs transition flex items-center gap-1.5 cursor-pointer shadow-sm"
+                className="py-1 px-3.5 rounded-md bg-gradient-to-r from-orange-500 via-rose-500 to-fuchsia-600 hover:from-orange-400 hover:to-rose-500 text-white font-bold text-xs transition flex items-center gap-1.5 cursor-pointer shadow-md shadow-rose-500/20 active:scale-98"
               >
                 <Save className="w-3.5 h-3.5" />
                 <span>{saving ? "Saving..." : "Save Changes"}</span>

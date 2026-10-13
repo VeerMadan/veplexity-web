@@ -1,289 +1,283 @@
 "use client";
 
 import { motion } from "framer-motion";
-import Navbar from "../components/Navbar";
-import Footer from "../components/Footer";
+import Navbar from "@/app/components/Navbar";
+import Footer from "@/app/components/Footer";
 import Link from "next/link";
 import { 
-  Bot, Music, Shield, Sparkles, Sliders, Database, Gamepad2, 
-  ExternalLink, Heart, Terminal, ArrowRight, Zap 
+  Shield, Radio, ChevronRight, Music, 
+  Award, Lock, Bot, Mic, Zap, Heart, ArrowRight,
+  Video, Play, Share2, CheckCircle2, Sparkles, Plus
 } from "lucide-react";
+import { DiscordLogo } from "@/app/components/BrandIcons";
 
-export default function BotPage() {
-  const features = [
-    {
-      icon: <Terminal className="w-8 h-8 text-orange-400" />,
-      title: "Dual-Engine Hybrid Command Runner",
-      badge: "Instant . / ? / !",
-      borderColor: "hover:border-orange-400/50",
-      description: "Supports instant prefix commands (.purge, .afk, ?purge, !help) with fast typing aliases (.bal, .p, .np, .q, .vol) alongside modern Discord slash commands (/), complete with 5-second auto-clearing purge alerts.",
-    },
-    {
-      icon: <Music className="w-8 h-8 text-fuchsia-500" />,
-      title: "Lossless Audio DSP Engine",
-      badge: "48kHz VOIP",
-      borderColor: "hover:border-fuchsia-500/50",
-      description: "Low-latency streaming architecture with queue looping, dynamic bass boost filters, volume calibration, and 24/7 voice stay in dedicated channels.",
-    },
-    {
-      icon: <Sparkles className="w-8 h-8 text-orange-500" />,
-      title: "Google Gemini AI Assistant",
-      badge: "Multi-Modal",
-      borderColor: "hover:border-orange-500/50",
-      description: "Direct conversational AI module powered by Gemini. Supports custom server personas, contextual conversational memory, and image prompt generation.",
-    },
-    {
-      icon: <Shield className="w-8 h-8 text-red-500" />,
-      title: "100% Free Moderation Suite",
-      badge: "Permanent Free",
-      borderColor: "hover:border-red-500/50",
-      description: "All server safety tools (/ban, /kick, /warn, /timeout, .purge, /lock) remain permanently free with zero paywalls. Case-indexed audit logs with auto-moderation.",
-    },
-    {
-      icon: <Sliders className="w-8 h-8 text-purple-500" />,
-      title: "Cloud Dashboard & Activity Rewards",
-      badge: "Next.js 16",
-      borderColor: "hover:border-purple-500/50",
-      description: "Configure prefixes, notification channels, reaction roles, and customizable voice channel duration & message count milestone rewards in real-time.",
-    },
-    {
-      icon: <Database className="w-8 h-8 text-orange-400" />,
-      title: "MongoDB Atlas Persistence",
-      badge: "Sub-15ms Sync",
-      borderColor: "hover:border-orange-400/50",
-      description: "Enterprise cloud cluster storing user XP, server configurations, moderation records, and reaction role mappings with zero data loss.",
-    },
-  ];
-
-  const commandCategories = [
-    {
-      category: "Dual-Engine Rapid Prefix Aliases (. / ? / !)",
-      commands: [
-        ".purge [amount]", ".afk [reason]", ".bal", ".p [query]", 
-        ".q", ".np", ".vol [0-100]", ".dc", ".w @user [reason]", 
-        ".mute", ".unmute", ".av @user", ".h", ".si", ".ui", ".cf", ".8b"
-      ],
-    },
-    {
-      category: "Standalone Social & Action Commands (14 Standalone)",
-      commands: [
-        "/hug", "/kiss", "/pat", "/slap", "/bite", "/cuddle", 
-        "/poke", "/tickle", "/bonk", "/punch", "/blush", "/wink", "/lick", "/cry"
-      ],
-    },
-    {
-      category: "Music & Audio DSP (24/7 Voice Retention)",
-      commands: ["/play", "/skip", "/queue", "/volume", "/247", "/pause", "/resume", "/stop", "/lyrics"],
-    },
-    {
-      category: "AI & Intelligence (Google Gemini Multi-Modal)",
-      commands: ["/gemini ask", "/gemini reset", "/gemini persona", "/gemini vision", "/imagine"],
-    },
-    {
-      category: "100% Free Moderation & Server Protection",
-      commands: ["/ban", "/kick", "/timeout", "/warn", "/warnings", "/clearwarns", "/lock", "/unlock", "/purge", "/modlogs", "/massmod"],
-    },
-    {
-      category: "System, Economy & Activity Rewards",
-      commands: ["/setup", "/setwelcome", "/reactionrole", "/announce", "/botinfo", "/serverinfo", "/rank", "/balance", "/daily", "/work"],
-    },
-    {
-      category: "Interactive & Mini-Games",
-      commands: ["/tictactoe", "/connect4", "/rps", "/trivia", "/truth-or-dare", "/8ball", "/avatar"],
-    },
-  ];
-
+export default function DiscordBotsShowcaseHubPage() {
   return (
-    <div className="min-h-screen bg-[#070308] text-white selection:bg-fuchsia-500/30 overflow-hidden flex flex-col font-sans">
+    <div className="min-h-screen bg-[#0a0512] text-white selection:bg-rose-500/30 overflow-hidden flex flex-col font-sans">
       <Navbar />
 
-      <main className="flex-1 max-w-7xl w-full mx-auto px-5 sm:px-8 lg:px-12 py-16 relative z-10">
-        
+      <main className="flex-1 max-w-7xl w-full mx-auto px-5 sm:px-8 lg:px-12 py-16 relative z-10 space-y-16">
         {/* HERO SECTION */}
-        <div className="border-b border-white/5 pb-16 mb-16 relative">
-          <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-fuchsia-600/10 blur-[150px] rounded-full pointer-events-none" />
+        <div className="text-center space-y-4 max-w-3xl mx-auto relative">
+          <div className="absolute -top-20 left-1/2 -translate-x-1/2 w-96 h-96 bg-gradient-to-br from-orange-500/15 via-rose-500/15 to-fuchsia-600/15 blur-[140px] rounded-full pointer-events-none" />
 
           <motion.div 
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
-            className="mb-8 flex items-center gap-2 px-4 py-2 border border-orange-500 text-orange-500 rounded-xl font-mono text-xs font-black uppercase tracking-widest bg-orange-500/10 shadow-[0_0_20px_rgba(249,115,22,0.2)] w-fit"
+            className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-gradient-to-r from-orange-500/15 via-rose-500/15 to-fuchsia-500/15 border border-rose-500/30 text-rose-300 font-mono text-xs font-bold shadow-sm"
           >
-            <Terminal className="w-4 h-4" /> Render Node 24/7 • 100 Production Commands • Dual-Engine (Slash &amp; Prefixes)
+            <span className="w-2 h-2 rounded-full bg-rose-400 animate-pulse" />
+            <span>DISCORD BOT ECOSYSTEM</span>
           </motion.div>
 
           <motion.h1 
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="text-5xl sm:text-7xl lg:text-[5.5rem] font-black text-white tracking-tighter leading-[1] mb-6 drop-shadow-[0_0_15px_rgba(217,70,239,0.3)] max-w-4xl"
+            className="text-4xl sm:text-6xl font-black text-white tracking-tight uppercase"
           >
-            VePlexity Commercial <br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-500 to-fuchsia-500">
-              VePlexity Bot.
+            Two Specialized Bots. <br />
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-500 via-rose-500 to-fuchsia-500">
+              Zero Conflicts. Total Power.
             </span>
           </motion.h1>
 
           <motion.p 
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className="text-lg md:text-2xl text-gray-400 max-w-3xl mb-10 leading-relaxed"
+            className="text-base sm:text-lg text-zinc-300 leading-relaxed font-normal"
           >
-            Production-grade Discord cloud infrastructure engineered by Veer Madan. Featuring lossless audio streaming, context-aware Gemini AI, full enterprise moderation, and live web management.
+            Engineered by Veer Madan. We built two completely separated Discord bots with dedicated backends, distinct dashboards, and specialized architectures. Choose your bot below to explore features, invite, or launch the console.
           </motion.p>
+        </div>
 
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
+        {/* DUAL BOT SHOWCASE CARDS */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 w-full">
+          {/* BOT 1: VePlexity Bot */}
+          <motion.div
+            initial={{ opacity: 0, y: 25 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3 }}
-            className="flex flex-wrap items-center gap-4"
+            transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+            className="rounded-[2.5rem] bg-[#120a1d] border-2 border-rose-500/30 hover:border-rose-500/60 transition-all duration-300 flex flex-col justify-between overflow-hidden relative shadow-2xl group"
           >
-            <Link
-              href="/invite"
-              className="px-8 py-4 bg-gradient-to-br from-orange-500 to-fuchsia-600 text-white font-black uppercase tracking-widest rounded-2xl flex items-center gap-3 transition-transform hover:scale-105 shadow-[0_0_30px_rgba(217,70,239,0.4)]"
-            >
-              <Bot className="w-5 h-5" />
-              <span>Add to Server</span>
-            </Link>
+            <div className="p-8 sm:p-10 space-y-6">
+              {/* Header Badge */}
+              <div className="flex items-center justify-between">
+                <div className="w-14 h-14 rounded-2xl bg-[#1b0f2a] border border-rose-500/40 flex items-center justify-center text-rose-400 shadow-lg group-hover:scale-105 transition-transform">
+                  <Shield className="w-7 h-7" />
+                </div>
+                <span className="px-3.5 py-1 rounded-full bg-gradient-to-r from-orange-500/20 to-rose-500/20 border border-rose-500/40 text-rose-300 font-mono text-[11px] font-black uppercase tracking-wider">
+                  COMMUNITY POWERHOUSE
+                </span>
+              </div>
 
-            <Link
-              href="/dashboard"
-              className="px-8 py-4 bg-[#0c0512] text-fuchsia-400 border-[3px] border-fuchsia-500/30 hover:bg-fuchsia-500/10 font-black uppercase tracking-widest rounded-2xl transition-all hover:border-fuchsia-500/60"
-            >
-              <span>Launch Dashboard</span>
-            </Link>
+              {/* Title & Desc */}
+              <div className="space-y-2">
+                <h2 className="text-3xl font-black text-white group-hover:text-rose-300 transition-colors tracking-tight">
+                  VePlexity Bot
+                </h2>
+                <p className="text-sm text-zinc-300 leading-relaxed font-normal">
+                  The complete all-in-one Discord powerhouse. 24/7 lossless audio streaming, proactive AutoMod defense, Gemini conversational AI, XP leveling, and dynamic temporary voice hubs.
+                </p>
+              </div>
 
-            <a
-              href="https://www.buymeacoffee.com/veplexity1"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="px-6 py-4 bg-black/50 text-zinc-300 hover:text-white border border-white/10 rounded-2xl font-bold uppercase tracking-wider text-xs flex items-center gap-2 transition-colors"
-            >
-              <Heart className="w-4 h-4 text-orange-400" />
-              <span>Support Perks</span>
-            </a>
+              {/* Features Matrix */}
+              <div className="grid grid-cols-2 gap-2.5 pt-2">
+                {[
+                  { icon: Music, label: "24/7 Lossless Audio DJ" },
+                  { icon: Lock, label: "Proactive AutoMod Shield" },
+                  { icon: Award, label: "XP Leveling & Rank Cards" },
+                  { icon: Bot, label: "Google Gemini AI Assistant" },
+                  { icon: Mic, label: "Join-to-Create Temp VCs" },
+                  { icon: Zap, label: "100 Production Commands" },
+                ].map((feat, idx) => (
+                  <div key={idx} className="flex items-center gap-2 p-2.5 rounded-xl bg-black/40 border border-zinc-800 text-xs font-mono text-zinc-300">
+                    <feat.icon className="w-4 h-4 text-orange-400 shrink-0" />
+                    <span className="truncate">{feat.label}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Actions */}
+            <div className="p-8 sm:p-10 pt-0 space-y-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <Link
+                  href="/invite"
+                  className="py-3.5 px-5 rounded-2xl bg-gradient-to-r from-orange-500 via-rose-500 to-fuchsia-600 hover:from-orange-400 hover:to-rose-500 text-white text-xs font-black uppercase tracking-wider flex items-center justify-center gap-2 shadow-lg shadow-rose-500/25 active:scale-98 transition-all"
+                >
+                  <DiscordLogo className="w-4 h-4" fill="#ffffff" />
+                  <span>Add VePlexity Bot</span>
+                </Link>
+
+                <Link
+                  href="/discord-bots/veplexity"
+                  className="py-3.5 px-5 rounded-2xl bg-[#180f24] hover:bg-[#201330] text-rose-300 border border-rose-500/40 text-xs font-black uppercase tracking-wider flex items-center justify-center gap-1.5 transition-colors"
+                >
+                  <span>Launch Console Deck</span>
+                  <ChevronRight className="w-4 h-4" />
+                </Link>
+              </div>
+
+              <div className="flex items-center justify-between text-xs pt-1 px-1">
+                <Link href="/bot/veplexity" className="text-zinc-400 hover:text-white font-mono flex items-center gap-1 text-[11px] transition-colors">
+                  <span>View All 100 Commands &amp; Architecture →</span>
+                </Link>
+                <span className="font-mono text-[10px] text-zinc-500">ID: 1556640364448714752</span>
+              </div>
+            </div>
+          </motion.div>
+
+          {/* BOT 2: PingPlex */}
+          <motion.div
+            initial={{ opacity: 0, y: 25 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.35, delay: 0.08, ease: [0.16, 1, 0.3, 1] }}
+            className="rounded-[2.5rem] bg-[#140b20] border-2 border-fuchsia-500/30 hover:border-fuchsia-500/60 transition-all duration-300 flex flex-col justify-between overflow-hidden relative shadow-2xl group"
+          >
+            <div className="p-8 sm:p-10 space-y-6">
+              {/* Header Badge */}
+              <div className="flex items-center justify-between">
+                <div className="w-14 h-14 rounded-2xl bg-[#1e0f2d] border border-fuchsia-500/40 flex items-center justify-center text-fuchsia-400 shadow-lg group-hover:scale-105 transition-transform">
+                  <Radio className="w-7 h-7" />
+                </div>
+                <span className="px-3.5 py-1 rounded-full bg-gradient-to-r from-fuchsia-500/20 to-purple-500/20 border border-fuchsia-500/40 text-fuchsia-300 font-mono text-[11px] font-black uppercase tracking-wider">
+                  CREATOR ALERTS STUDIO
+                </span>
+              </div>
+
+              {/* Title & Desc */}
+              <div className="space-y-2">
+                <h2 className="text-3xl font-black text-white group-hover:text-fuchsia-300 transition-colors tracking-tight">
+                  PingPlex
+                </h2>
+                <p className="text-sm text-zinc-300 leading-relaxed font-normal">
+                  The zero-delay creator alert engine for Discord. Instant sub-second notification dispatches for YouTube, Twitch, TikTok, X (Twitter), and Reddit with zero paywalls.
+                </p>
+              </div>
+
+              {/* Features Matrix */}
+              <div className="grid grid-cols-2 gap-2.5 pt-2">
+                {[
+                  { icon: Play, label: "YouTube Uploads & Streams" },
+                  { icon: Video, label: "Twitch Live Webhooks" },
+                  { icon: Share2, label: "TikTok Video Alerts" },
+                  { icon: Radio, label: "X (Twitter) Feed Sync" },
+                  { icon: Share2, label: "Subreddit Monitors" },
+                  { icon: Zap, label: "Unlimited Free Feeds" },
+                ].map((feat, idx) => (
+                  <div key={idx} className="flex items-center gap-2 p-2.5 rounded-xl bg-black/40 border border-zinc-800 text-xs font-mono text-zinc-300">
+                    <feat.icon className="w-4 h-4 text-fuchsia-400 shrink-0" />
+                    <span className="truncate">{feat.label}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Actions */}
+            <div className="p-8 sm:p-10 pt-0 space-y-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <Link
+                  href="/invite/pingplex"
+                  className="py-3.5 px-5 rounded-2xl bg-gradient-to-r from-fuchsia-600 via-purple-600 to-rose-600 hover:from-fuchsia-500 hover:to-purple-500 text-white text-xs font-black uppercase tracking-wider flex items-center justify-center gap-2 shadow-lg shadow-fuchsia-500/25 active:scale-98 transition-all"
+                >
+                  <DiscordLogo className="w-4 h-4" fill="#ffffff" />
+                  <span>Add PingPlex Bot</span>
+                </Link>
+
+                <Link
+                  href="/discord-bots/pingplex"
+                  className="py-3.5 px-5 rounded-2xl bg-[#1e0f2d] hover:bg-[#28143c] text-fuchsia-300 border border-fuchsia-500/40 text-xs font-black uppercase tracking-wider flex items-center justify-center gap-1.5 transition-colors"
+                >
+                  <span>Launch Creator Studio</span>
+                  <ChevronRight className="w-4 h-4" />
+                </Link>
+              </div>
+
+              <div className="flex items-center justify-between text-xs pt-1 px-1">
+                <Link href="/bot/pingplex" className="text-zinc-400 hover:text-white font-mono flex items-center gap-1 text-[11px] transition-colors">
+                  <span>View All 5 Supported Creator Feeds →</span>
+                </Link>
+                <span className="font-mono text-[10px] text-zinc-500">ID: 1559520031916687430</span>
+              </div>
+            </div>
           </motion.div>
         </div>
 
-        {/* METRICS STRIP */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 p-8 md:p-10 rounded-[2rem] bg-[#0c0512] border-[4px] border-zinc-900 mb-20 shadow-[0_0_40px_rgba(249,115,22,0.05)]">
-          <div>
-            <div className="text-xs text-orange-500 font-black uppercase tracking-widest">COMMAND ENGINE</div>
-            <div className="text-4xl font-black text-white mt-1">100 PROD</div>
-            <div className="text-xs text-zinc-400 font-mono mt-1">Slash &amp; Instant Prefixes</div>
-          </div>
-          <div>
-            <div className="text-xs text-fuchsia-500 font-black uppercase tracking-widest">CLOUD DAEMON</div>
-            <div className="text-4xl font-black text-white mt-1">RENDER</div>
-            <div className="text-xs text-zinc-400 font-mono mt-1">24/7 Dedicated Daemon</div>
-          </div>
-          <div>
-            <div className="text-xs text-purple-400 font-black uppercase tracking-widest">PERSISTENCE</div>
-            <div className="text-4xl font-black text-white mt-1">ATLAS DB</div>
-            <div className="text-xs text-zinc-400 font-mono mt-1">Sub-15ms Replica Set</div>
-          </div>
-          <div>
-            <div className="text-xs text-green-400 font-black uppercase tracking-widest">API GATEWAY</div>
-            <div className="text-4xl font-black text-white mt-1">DISCORD V10</div>
-            <div className="text-xs text-zinc-400 font-mono mt-1">WebSocket Gateway</div>
-          </div>
-        </div>
-
-        {/* ARCHITECTURE FEATURES */}
-        <div className="mb-24">
-          <div className="mb-12">
-            <h2 className="text-4xl sm:text-5xl font-black text-white tracking-tighter">
-              Production <span className="bg-gradient-to-r from-orange-500 to-fuchsia-500 bg-clip-text text-transparent">Architecture.</span>
-            </h2>
+        {/* COMPARISON MATRIX FOR INDIAN & GLOBAL USERS */}
+        <div className="p-8 sm:p-12 rounded-[2.5rem] bg-[#120a1d] border-2 border-rose-500/20 space-y-8 shadow-xl">
+          <div className="text-center space-y-2">
+            <h3 className="text-2xl sm:text-3xl font-black text-white uppercase tracking-tight">
+              Which Bot Does Your Server Need?
+            </h3>
+            <p className="text-sm text-zinc-400 max-w-xl mx-auto">
+              Most servers invite both! VePlexity manages music &amp; security, while PingPlex handles creator alerts.
+            </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {features.map((feat, idx) => (
-              <motion.div
-                key={idx}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: idx * 0.08 }}
-                className={`p-8 rounded-[2rem] bg-[#0c0512] border-[4px] border-zinc-900 ${feat.borderColor} transition-colors duration-300 flex flex-col justify-between`}
-              >
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="p-6 rounded-2xl bg-black/40 border border-zinc-800 space-y-4">
+              <div className="flex items-center gap-3">
+                <div className="w-9 h-9 rounded-xl bg-orange-500/20 border border-orange-500/30 flex items-center justify-center text-orange-400">
+                  <Shield className="w-5 h-5" />
+                </div>
                 <div>
-                  <div className="flex items-center justify-between mb-6">
-                    <div className="w-16 h-16 rounded-2xl bg-zinc-900 border border-zinc-800 flex items-center justify-center">
-                      {feat.icon}
-                    </div>
-                    <span className="px-3 py-1 border border-zinc-700 text-zinc-300 rounded-lg text-[10px] font-black uppercase tracking-widest bg-black">
-                      {feat.badge}
-                    </span>
-                  </div>
-
-                  <h3 className="text-2xl font-black text-white mb-3 leading-snug">
-                    {feat.title}
-                  </h3>
-                  <p className="text-base text-gray-400 leading-relaxed font-normal">
-                    {feat.description}
-                  </p>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-
-        {/* 101 COMMAND MATRIX */}
-        <div className="p-8 sm:p-12 rounded-[2rem] bg-[#0c0512] border-[4px] border-zinc-900 mb-20">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-10 pb-6 border-b border-white/5">
-            <div>
-              <span className="font-mono text-xs font-black text-orange-500 uppercase tracking-widest">COMMAND INDEX</span>
-              <h2 className="text-3xl font-black text-white mt-1 tracking-tight">100 Production Slash Routes &amp; Prefix Runners</h2>
-            </div>
-            <div className="text-xs text-zinc-400 font-mono">
-              Type <code className="text-orange-400 bg-black px-2 py-1 rounded border border-zinc-800">/help</code> or <code className="text-fuchsia-400 bg-black px-2 py-1 rounded border border-zinc-800">.help</code> in Discord
-            </div>
-          </div>
-
-          <div className="space-y-8">
-            {commandCategories.map((cat, idx) => (
-              <div key={idx} className="space-y-3">
-                <div className="text-xs font-black uppercase tracking-widest text-fuchsia-400">
-                  {cat.category}
-                </div>
-                <div className="flex flex-wrap gap-2.5">
-                  {cat.commands.map((cmd) => (
-                    <span
-                      key={cmd}
-                      className="px-3.5 py-1.5 rounded-xl bg-black border border-zinc-800 text-xs font-mono font-bold text-zinc-300 hover:border-orange-500/50 hover:text-white transition-colors cursor-default"
-                    >
-                      {cmd}
-                    </span>
-                  ))}
+                  <h4 className="font-bold text-base text-white">Choose VePlexity Bot If:</h4>
+                  <p className="text-xs text-zinc-400 font-mono">Community &amp; Infrastructure</p>
                 </div>
               </div>
-            ))}
+              <ul className="text-xs text-zinc-300 space-y-2.5 font-medium">
+                <li className="flex items-start gap-2">
+                  <span className="text-orange-400 font-bold">✓</span>
+                  <span>You want 24/7 high-fidelity music streaming without voice drops.</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-orange-400 font-bold">✓</span>
+                  <span>You want server protection: AutoMod shields against invites, spam &amp; links.</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-orange-400 font-bold">✓</span>
+                  <span>You want chat activity XP leveling, rank cards, and automated milestone roles.</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-orange-400 font-bold">✓</span>
+                  <span>You want conversational Google Gemini AI chatbot interactions.</span>
+                </li>
+              </ul>
+            </div>
+
+            <div className="p-6 rounded-2xl bg-black/40 border border-zinc-800 space-y-4">
+              <div className="flex items-center gap-3">
+                <div className="w-9 h-9 rounded-xl bg-fuchsia-500/20 border border-fuchsia-500/30 flex items-center justify-center text-fuchsia-400">
+                  <Radio className="w-5 h-5" />
+                </div>
+                <div>
+                  <h4 className="font-bold text-base text-white">Choose PingPlex If:</h4>
+                  <p className="text-xs text-zinc-400 font-mono">Creator Feeds &amp; Alerts</p>
+                </div>
+              </div>
+              <ul className="text-xs text-zinc-300 space-y-2.5 font-medium">
+                <li className="flex items-start gap-2">
+                  <span className="text-fuchsia-400 font-bold">✓</span>
+                  <span>You are a YouTuber or streamer who wants automatic live notifications.</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-fuchsia-400 font-bold">✓</span>
+                  <span>You want instant Twitch stream announcements with thumbnails and titles.</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-fuchsia-400 font-bold">✓</span>
+                  <span>You want to relay TikTok video drops directly into your server.</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-fuchsia-400 font-bold">✓</span>
+                  <span>You want 100% free alerts with zero feed limits and zero paid paywalls.</span>
+                </li>
+              </ul>
+            </div>
           </div>
         </div>
-
-        {/* CTA BANNER */}
-        <div className="flex flex-col sm:flex-row items-center justify-between p-10 rounded-[2rem] bg-[#0c0512] border-[4px] border-zinc-900 gap-6 shadow-[0_0_40px_rgba(217,70,239,0.1)]">
-          <div>
-            <h3 className="text-2xl font-black uppercase tracking-tight text-white">Deploy to your Discord server</h3>
-            <p className="text-sm text-gray-400 mt-1 font-normal">Instant authorization. Zero configuration required to start.</p>
-          </div>
-          <div className="flex items-center gap-4">
-            <Link
-              href="/invite"
-              className="px-8 py-4 bg-gradient-to-br from-orange-500 to-fuchsia-600 text-white font-black uppercase tracking-widest rounded-2xl text-xs hover:scale-105 transition-transform shadow-[0_0_20px_rgba(217,70,239,0.4)]"
-            >
-              Authorize Bot
-            </Link>
-            <Link
-              href="/dashboard"
-              className="px-6 py-4 bg-black text-fuchsia-400 border border-fuchsia-500/30 rounded-2xl font-bold uppercase tracking-wider text-xs hover:bg-fuchsia-500/10 transition-colors"
-            >
-              Dashboard
-            </Link>
-          </div>
-        </div>
-
       </main>
 
       <Footer />

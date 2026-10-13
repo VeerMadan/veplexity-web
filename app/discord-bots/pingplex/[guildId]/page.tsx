@@ -380,11 +380,11 @@ function PingPlexGuildStudioInner({ params }: { params: Promise<{ guildId: strin
         <div
           className={`fixed top-4 right-4 z-50 px-4 py-2.5 rounded-lg border text-xs font-semibold flex items-center gap-2.5 shadow-xl transition-all ${
             toast.type === "success"
-              ? "bg-[#102a1e] border-emerald-500/40 text-emerald-200"
+              ? "bg-[#1e0f24] border-fuchsia-500/40 text-fuchsia-200"
               : "bg-[#2a1015] border-rose-500/40 text-rose-200"
           }`}
         >
-          {toast.type === "success" ? <CheckCircle2 className="w-4 h-4 text-emerald-400" /> : <AlertCircle className="w-4 h-4 text-rose-400" />}
+          {toast.type === "success" ? <CheckCircle2 className="w-4 h-4 text-fuchsia-400" /> : <AlertCircle className="w-4 h-4 text-rose-400" />}
           <span>{toast.message}</span>
         </div>
       )}

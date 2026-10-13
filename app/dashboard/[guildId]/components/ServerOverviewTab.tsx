@@ -88,7 +88,7 @@ function getModulePreviewBadge(id: string) {
       );
     case "welcome":
       return (
-        <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 font-mono text-[10px] font-bold">
+        <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-rose-500/15 border border-rose-500/30 text-rose-300 font-mono text-[10px] font-bold">
           <span>👋 Canvas Graphic Cards • Instant Auto-Role</span>
         </span>
       );
@@ -144,6 +144,13 @@ export function ServerOverviewTab({
   const [searchQuery, setSearchQuery] = useState("");
   const [copiedId, setCopiedId] = useState(false);
 
+  const availableCategories = useMemo(() => {
+    return CATEGORY_TABS.filter((cat) => {
+      if (cat.id === "all") return true;
+      return modules.some((m) => m.category === cat.id);
+    });
+  }, [modules]);
+
   const filteredModules = useMemo(() => {
     return modules.filter((m) => {
       const matchesCategory =
@@ -173,16 +180,16 @@ export function ServerOverviewTab({
   return (
     <div className="space-y-6 w-full max-w-7xl mx-auto">
       {/* ─── 1. HIGH-PRECISION SERVER COMMAND DECK ─────────────────────────────── */}
-      <div className="p-5 sm:p-6 rounded-2xl bg-[#0d0f17] border border-zinc-800/80 shadow-2xl relative overflow-hidden">
+      <div className="p-5 sm:p-6 rounded-2xl bg-[#0e0817] border border-zinc-800/80 shadow-2xl relative overflow-hidden">
         {/* Luminous Mesh Backdrop */}
-        <div className="absolute top-0 right-0 w-96 h-96 bg-[radial-gradient(ellipse_at_top_right,rgba(16,185,129,0.12),transparent_70%)] pointer-events-none" />
-        <div className="absolute bottom-0 left-0 w-80 h-80 bg-[radial-gradient(ellipse_at_bottom_left,rgba(88,101,242,0.08),transparent_70%)] pointer-events-none" />
+        <div className="absolute top-0 right-0 w-96 h-96 bg-[radial-gradient(ellipse_at_top_right,rgba(244,63,94,0.14),transparent_70%)] pointer-events-none" />
+        <div className="absolute bottom-0 left-0 w-80 h-80 bg-[radial-gradient(ellipse_at_bottom_left,rgba(249,115,22,0.08),transparent_70%)] pointer-events-none" />
 
         <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6 relative z-10">
           <div className="flex items-center gap-5 sm:gap-6">
             {/* Holographic Server Avatar Cradle */}
-            <div className="w-18 h-18 sm:w-20 sm:h-20 rounded-2xl bg-[#121522] border-2 border-emerald-500/50 p-1 shadow-[0_0_30px_rgba(16,185,129,0.2)] overflow-hidden flex items-center justify-center shrink-0 relative group">
-              <div className="absolute inset-0 bg-emerald-500/10 animate-pulse pointer-events-none" />
+            <div className="w-18 h-18 sm:w-20 sm:h-20 rounded-2xl bg-[#190f26] border-2 border-rose-500/50 p-1 shadow-[0_0_30px_rgba(244,63,94,0.2)] overflow-hidden flex items-center justify-center shrink-0 relative group">
+              <div className="absolute inset-0 bg-rose-500/10 animate-pulse pointer-events-none" />
               {guildIconUrl ? (
                 <img
                   src={guildIconUrl}
@@ -204,8 +211,8 @@ export function ServerOverviewTab({
                 <h1 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
                   {guild?.name}
                 </h1>
-                <span className="text-[10px] font-mono px-2.5 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 border border-emerald-500/40 font-black flex items-center gap-1.5 shadow-xs">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                <span className="text-[10px] font-mono px-2.5 py-0.5 rounded-full bg-gradient-to-r from-orange-500/15 to-rose-500/15 text-rose-300 border border-rose-500/40 font-black flex items-center gap-1.5 shadow-xs">
+                  <span className="w-1.5 h-1.5 rounded-full bg-rose-400 animate-pulse" />
                   FLEET ENGINE ONLINE
                 </span>
               </div>
@@ -219,7 +226,7 @@ export function ServerOverviewTab({
                 >
                   <span>ID: {guild?.id}</span>
                   {copiedId ? (
-                    <Check className="w-3 h-3 text-emerald-400" />
+                    <Check className="w-3 h-3 text-rose-400" />
                   ) : (
                     <Copy className="w-3 h-3 text-zinc-500" />
                   )}
@@ -229,12 +236,12 @@ export function ServerOverviewTab({
                   👥 {guild?.memberCount?.toLocaleString() || 0} Members
                 </span>
 
-                <span className="px-3 py-1 rounded-full bg-emerald-950/60 border border-emerald-500/30 text-emerald-300 font-mono font-bold flex items-center gap-1.5">
-                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+                <span className="px-3 py-1 rounded-full bg-rose-950/50 border border-rose-500/30 text-rose-300 font-mono font-bold flex items-center gap-1.5">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-rose-400" />
                   <span>{activeModulesCount} of {modules.length} Armed</span>
                 </span>
 
-                <span className="px-3 py-1 rounded-full bg-[#5865F2]/15 border border-[#5865F2]/40 text-[#5865F2] font-mono text-[11px] font-bold">
+                <span className="px-3 py-1 rounded-full bg-gradient-to-r from-orange-500/15 to-rose-500/15 border border-rose-500/40 text-rose-300 font-mono text-[11px] font-bold">
                   💎 VIP Perks Active
                 </span>
               </div>
@@ -243,7 +250,7 @@ export function ServerOverviewTab({
 
           <div className="flex items-center gap-3 self-stretch lg:self-auto justify-end">
             <Link
-              href="/dashboard"
+              href="/discord-bots"
               className="btn-secondary px-4 py-2.5 rounded-xl text-xs font-bold transition flex items-center gap-2 cursor-pointer shadow-sm hover:border-zinc-700"
             >
               <span>Switch Server</span>
@@ -257,7 +264,7 @@ export function ServerOverviewTab({
       <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 pb-1">
         {/* Category Pills */}
         <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
-          {CATEGORY_TABS.map((tab) => {
+          {availableCategories.map((tab) => {
             const count =
               tab.id === "all"
                 ? modules.length
@@ -273,15 +280,15 @@ export function ServerOverviewTab({
                 }}
                 className={`px-4 py-2 rounded-xl text-xs font-black transition-all cursor-pointer whitespace-nowrap flex items-center gap-2 select-none ${
                   isSelected
-                    ? "bg-zinc-100 text-zinc-950 shadow-md shadow-white/10"
-                    : "bg-[#0d0f17] text-zinc-400 hover:text-white border border-zinc-800 hover:border-zinc-700"
+                    ? "bg-gradient-to-r from-orange-500 via-rose-500 to-fuchsia-600 text-white shadow-md shadow-rose-500/20"
+                    : "bg-[#0e0817] text-zinc-400 hover:text-white border border-zinc-800 hover:border-zinc-700"
                 }`}
               >
                 <span>{tab.label}</span>
                 <span
                   className={`text-[10px] font-mono px-1.5 py-0.2 rounded-full font-bold ${
                     isSelected
-                      ? "bg-zinc-900 text-zinc-100"
+                      ? "bg-black/30 text-white"
                       : "bg-zinc-800 text-zinc-400"
                   }`}
                 >
@@ -300,7 +307,7 @@ export function ServerOverviewTab({
             placeholder="Search modules..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-9 pr-8 py-2 rounded-xl bg-[#0d0f17] border border-zinc-800 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-emerald-500 transition font-medium"
+            className="w-full pl-9 pr-8 py-2 rounded-xl bg-[#0e0817] border border-zinc-800 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-rose-500 transition font-medium"
           />
           {searchQuery && (
             <button
@@ -327,10 +334,10 @@ export function ServerOverviewTab({
                 dashboardAudio.playClick();
                 setActiveTab(module.id);
               }}
-              className="rounded-2xl bg-[#0d0f17] p-5 flex flex-col justify-between gap-4 group border border-zinc-800/80 hover:border-emerald-500/50 hover:shadow-2xl hover:shadow-emerald-500/10 transition-all duration-200 cursor-pointer relative overflow-hidden"
+              className="rounded-2xl bg-[#0e0817] p-5 flex flex-col justify-between gap-4 group border border-zinc-800/80 hover:border-rose-500/50 hover:shadow-2xl hover:shadow-rose-500/10 transition-all duration-200 cursor-pointer relative overflow-hidden"
             >
               {/* Luminous Top Accent Glow */}
-              <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-transparent via-emerald-500/40 to-transparent group-hover:via-emerald-400 transition-colors" />
+              <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-transparent via-rose-500/40 to-transparent group-hover:via-orange-400 transition-colors" />
 
               {/* Top Row: 3D Squircle Icon & Tactile Toggle */}
               <div className="flex items-start justify-between gap-4">
@@ -355,7 +362,7 @@ export function ServerOverviewTab({
               {/* Middle Section: Title, Category Badge & Live Cue */}
               <div className="space-y-2 flex-1">
                 <div>
-                  <h3 className="font-black text-base text-white group-hover:text-emerald-300 transition-colors tracking-tight line-clamp-1">
+                  <h3 className="font-black text-base text-white group-hover:text-rose-300 transition-colors tracking-tight line-clamp-1">
                     {module.name}
                   </h3>
                   <span className="inline-block text-[9px] font-mono font-bold uppercase tracking-wider text-zinc-500 bg-zinc-900/90 px-2 py-0.5 rounded border border-zinc-800 mt-1">
@@ -378,8 +385,8 @@ export function ServerOverviewTab({
               <div className="pt-3 border-t border-zinc-800/60 flex items-center justify-between gap-2">
                 <div className="flex items-center gap-1.5 text-[11px] font-mono">
                   {module.active ? (
-                    <span className="flex items-center gap-1 text-emerald-400 font-bold">
-                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                    <span className="flex items-center gap-1 text-rose-400 font-bold">
+                      <span className="w-1.5 h-1.5 rounded-full bg-rose-400 animate-pulse" />
                       ACTIVE
                     </span>
                   ) : (
@@ -390,7 +397,7 @@ export function ServerOverviewTab({
                   )}
                 </div>
 
-                <span className="py-1 px-2.5 rounded-lg bg-zinc-900 group-hover:bg-emerald-500 text-zinc-300 group-hover:text-zinc-950 font-black text-xs transition-colors flex items-center gap-1">
+                <span className="py-1 px-2.5 rounded-lg bg-zinc-900 group-hover:bg-gradient-to-r group-hover:from-orange-500 group-hover:to-rose-500 text-zinc-300 group-hover:text-white font-black text-xs transition-colors flex items-center gap-1">
                   <span>STUDIO</span>
                   <ChevronRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5 stroke-[3]" />
                 </span>

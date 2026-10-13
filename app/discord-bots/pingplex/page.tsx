@@ -257,8 +257,8 @@ export default function PingPlexServerSelectPage() {
 
       {/* Toast Alert */}
       {toast && (
-        <div className="fixed top-5 right-5 z-50 px-4 py-2.5 rounded-xl border bg-zinc-900 border-emerald-500/50 text-emerald-300 text-xs font-bold flex items-center gap-2 shadow-xl">
-          <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+        <div className="fixed top-5 right-5 z-50 px-4 py-2.5 rounded-xl border bg-zinc-900 border-fuchsia-500/50 text-fuchsia-300 text-xs font-bold flex items-center gap-2 shadow-xl">
+          <CheckCircle2 className="w-4 h-4 text-fuchsia-400 shrink-0" />
           <span>{toast}</span>
         </div>
       )}

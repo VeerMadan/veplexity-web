@@ -7,6 +7,16 @@ const nextConfig: NextConfig = {
   async redirects() {
     return [
       {
+        source: "/dashboard",
+        destination: "/discord-bots",
+        permanent: false,
+      },
+      {
+        source: "/dashboard/:guildId",
+        destination: "/discord-bots/veplexity/:guildId",
+        permanent: false,
+      },
+      {
         source: "/discord-bots/plexping",
         destination: "/discord-bots/pingplex",
         permanent: false,

@@ -34,26 +34,32 @@ export default function Footer() {
 
         {/* Links */}
         <div className="flex flex-wrap justify-center gap-6 sm:gap-8 mb-12">
-          <Link href="/bot" className="text-sm font-bold uppercase tracking-widest text-zinc-400 hover:text-orange-400 transition-colors">
+          <Link href="/bot/veplexity" className="text-sm font-bold uppercase tracking-widest text-zinc-400 hover:text-orange-400 transition-colors">
             VePlexity Bot
+          </Link>
+          <Link href="/bot/pingplex" className="text-sm font-bold uppercase tracking-widest text-zinc-400 hover:text-fuchsia-400 transition-colors">
+            PingPlex
+          </Link>
+          <Link href="/discord-bots" className="text-sm font-bold uppercase tracking-widest text-zinc-400 hover:text-rose-400 transition-colors">
+            Consoles
           </Link>
           <Link href="/news-wire" className="text-sm font-bold uppercase tracking-widest text-zinc-400 hover:text-fuchsia-400 transition-colors">
             Newswire
           </Link>
-          <Link href="/labs" className="text-sm font-bold uppercase tracking-widest text-zinc-400 hover:text-orange-400 transition-colors">
-            Labs R&D
-          </Link>
           <Link href="/support" className="text-sm font-bold uppercase tracking-widest text-zinc-400 hover:text-fuchsia-400 transition-colors">
             Support
           </Link>
-          <a href="https://youtube.com/@VePlexity" target="_blank" rel="noreferrer" className="flex items-center gap-2 text-sm font-bold uppercase tracking-widest text-zinc-400 hover:text-orange-400 transition-colors">
-            <MonitorPlay className="w-4 h-4" /> YouTube
-          </a>
+          <Link href="/terms" className="text-sm font-bold uppercase tracking-widest text-zinc-400 hover:text-rose-400 transition-colors">
+            Terms
+          </Link>
+          <Link href="/privacy" className="text-sm font-bold uppercase tracking-widest text-zinc-400 hover:text-rose-400 transition-colors">
+            Privacy
+          </Link>
           <a href="https://www.discord.gg/R6ZrqpWEcc" target="_blank" rel="noreferrer" className="flex items-center gap-2 text-sm font-bold uppercase tracking-widest text-zinc-400 hover:text-fuchsia-400 transition-colors">
             <MessageSquare className="w-4 h-4" /> Discord
           </a>
           <a href="https://veermadan.dev" target="_blank" rel="noreferrer" className="flex items-center gap-2 text-sm font-bold uppercase tracking-widest text-zinc-400 hover:text-white transition-colors">
-            <ExternalLink className="w-4 h-4 text-fuchsia-400" /> Creator Portfolio
+            <ExternalLink className="w-4 h-4 text-fuchsia-400" /> Portfolio
           </a>
         </div>
 

@@ -62,7 +62,7 @@ export function ServerFlightCanvas({
             zIndex: 99999,
             pointerEvents: "none",
           }}
-          className="bg-[#090a0f] flex items-center justify-center overflow-hidden border-2 border-emerald-500 shadow-[0_0_80px_rgba(16,185,129,0.35)]"
+          className="bg-[#0c0714] flex items-center justify-center overflow-hidden border-2 border-rose-500/80 shadow-[0_0_80px_rgba(244,63,94,0.35)]"
         >
           <motion.div
             initial={{ opacity: 0, scale: 0.7 }}
@@ -70,8 +70,8 @@ export function ServerFlightCanvas({
             transition={{ delay: 0.1, duration: 0.36, ease: [0.16, 1, 0.3, 1] }}
             className="flex flex-col items-center gap-4 text-center px-6"
           >
-            <div className="w-22 h-22 sm:w-24 sm:h-24 rounded-2xl bg-[#12141c] border-2 border-emerald-500/60 p-1.5 shadow-[0_0_40px_rgba(16,185,129,0.3)] flex items-center justify-center overflow-hidden relative">
-              <div className="absolute inset-0 bg-emerald-500/15 animate-ping rounded-2xl pointer-events-none" />
+            <div className="w-22 h-22 sm:w-24 sm:h-24 rounded-2xl bg-[#170e24] border-2 border-rose-500/70 p-1.5 shadow-[0_0_40px_rgba(249,115,22,0.35)] flex items-center justify-center overflow-hidden relative">
+              <div className="absolute inset-0 bg-gradient-to-br from-orange-500/20 via-rose-500/20 to-fuchsia-500/20 animate-ping rounded-2xl pointer-events-none" />
               {guild.iconUrl ? (
                 <img
                   src={guild.iconUrl}
@@ -89,9 +89,9 @@ export function ServerFlightCanvas({
               <h2 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
                 {guild.name}
               </h2>
-              <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 font-mono text-xs font-bold">
-                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-                <span>OPENING VEPLEXITY CONSOLE...</span>
+              <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-gradient-to-r from-orange-500/15 via-rose-500/15 to-fuchsia-500/15 border border-rose-500/40 text-rose-300 font-mono text-xs font-bold shadow-sm">
+                <span className="w-2 h-2 rounded-full bg-rose-400 animate-pulse" />
+                <span>OPENING SERVER CONSOLE...</span>
               </div>
             </div>
           </motion.div>

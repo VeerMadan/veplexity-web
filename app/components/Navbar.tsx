@@ -13,11 +13,11 @@ export default function Navbar() {
 
   const navLinks = [
     { name: "Overview", href: "/" },
-    { name: "VePlexity Bot", href: "/bot" },
+    { name: "VePlexity Bot", href: "/bot/veplexity" },
+    { name: "PingPlex", href: "/bot/pingplex" },
+    { name: "Bots Hub", href: "/bot" },
     { name: "Newswire", href: "/news-wire" },
-    { name: "Labs & R&D", href: "/labs" },
     { name: "Support", href: "/support" },
-    { name: "Contact", href: "/contact" },
   ];
 
   return (
@@ -81,11 +81,11 @@ export default function Navbar() {
           </a>
 
           <Link
-            href="/dashboard"
-            className="inline-flex items-center gap-2 px-4 py-2 bg-[#5865F2] hover:bg-[#4752c4] text-white font-semibold text-xs rounded-lg transition"
+            href="/discord-bots"
+            className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-orange-500 via-rose-500 to-fuchsia-600 hover:from-orange-400 hover:to-rose-500 text-white font-bold text-xs rounded-xl shadow-[0_0_20px_rgba(244,63,94,0.3)] transition"
           >
-            <DiscordLogo className="w-3.5 h-3.5" />
-            <span>Dashboard</span>
+            <DiscordLogo className="w-3.5 h-3.5" fill="#ffffff" />
+            <span>Bot Consoles</span>
           </Link>
         </div>
 
@@ -129,12 +129,12 @@ export default function Navbar() {
               Creator Portfolio: veermadan.dev ↗
             </a>
             <Link
-              href="/dashboard"
+              href="/discord-bots"
               onClick={() => setMobileMenuOpen(false)}
-              className="w-full py-2.5 px-4 text-center text-xs font-semibold text-white bg-[#5865F2] hover:bg-[#4752c4] rounded-lg transition flex items-center justify-center gap-2"
+              className="w-full py-2.5 px-4 text-center text-xs font-bold text-white bg-gradient-to-r from-orange-500 via-rose-500 to-fuchsia-600 hover:from-orange-400 hover:to-rose-500 rounded-xl shadow-lg transition flex items-center justify-center gap-2"
             >
-              <DiscordLogo className="w-3.5 h-3.5" />
-              <span>Launch Dashboard</span>
+              <DiscordLogo className="w-3.5 h-3.5" fill="#ffffff" />
+              <span>Launch Bot Consoles</span>
             </Link>
           </div>
         </div>
