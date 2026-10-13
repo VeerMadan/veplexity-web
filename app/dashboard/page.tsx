@@ -502,75 +502,101 @@ export default function DashboardPage() {
                   <motion.div
                     key={guild.id}
                     variants={{
-                      hidden: { opacity: 0, y: 12 },
-                      show: { opacity: 1, y: 0, transition: { duration: 0.25, ease: [0.16, 1, 0.3, 1] } },
+                      hidden: { opacity: 0, y: 15 },
+                      show: { opacity: 1, y: 0, transition: { duration: 0.3, ease: [0.16, 1, 0.3, 1] } },
                     }}
-                    whileHover={{ y: -4, transition: { duration: 0.15 } }}
+                    whileHover={{ y: -5, transition: { duration: 0.2 } }}
                     onClick={(e) => {
                       if (guild.botJoined) {
                         handleManageClick(e, guild);
                       }
                     }}
-                    className={`rounded-2xl pro-card overflow-hidden flex flex-col justify-between group border border-zinc-800/80 hover:border-zinc-700 transition shadow-lg ${
+                    className={`rounded-2xl bg-[#0d0f17] overflow-hidden flex flex-col justify-between group border border-zinc-800/80 hover:border-emerald-500/40 hover:shadow-2xl hover:shadow-emerald-500/10 transition-all duration-300 relative ${
                       guild.botJoined ? "cursor-pointer" : ""
                     }`}
                   >
-                    {/* Upper Ambient Backdrop */}
-                    <div className="h-20 bg-gradient-to-b from-[#181a29] to-[#0e1017] border-b border-zinc-800/40 relative">
-                      {/* Connection pill in top right */}
-                      <div className="absolute top-3 right-3">
+                    {/* Top Ambient Backdrop with Scanner Hairline */}
+                    <div className="h-24 bg-gradient-to-b from-[#181d2e] via-[#101322] to-[#0d0f17] border-b border-zinc-800/50 relative overflow-hidden">
+                      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(16,185,129,0.12),transparent_70%)] pointer-events-none" />
+                      
+                      {/* Top Bar Badges */}
+                      <div className="absolute top-3 inset-x-3.5 flex items-center justify-between z-10">
+                        <span className="text-[10px] font-mono uppercase tracking-wider text-zinc-500 font-bold">
+                          ID: {guild.id.slice(-6)}
+                        </span>
+                        
                         {guild.botJoined ? (
-                          <span className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-950/60 border border-emerald-500/30 text-emerald-400 font-mono text-[10px] font-bold">
+                          <span className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-500/15 border border-emerald-500/40 text-emerald-400 font-mono text-[10px] font-black shadow-xs">
                             <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                            Connected
+                            ACTIVE ENGINE
                           </span>
                         ) : (
-                          <span className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-zinc-900/80 border border-zinc-700 text-zinc-400 font-mono text-[10px] font-bold">
-                            Setup Needed
+                          <span className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-amber-500/15 border border-amber-500/30 text-amber-300 font-mono text-[10px] font-bold">
+                            SETUP NEEDED
                           </span>
                         )}
                       </div>
                     </div>
 
-                    {/* Centered Large Circular Avatar */}
-                    <div className="relative z-10 flex flex-col items-center px-6 pb-6 pt-0 -mt-10 text-center flex-1 justify-between gap-5">
+                    {/* Centered Large Circular Avatar in Machined Bezel */}
+                    <div className="relative z-10 flex flex-col items-center px-5 pb-5 pt-0 -mt-12 text-center flex-1 justify-between gap-4">
                       <div className="flex flex-col items-center gap-3 w-full">
-                        <div className="w-20 h-20 sm:w-22 sm:h-22 rounded-full bg-[#12141c] border-4 border-[#0e1017] shadow-xl overflow-hidden flex items-center justify-center font-bold text-lg text-zinc-200 shrink-0 relative z-20 group-hover:scale-105 transition-transform duration-200">
+                        <div className="w-20 h-20 sm:w-22 sm:h-22 rounded-2xl bg-[#121522] border-2 border-zinc-700/80 group-hover:border-emerald-500/60 shadow-2xl overflow-hidden flex items-center justify-center font-bold text-xl text-zinc-200 shrink-0 relative z-20 group-hover:scale-105 transition-all duration-300 p-1">
                           {guild.iconUrl ? (
                             <img
                               src={guild.iconUrl}
                               alt={guild.name}
-                              className="w-full h-full object-cover"
-                              onError={(e) => { (e.currentTarget.style.display = "none"); }}
+                              className="w-full h-full object-cover rounded-xl"
+                              onError={(e) => {
+                                e.currentTarget.style.display = "none";
+                              }}
                             />
                           ) : (
-                            <span className="text-xl font-mono text-zinc-300">{guild.name.slice(0, 2).toUpperCase()}</span>
+                            <span className="text-xl font-mono font-black text-zinc-200">
+                              {guild.name.slice(0, 2).toUpperCase()}
+                            </span>
                           )}
                         </div>
 
                         {/* Server Title & Roles */}
-                        <div className="space-y-1 w-full">
-                          <h3 className="font-bold text-base text-white truncate max-w-full" title={guild.name}>
+                        <div className="space-y-1.5 w-full">
+                          <h3
+                            className="font-black text-base text-white group-hover:text-emerald-300 transition-colors truncate max-w-full tracking-tight"
+                            title={guild.name}
+                          >
                             {guild.name}
                           </h3>
 
-                          <div className="flex items-center justify-center gap-2 text-xs">
-                            <span className="font-mono text-zinc-400 text-[11px] font-medium">
-                              {guild.owner ? "Server Owner" : "Administrator"}
+                          <div className="flex items-center justify-center gap-2 text-xs flex-wrap">
+                            <span className="px-2 py-0.5 rounded-full bg-zinc-900 border border-zinc-800 text-zinc-400 font-mono text-[10px] font-semibold">
+                              {guild.owner ? "👑 Server Owner" : "🛡️ Administrator"}
                             </span>
                           </div>
                         </div>
+
+                        {/* Feature Badges Strip */}
+                        <div className="w-full py-2 px-3 rounded-xl bg-[#090b12] border border-zinc-800/60 flex items-center justify-around text-[11px] font-mono text-zinc-400">
+                          <span title="24/7 Lossless Audio">🎵 Audio</span>
+                          <span className="text-zinc-700">•</span>
+                          <span title="AutoMod Security">🛡️ Mod</span>
+                          <span className="text-zinc-700">•</span>
+                          <span title="Pingcord Social Alerts">🔔 Alerts</span>
+                          <span className="text-zinc-700">•</span>
+                          <span title="Leveling & XP">🏆 XP</span>
+                        </div>
                       </div>
 
-                      {/* Action Pill Button */}
+                      {/* Action Pill Button with Nested Circle */}
                       <div className="w-full pt-1">
                         {guild.botJoined ? (
                           <button
                             onClick={(e) => handleManageClick(e, guild)}
-                            className="w-full py-2.5 px-4 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-zinc-950 text-xs font-black transition-all flex items-center justify-center gap-2 cursor-pointer shadow-md hover:shadow-emerald-500/20 active:scale-95 group/btn"
+                            className="w-full py-2.5 px-4 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-zinc-950 text-xs font-black transition-all flex items-center justify-between cursor-pointer shadow-lg hover:shadow-emerald-500/25 active:scale-98 group/btn"
                           >
-                            <span>Go</span>
-                            <ChevronRight className="w-4 h-4 transition-transform group-hover/btn:translate-x-0.5" />
+                            <span className="tracking-wider uppercase">LAUNCH CONSOLE</span>
+                            <div className="w-6 h-6 rounded-full bg-zinc-950/20 flex items-center justify-center transition-transform group-hover/btn:translate-x-1">
+                              <ChevronRight className="w-3.5 h-3.5 text-zinc-950 stroke-[3]" />
+                            </div>
                           </button>
                         ) : (
                           <a
@@ -578,23 +604,22 @@ export default function DashboardPage() {
                             target="_blank"
                             rel="noopener noreferrer"
                             onClick={() => handleInviteClick(guild.id, guild.name)}
-                            className={`w-full py-2.5 px-4 rounded-xl text-xs font-bold transition flex items-center justify-center gap-2 cursor-pointer ${
+                            className={`w-full py-2.5 px-4 rounded-xl text-xs font-black transition-all flex items-center justify-between cursor-pointer ${
                               pendingGuildId === guild.id
                                 ? "bg-zinc-900 border border-[#5865F2] text-[#5865F2] animate-pulse"
-                                : "bg-amber-500/10 hover:bg-amber-500/20 text-amber-300 border border-amber-500/30"
+                                : "bg-amber-500/15 hover:bg-amber-500/25 text-amber-300 border border-amber-500/40 shadow-sm"
                             }`}
                           >
-                            {pendingGuildId === guild.id ? (
-                              <>
-                                <RefreshCw className="w-3.5 h-3.5 animate-spin" />
-                                <span>Detecting Bot...</span>
-                              </>
-                            ) : (
-                              <>
-                                <Plus className="w-4 h-4" />
-                                <span>Setup</span>
-                              </>
-                            )}
+                            <span className="tracking-wider uppercase">
+                              {pendingGuildId === guild.id ? "DETECTING BOT..." : "INVITE VEPLEXITY"}
+                            </span>
+                            <div className="w-6 h-6 rounded-full bg-amber-500/20 flex items-center justify-center">
+                              {pendingGuildId === guild.id ? (
+                                <RefreshCw className="w-3 h-3 animate-spin text-amber-300" />
+                              ) : (
+                                <Plus className="w-3.5 h-3.5 text-amber-300 stroke-[3]" />
+                              )}
+                            </div>
                           </a>
                         )}
                       </div>
