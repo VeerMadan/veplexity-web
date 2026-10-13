@@ -96,7 +96,7 @@ export default function Navbar() {
 
           <Link
             href="/discord-bot"
-            className="inline-flex items-center gap-2 px-4 py-2 bg-white/[0.08] hover:bg-white/[0.14] border border-white/15 hover:border-white/25 text-white font-bold text-xs rounded-xl shadow-[inset_0_1px_0_rgba(255,255,255,0.2),0_8px_20px_rgba(0,0,0,0.35)] backdrop-blur-md transition active:scale-95"
+            className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-orange-500 via-rose-500 to-fuchsia-600 hover:from-orange-400 hover:to-rose-500 text-white font-bold text-xs rounded-xl shadow-lg shadow-rose-500/25 transition active:scale-95"
           >
             <DiscordLogo className="w-3.5 h-3.5" fill="#ffffff" />
             <span>Discord Bots</span>

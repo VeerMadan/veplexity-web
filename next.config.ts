@@ -16,11 +16,7 @@ const nextConfig: NextConfig = {
         destination: "/discord-bot/:path*",
         permanent: false,
       },
-      {
-        source: "/dashboard",
-        destination: "/discord-bot",
-        permanent: false,
-      },
+
       {
         source: "/dashboard/:guildId",
         destination: "/discord-bot/veplexity/:guildId",

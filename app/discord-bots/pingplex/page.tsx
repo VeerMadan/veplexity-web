@@ -1,35 +1,17 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
-import { useSession, signIn, signOut } from "next-auth/react";
+import { useState, useRef } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { 
-  Server, Plus, RefreshCw, LogOut, CheckCircle2, ChevronRight, 
-  Search, ArrowLeft, ExternalLink, Radio, Bell, Play, Video, 
-  Share2, Sparkles, Terminal, Flame, MessageSquare, ShieldCheck, 
-  Lock, Eye, Twitch, Youtube, Twitter, Copy, Check, Hash, User, Send
+  Server, Plus, ChevronRight, Search, Radio, ArrowLeft, 
+  ExternalLink, Bell, Video, Sparkles, ShieldCheck, 
+  Lock, Copy, Check, Hash, Send, Zap
 } from "lucide-react";
 import { DiscordLogo, DiscordVerifiedBadge, DiscordAppPill } from "@/app/components/BrandIcons";
 import Navbar from "@/app/components/Navbar";
 import Footer from "@/app/components/Footer";
 import { dashboardAudio } from "@/lib/dashboardAudio";
-import { ServerFlightCanvas, FlightRect, FlightGuildData } from "@/app/components/ServerRevealTransition";
-import { CardZoomRevealCanvas, ZoomRevealRect, ZoomRevealBotData } from "@/app/components/CardZoomRevealCanvas";
-
-interface GuildItem {
-  id: string;
-  name: string;
-  icon: string | null;
-  owner: boolean;
-  botJoined: boolean;
-  bots?: {
-    veplexity: boolean;
-    pingplex: boolean;
-  };
-  iconUrl: string | null;
-}
 
 interface AlertCommandSpec {
   name: string;
@@ -50,29 +32,12 @@ interface AlertCommandSpec {
 }
 
 export default function PingPlexLandingPage() {
-  const { data: session, status } = useSession();
-  const router = useRouter();
-
-  // Server management state
-  const [guilds, setGuilds] = useState<GuildItem[]>([]);
-  const [loadingGuilds, setLoadingGuilds] = useState(false);
-  const [isRefreshing, setIsRefreshing] = useState(false);
-  const [serverSearch, setServerSearch] = useState("");
-  const [serverFilter, setServerFilter] = useState<"all" | "active" | "uninvited">("all");
-  const [serverError, setServerError] = useState<string | null>(null);
-
-  // Flight transition states
-  const [flightRect, setFlightRect] = useState<FlightRect | null>(null);
-  const [flightGuild, setFlightGuild] = useState<FlightGuildData | null>(null);
-
-  // Command Explorer State
   const [selectedCommandIdx, setSelectedCommandIdx] = useState<number>(0);
   const [commandCategory, setCommandCategory] = useState<string>("all");
   const [commandSearch, setCommandSearch] = useState<string>("");
   const [copiedCmd, setCopiedCmd] = useState<boolean>(false);
 
   // Preset Template State
-  const [activePreset, setActivePreset] = useState<string>("hype");
   const [copiedPreset, setCopiedPreset] = useState<string | null>(null);
 
   // Live Typing & Sending Simulation State Machine
@@ -217,7 +182,6 @@ export default function PingPlexLandingPage() {
 
   const activeCmd = alertCommands[selectedCommandIdx] || alertCommands[0];
 
-  // Trigger simulated live typing -> sending -> bot thinking -> bot embed
   const runLiveCommandSimulation = (targetCmd: AlertCommandSpec) => {
     simTimeoutRef.current.forEach(clearTimeout);
     simTimeoutRef.current = [];
@@ -256,97 +220,21 @@ export default function PingPlexLandingPage() {
     runLiveCommandSimulation(alertCommands[idx]);
   };
 
-  const fetchGuilds = async (showSpinner = true) => {
-    try {
-      if (showSpinner) setLoadingGuilds(true);
-      else setIsRefreshing(true);
-      setServerError(null);
-      const res = await fetch("/api/user/guilds", { cache: "no-store" });
-      if (!res.ok) {
-        const err = await res.json().catch(() => ({}));
-        throw new Error(err.error || "Failed to load servers");
-      }
-      const data = await res.json();
-      setGuilds(data.guilds || []);
-    } catch (err: any) {
-      console.error("[PingPlexSelector] Error loading guilds:", err);
-      if (showSpinner) setServerError(err.message || "Failed to connect to Discord API");
-    } finally {
-      if (showSpinner) setLoadingGuilds(false);
-      setIsRefreshing(false);
-    }
-  };
-
-  useEffect(() => {
-    if (status === "authenticated") {
-      fetchGuilds(true);
-    }
-  }, [status]);
-
-  const handleManageServerFlight = (e: React.MouseEvent, guild: GuildItem) => {
-    e.preventDefault();
-    e.stopPropagation();
-    dashboardAudio.playClick();
-
-    const rect = e.currentTarget.getBoundingClientRect();
-    const flightData: FlightGuildData = {
-      id: guild.id,
-      name: guild.name,
-      iconUrl: guild.iconUrl,
-      initials: guild.name
-        .split(" ")
-        .map((w) => w[0])
-        .join("")
-        .substring(0, 3)
-        .toUpperCase(),
-    };
-
-    try {
-      sessionStorage.setItem("vep_server_flight", JSON.stringify(flightData));
-    } catch {}
-
-    setFlightRect({
-      top: rect.top,
-      left: rect.left,
-      width: rect.width,
-      height: rect.height,
-    });
-    setFlightGuild(flightData);
-
-    setTimeout(() => {
-      router.push(`/discord-bots/pingplex/${guild.id}`);
-    }, 520);
-  };
-
-  const visibleGuilds = guilds.filter((g) => {
-    const matchesSearch = g.name.toLowerCase().includes(serverSearch.toLowerCase());
-    const isJoined = Boolean(g.bots?.pingplex);
-    if (serverFilter === "active") return matchesSearch && isJoined;
-    if (serverFilter === "uninvited") return matchesSearch && !isJoined;
-    return matchesSearch;
-  });
-
   return (
     <div className="min-h-screen bg-[#07030a] text-zinc-100 flex flex-col font-sans selection:bg-fuchsia-500/30 relative overflow-x-hidden">
       <Navbar />
 
-      {/* Flight Canvas Transition into Specific Guild */}
-      {flightRect && flightGuild && (
-        <ServerFlightCanvas startRect={flightRect} guild={flightGuild} />
-      )}
+      {/* Atmospheric Soft Glows */}
+      <div className="fixed top-0 right-1/4 w-[750px] h-[750px] bg-gradient-to-br from-fuchsia-600/15 via-purple-600/10 to-transparent rounded-full blur-[170px] pointer-events-none" />
+      <div className="fixed top-1/2 left-1/4 w-[750px] h-[750px] bg-gradient-to-tr from-purple-600/15 via-rose-600/10 to-transparent rounded-full blur-[170px] pointer-events-none" />
 
-      {/* Ambient Soft Glowing Hues */}
-      <div className="fixed top-0 right-1/4 w-[700px] h-[700px] bg-gradient-to-br from-fuchsia-600/10 via-purple-600/5 to-transparent rounded-full blur-[170px] pointer-events-none" />
-      <div className="fixed top-1/2 left-1/4 w-[700px] h-[700px] bg-gradient-to-tr from-purple-600/10 via-rose-600/5 to-transparent rounded-full blur-[170px] pointer-events-none" />
-
-      {/* WIDESCREEN CONTAINER */}
-      <main className="flex-1 w-full max-w-[1720px] mx-auto px-4 sm:px-8 lg:px-12 py-8 sm:py-12 space-y-16 sm:space-y-20 relative z-10">
+      <main className="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 space-y-16 relative z-10">
         
-        {/* ─── HERO & TOP STUDIO LAUNCHER DECK ────────────────────────────── */}
-        <section className="relative pb-10 border-b border-white/[0.07]">
+        {/* ─── HERO SECTION: BOT SHOWCASE & DUAL CTAS ─────────────────────── */}
+        <section className="relative pb-12 border-b border-zinc-800 space-y-6">
           
-          {/* Breadcrumb Navigation */}
-          <div className="flex items-center gap-2 text-xs font-mono text-zinc-400 mb-6">
+          {/* Breadcrumb */}
+          <div className="flex items-center gap-2 text-xs font-mono text-zinc-400">
             <Link href="/discord-bot" className="hover:text-white transition-colors flex items-center gap-1.5">
               <ArrowLeft className="w-3.5 h-3.5" />
               <span>Discord Bots</span>
@@ -355,44 +243,38 @@ export default function PingPlexLandingPage() {
             <span className="text-fuchsia-400 font-bold">PingPlex</span>
           </div>
 
-          <div className="grid grid-cols-1 xl:grid-cols-12 gap-8 lg:gap-12 items-stretch">
+          <div className="flex flex-col lg:flex-row items-start justify-between gap-10">
             
-            {/* LEFT COLUMN: BRAND LOCKUP + OVERVIEW (7 Cols on XL) */}
-            <motion.div 
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: false, amount: 0.2 }}
-              transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
-              className="xl:col-span-7 flex flex-col justify-between space-y-6"
-            >
-              {/* Official Unboxed Logo + Title */}
+            {/* Left: Brand Identity & Descriptions */}
+            <div className="space-y-6 max-w-3xl">
+              
+              {/* Unboxed Logo + Title Lockup */}
               <div className="flex flex-col sm:flex-row items-center sm:items-start gap-5">
-                {/* Unboxed Crisp Logo with zero artificial container box */}
                 <div className="relative shrink-0 flex items-center justify-center">
                   <img 
                     src="/bots/pingplex-avatar.png" 
                     alt="PingPlex Official Logo" 
-                    className="w-24 h-24 sm:w-28 sm:h-28 object-contain filter drop-shadow-[0_12px_28px_rgba(0,0,0,0.7)] group-hover:scale-105 transition-transform"
+                    className="w-24 h-24 sm:w-28 sm:h-28 object-contain filter drop-shadow-[0_12px_28px_rgba(217,70,239,0.6)]"
                     onError={(e) => { e.currentTarget.src = "/bots/pp.png"; }}
                   />
                 </div>
 
                 <div className="space-y-2 text-center sm:text-left">
                   <div className="flex items-center gap-2 justify-center sm:justify-start flex-wrap">
-                    <span className="text-xs font-mono px-3 py-1 rounded-full bg-white/[0.05] border border-white/10 text-fuchsia-300 font-bold uppercase tracking-wider backdrop-blur-md">
+                    <span className="text-xs font-mono px-3 py-1 rounded-full bg-fuchsia-500/15 border border-fuchsia-500/40 text-fuchsia-300 font-bold uppercase tracking-wider">
                       CREATOR ALERT ENGINE • ZERO PAYWALLS
                     </span>
-                    <span className="text-xs font-mono text-emerald-400 font-bold flex items-center gap-1">
+                    <span className="text-xs font-mono text-emerald-400 font-bold flex items-center gap-1.5">
                       <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
                       <span>Render Cluster Live</span>
                     </span>
                   </div>
 
                   <div className="flex items-center gap-3 justify-center sm:justify-start flex-wrap">
-                    <h1 className="text-3xl sm:text-5xl font-black text-white tracking-tight uppercase leading-none">
+                    <h1 className="text-4xl sm:text-6xl font-black text-white tracking-tight uppercase leading-none">
                       PINGPLEX
                     </h1>
-                    <DiscordVerifiedBadge className="w-6 h-6 shrink-0" />
+                    <DiscordVerifiedBadge className="w-7 h-7 shrink-0" />
                     <DiscordAppPill />
                   </div>
 
@@ -402,8 +284,8 @@ export default function PingPlexLandingPage() {
                 </div>
               </div>
 
-              {/* Subtitle / Overview */}
-              <p className="text-sm sm:text-base text-zinc-300 leading-relaxed font-normal">
+              {/* Subtitle Overview */}
+              <p className="text-base sm:text-lg text-zinc-300 leading-relaxed font-normal">
                 The zero-delay creator alert engine for Discord communities. Deliver instantaneous, high-fidelity notifications for <strong>YouTube uploads &amp; shorts</strong>, <strong>Twitch live streams</strong>, <strong>TikTok videos</strong>, <strong>X (Twitter) posts</strong>, and <strong>Reddit threads</strong> — 100% free with unlimited feeds and custom mention presets.
               </p>
 
@@ -417,193 +299,69 @@ export default function PingPlexLandingPage() {
                   "Custom Ping Roles (@StreamSquad)",
                   "Dedicated Render Cloud Cluster"
                 ].map((pill, idx) => (
-                  <span key={idx} className="px-3 py-1 rounded-xl bg-white/[0.04] border border-white/[0.08] text-[11px] font-mono text-zinc-300 font-semibold shadow-sm">
+                  <span key={idx} className="px-3 py-1.5 rounded-xl bg-[#0c0716] border border-fuchsia-500/20 text-xs font-mono text-zinc-300 font-semibold shadow-sm">
                     ✓ {pill}
                   </span>
                 ))}
               </div>
 
-              {/* Action Buttons & Legal Links */}
-              <div className="flex flex-col sm:flex-row items-center gap-4 pt-2">
+              {/* ── DUAL ACTION CTAS: ADD TO SERVER & SEPARATE STUDIO DASHBOARD BUTTON ── */}
+              <div className="flex flex-col sm:flex-row items-center gap-4 pt-3">
                 <a
                   href="/invite/pingplex"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-full sm:w-auto px-7 py-3.5 rounded-xl bg-white/[0.12] hover:bg-white/[0.18] border border-white/20 hover:border-white/35 text-white font-black text-xs tracking-wider uppercase transition-all flex items-center justify-center gap-2.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.25),0_10px_25px_rgba(0,0,0,0.4)] backdrop-blur-xl active:scale-95"
+                  className="w-full sm:w-auto px-8 py-4 rounded-2xl bg-gradient-to-r from-fuchsia-600 via-purple-600 to-rose-600 hover:from-fuchsia-500 hover:to-purple-500 text-white font-black text-sm tracking-wide uppercase transition-all flex items-center justify-center gap-2.5 shadow-xl shadow-fuchsia-600/25 active:scale-95 group cursor-pointer"
                 >
-                  <DiscordLogo className="w-4 h-4" fill="#ffffff" />
+                  <DiscordLogo className="w-5 h-5" fill="#ffffff" />
                   <span>Add to Server</span>
-                  <ExternalLink className="w-3.5 h-3.5 text-zinc-400" />
+                  <ExternalLink className="w-4 h-4 transition-transform group-hover:translate-x-0.5" />
                 </a>
 
-                <a
-                  href="#command-console"
-                  className="w-full sm:w-auto px-6 py-3.5 rounded-xl bg-transparent hover:bg-white/[0.05] border border-white/10 text-zinc-300 hover:text-white font-bold text-xs tracking-wider uppercase transition-all flex items-center justify-center gap-2 backdrop-blur-xl"
+                <Link
+                  href="/discord-bots/pingplex/dashboard"
+                  onClick={() => dashboardAudio.playClick()}
+                  className="w-full sm:w-auto px-8 py-4 rounded-2xl bg-[#180a24] hover:bg-[#230f34] border-2 border-fuchsia-500/40 hover:border-fuchsia-500/80 text-white font-black text-sm tracking-wide uppercase transition-all flex items-center justify-center gap-2.5 shadow-lg active:scale-95 group cursor-pointer"
                 >
-                  <span>Alert Command Simulator ↓</span>
-                </a>
-              </div>
-
-              {/* Legal Links Bar */}
-              <div className="flex items-center gap-3 text-xs font-mono text-zinc-400 pt-1">
-                <Link href="/discord-bot/pingplex/terms" className="hover:text-fuchsia-400 transition-colors underline">
-                  Terms of Service
-                </Link>
-                <span>•</span>
-                <Link href="/discord-bot/pingplex/privacy" className="hover:text-fuchsia-400 transition-colors underline">
-                  Privacy Policy
-                </Link>
-                <span>•</span>
-                <span className="text-zinc-500">Free Multi-Feed Webhook Dispatcher</span>
-              </div>
-            </motion.div>
-
-            {/* RIGHT COLUMN: PROMINENT TOP STUDIO LAUNCHER DECK (5 Cols on XL) */}
-            <motion.div 
-              initial={{ opacity: 0, scale: 0.98 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: false, amount: 0.2 }}
-              transition={{ duration: 0.45, delay: 0.08 }}
-              id="studio-management-deck"
-              className="xl:col-span-5 rounded-3xl bg-[#0c0716]/85 border border-white/[0.08] p-6 sm:p-7 shadow-[inset_0_1px_0_rgba(255,255,255,0.08),0_20px_50px_rgba(0,0,0,0.6)] backdrop-blur-2xl flex flex-col justify-between space-y-5"
-            >
-              {/* Header */}
-              <div className="flex items-center justify-between pb-3 border-b border-white/[0.07]">
-                <div className="flex items-center gap-2.5">
                   <Radio className="w-5 h-5 text-fuchsia-400" />
-                  <span className="text-xs font-mono font-bold uppercase tracking-wider text-white">
-                    PINGPLEX STUDIO CONSOLE
-                  </span>
+                  <span>Launch Studio Dashboard</span>
+                  <ChevronRight className="w-4 h-4 text-fuchsia-400 transition-transform group-hover:translate-x-1" />
+                </Link>
+              </div>
+            </div>
+
+            {/* Right: Quick Features Deck */}
+            <div className="w-full lg:w-80 rounded-3xl bg-[#0c0716]/95 border-2 border-fuchsia-500/30 p-6 space-y-4 shadow-xl shrink-0 backdrop-blur-xl">
+              <span className="text-xs font-mono font-bold uppercase tracking-wider text-fuchsia-400 flex items-center gap-1.5">
+                <Sparkles className="w-4 h-4" />
+                <span>STUDIO CONTROLS</span>
+              </span>
+
+              <div className="space-y-3 text-xs font-mono text-zinc-300">
+                <div className="p-3 rounded-xl bg-black/50 border border-zinc-800 space-y-1">
+                  <p className="text-fuchsia-300 font-bold">📡 Multi-Platform Feeds</p>
+                  <p className="text-[11px] text-zinc-400">YouTube, Twitch, TikTok, X, and Reddit supported.</p>
                 </div>
-                {status === "authenticated" && (
-                  <button
-                    onClick={() => signOut()}
-                    className="text-[11px] font-mono text-zinc-400 hover:text-rose-400 transition flex items-center gap-1"
-                  >
-                    <LogOut className="w-3 h-3" />
-                    <span>Sign Out</span>
-                  </button>
-                )}
+
+                <div className="p-3 rounded-xl bg-black/50 border border-zinc-800 space-y-1">
+                  <p className="text-rose-300 font-bold">⚡ Zero Polling Lag</p>
+                  <p className="text-[11px] text-zinc-400">Low-latency Twitch EventSub &amp; YouTube PubSubHubbub.</p>
+                </div>
+
+                <div className="p-3 rounded-xl bg-black/50 border border-zinc-800 space-y-1">
+                  <p className="text-purple-300 font-bold">🎯 Targeted Mentions</p>
+                  <p className="text-[11px] text-zinc-400">Ping specific roles instead of annoying @everyone.</p>
+                </div>
               </div>
 
-              {/* Body: Authenticated vs Unauthenticated */}
-              {status !== "authenticated" ? (
-                <div className="space-y-4 py-2">
-                  <p className="text-xs sm:text-sm text-zinc-300 leading-relaxed font-normal">
-                    Log in with Discord to view servers where you hold <strong>Manage Server</strong> or <strong>Administrator</strong> privileges and open PingPlex Alert Studio.
-                  </p>
-
-                  <div className="p-3.5 rounded-2xl bg-white/[0.03] border border-white/[0.06] space-y-1.5 text-xs font-mono text-zinc-400">
-                    <p className="text-white font-bold">⚡ What you can configure:</p>
-                    <p>• YouTube, Twitch, TikTok, X, &amp; Reddit webhook channels</p>
-                    <p>• 1-Click message templates &amp; hype alert presets</p>
-                    <p>• Custom mention roles (@StreamSquad) to eliminate ping fatigue</p>
-                  </div>
-
-                  <button
-                    onClick={() => signIn("discord")}
-                    className="w-full py-3.5 px-5 rounded-xl bg-white/[0.12] hover:bg-white/[0.18] border border-white/20 text-white font-bold text-xs tracking-wider uppercase transition flex items-center justify-center gap-2.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.2),0_8px_20px_rgba(0,0,0,0.35)] backdrop-blur-xl active:scale-95 cursor-pointer"
-                  >
-                    <DiscordLogo className="w-4 h-4" fill="#ffffff" />
-                    <span>Log In with Discord &amp; Open Studio</span>
-                  </button>
-
-                  <p className="text-[10px] font-mono text-zinc-500 text-center">
-                    Read-only server permissions • Zero private message access
-                  </p>
-                </div>
-              ) : (
-                /* Authenticated Server Selector inside Top Deck */
-                <div className="space-y-3.5 flex-1 flex flex-col justify-between">
-                  {/* Search & Filter Bar */}
-                  <div className="flex items-center gap-2">
-                    <div className="relative flex-1">
-                      <Search className="w-3.5 h-3.5 text-zinc-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
-                      <input
-                        type="text"
-                        placeholder="Search your servers..."
-                        value={serverSearch}
-                        onChange={(e) => setServerSearch(e.target.value)}
-                        className="w-full pl-8 pr-3 py-1.5 rounded-xl bg-black/60 border border-white/10 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-fuchsia-500/50"
-                      />
-                    </div>
-
-                    <button
-                      onClick={() => fetchGuilds(false)}
-                      disabled={isRefreshing}
-                      className="p-2 rounded-xl bg-white/[0.04] border border-white/10 text-zinc-300 hover:text-white transition disabled:opacity-50"
-                      title="Refresh Servers"
-                    >
-                      <RefreshCw className={`w-3.5 h-3.5 ${isRefreshing ? "animate-spin" : ""}`} />
-                    </button>
-                  </div>
-
-                  {/* Servers List View */}
-                  <div className="max-h-56 overflow-y-auto space-y-2 pr-1 custom-scrollbar">
-                    {loadingGuilds ? (
-                      <div className="text-center py-8 space-y-2">
-                        <div className="w-6 h-6 rounded-full border-2 border-fuchsia-500 border-t-transparent animate-spin mx-auto" />
-                        <p className="text-[11px] font-mono text-zinc-400">Loading Discord servers...</p>
-                      </div>
-                    ) : visibleGuilds.length === 0 ? (
-                      <p className="text-xs text-zinc-500 text-center py-6">No managed servers found.</p>
-                    ) : (
-                      visibleGuilds.map((guild) => {
-                        const isJoined = Boolean(guild.bots?.pingplex);
-                        return (
-                          <div
-                            key={guild.id}
-                            className="p-3 rounded-xl bg-white/[0.03] border border-white/[0.06] hover:border-fuchsia-500/30 transition flex items-center justify-between gap-3 group"
-                          >
-                            <div className="flex items-center gap-3 min-w-0">
-                              <div className="w-9 h-9 rounded-xl bg-zinc-900 border border-white/10 overflow-hidden flex items-center justify-center font-bold text-xs text-zinc-400 shrink-0">
-                                {guild.iconUrl ? (
-                                  <img src={guild.iconUrl} alt={guild.name} className="w-full h-full object-cover" />
-                                ) : (
-                                  guild.name.substring(0, 2).toUpperCase()
-                                )}
-                              </div>
-                              <div className="min-w-0">
-                                <p className="text-xs font-bold text-white truncate group-hover:text-fuchsia-400 transition-colors">
-                                  {guild.name}
-                                </p>
-                                <p className="text-[10px] font-mono text-zinc-500">
-                                  {isJoined ? "● PingPlex Active" : "Not Invited"}
-                                </p>
-                              </div>
-                            </div>
-
-                            {isJoined ? (
-                              <button
-                                onClick={(e) => handleManageServerFlight(e, guild)}
-                                className="px-3 py-1.5 rounded-lg bg-white/[0.12] hover:bg-white/[0.2] border border-white/20 text-white font-bold text-[11px] transition flex items-center gap-1 shrink-0 cursor-pointer active:scale-95"
-                              >
-                                <span>Studio</span>
-                                <ChevronRight className="w-3.5 h-3.5 text-fuchsia-400" />
-                              </button>
-                            ) : (
-                              <a
-                                href={`https://discord.com/api/oauth2/authorize?client_id=1559520031916687430&permissions=8&scope=bot%20applications.commands&guild_id=${guild.id}&disable_guild_select=true`}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="px-3 py-1.5 rounded-lg bg-fuchsia-500/20 hover:bg-fuchsia-500/30 border border-fuchsia-500/40 text-fuchsia-300 font-bold text-[11px] transition flex items-center gap-1 shrink-0"
-                              >
-                                <Plus className="w-3.5 h-3.5" />
-                                <span>Invite</span>
-                              </a>
-                            )}
-                          </div>
-                        );
-                      })
-                    )}
-                  </div>
-
-                  <p className="text-[10px] font-mono text-zinc-500 text-center">
-                    Select a server to open dedicated social webhook feeds &amp; template presets
-                  </p>
-                </div>
-              )}
-            </motion.div>
+              <Link
+                href="/discord-bots/pingplex/dashboard"
+                className="w-full py-2.5 px-4 rounded-xl bg-fuchsia-500/15 hover:bg-fuchsia-500/25 border border-fuchsia-500/40 text-fuchsia-300 text-xs font-mono font-bold flex items-center justify-between transition"
+              >
+                <span>Open Dedicated Studio</span>
+                <ChevronRight className="w-3.5 h-3.5" />
+              </Link>
+            </div>
           </div>
         </section>
 
@@ -627,13 +385,13 @@ export default function PingPlexLandingPage() {
             {presetTemplates.map((preset) => (
               <div
                 key={preset.id}
-                className="p-4 rounded-2xl bg-white/[0.03] border border-white/[0.07] hover:border-fuchsia-500/30 transition flex flex-col justify-between space-y-3 backdrop-blur-xl"
+                className="p-4 rounded-2xl bg-[#0c0716] border border-fuchsia-500/25 hover:border-fuchsia-500/50 transition flex flex-col justify-between space-y-3"
               >
                 <div className="space-y-1.5">
                   <span className="text-xs font-bold text-white font-mono block">
                     {preset.label}
                   </span>
-                  <p className="text-xs font-mono text-zinc-300 bg-black/50 p-2.5 rounded-lg border border-white/5 break-words">
+                  <p className="text-xs font-mono text-zinc-300 bg-black/60 p-2.5 rounded-lg border border-zinc-800 break-words">
                     {preset.text}
                   </p>
                 </div>
@@ -645,7 +403,7 @@ export default function PingPlexLandingPage() {
                     setCopiedPreset(preset.id);
                     setTimeout(() => setCopiedPreset(null), 2000);
                   }}
-                  className="w-full py-1.5 rounded-lg bg-white/[0.08] hover:bg-white/[0.14] border border-white/10 text-white text-xs font-bold font-mono transition flex items-center justify-center gap-1.5"
+                  className="w-full py-1.5 rounded-lg bg-fuchsia-500/15 hover:bg-fuchsia-500/25 border border-fuchsia-500/30 text-white text-xs font-bold font-mono transition flex items-center justify-center gap-1.5 cursor-pointer"
                 >
                   {copiedPreset === preset.id ? (
                     <>
@@ -664,14 +422,9 @@ export default function PingPlexLandingPage() {
           </div>
         </section>
 
-        {/* ─── INTERACTIVE LIVE TYPING COMMAND VISUALIZER ───────────────────── */}
+        {/* ─── INTERACTIVE LIVE TYPING COMMAND SIMULATOR ───────────────────── */}
         <section id="command-console" className="space-y-6 pt-2 scroll-mt-24">
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: false, amount: 0.3 }}
-            className="text-center space-y-2 max-w-2xl mx-auto"
-          >
+          <div className="text-center space-y-2 max-w-2xl mx-auto">
             <span className="text-xs font-mono text-fuchsia-400 font-bold uppercase tracking-wider">
               HIGH-FIDELITY DISCORD SIMULATOR
             </span>
@@ -681,19 +434,13 @@ export default function PingPlexLandingPage() {
             <p className="text-xs sm:text-sm text-zinc-400">
               Select any alert command to watch simulated character typing, Discord webhook dispatch, and rich alert embeds.
             </p>
-          </motion.div>
+          </div>
 
-          {/* Workbench Grid: Left Command Selector + Right Live Discord Chat Visualizer */}
-          <motion.div 
-            initial={{ opacity: 0, y: 25 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: false, amount: 0.15 }}
-            transition={{ duration: 0.45 }}
-            className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start"
-          >
+          {/* Workbench Grid: Left Command List + Right Live Discord Chat */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
             
             {/* ── LEFT: SCROLLABLE COMMAND LIST (4 Cols) ── */}
-            <div className="lg:col-span-4 rounded-3xl bg-[#0c0716]/85 border border-white/[0.08] p-4 sm:p-5 flex flex-col space-y-3.5 shadow-xl backdrop-blur-2xl max-h-[620px]">
+            <div className="lg:col-span-4 rounded-3xl bg-[#0c0716] border border-fuchsia-500/20 p-4 sm:p-5 flex flex-col space-y-3.5 shadow-xl max-h-[620px]">
               {/* Search Bar */}
               <div className="relative">
                 <Search className="w-3.5 h-3.5 text-zinc-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
@@ -702,7 +449,7 @@ export default function PingPlexLandingPage() {
                   placeholder="Filter alert commands..."
                   value={commandSearch}
                   onChange={(e) => setCommandSearch(e.target.value)}
-                  className="w-full pl-8 pr-3 py-2 rounded-xl bg-black/60 border border-white/10 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-fuchsia-500/50"
+                  className="w-full pl-8 pr-3 py-2 rounded-xl bg-black border border-zinc-800 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-fuchsia-500/50"
                 />
               </div>
 
@@ -720,10 +467,10 @@ export default function PingPlexLandingPage() {
                           const originalIdx = alertCommands.findIndex(c => c.name === cmd.name);
                           handleSelectCommand(originalIdx >= 0 ? originalIdx : 0);
                         }}
-                        className={`w-full text-left p-3 rounded-2xl border transition-all flex items-center justify-between group cursor-pointer ${
+                        className={`w-full text-left p-3.5 rounded-2xl border transition-all flex items-center justify-between group cursor-pointer ${
                           isSelected
-                            ? "bg-white/[0.10] border-white/25 shadow-sm"
-                            : "bg-white/[0.03] border-white/[0.06] hover:border-white/15 hover:bg-white/[0.05]"
+                            ? "bg-gradient-to-r from-fuchsia-600/20 via-purple-600/15 to-transparent border-fuchsia-500/70 shadow-md shadow-fuchsia-500/15"
+                            : "bg-[#090312] border-zinc-800/80 hover:border-zinc-700 hover:bg-zinc-900/40"
                         }`}
                       >
                         <div className="space-y-1 min-w-0 pr-2">
@@ -734,7 +481,7 @@ export default function PingPlexLandingPage() {
                               {cmd.name}
                             </span>
                             {cmd.badge && (
-                              <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-white/[0.06] border border-white/10 text-zinc-300 font-bold shrink-0">
+                              <span className="text-[9px] font-mono px-2 py-0.5 rounded bg-fuchsia-500/15 border border-fuchsia-500/30 text-fuchsia-300 font-bold shrink-0">
                                 {cmd.badge}
                               </span>
                             )}
@@ -943,17 +690,12 @@ export default function PingPlexLandingPage() {
                 </button>
               </div>
             </div>
-          </motion.div>
+          </div>
         </section>
 
         {/* ─── ENLISTED LEGAL DOCUMENTS DIRECTORY ─────────────────────────── */}
-        <section className="pt-8 border-t border-white/[0.07] space-y-6">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: false, amount: 0.3 }}
-            className="text-center space-y-2 max-w-xl mx-auto"
-          >
+        <section className="pt-8 border-t border-zinc-800 space-y-6">
+          <div className="text-center space-y-2 max-w-xl mx-auto">
             <span className="text-xs font-mono text-fuchsia-400 font-bold uppercase tracking-wider">
               LEGAL &amp; COMPLIANCE POLICIES
             </span>
@@ -963,15 +705,15 @@ export default function PingPlexLandingPage() {
             <p className="text-xs text-zinc-400">
               Complete transparent legal documents directly codified for PingPlex Creator Alert operations.
             </p>
-          </motion.div>
+          </div>
 
-          <div className="p-6 sm:p-8 rounded-3xl bg-[#0c0716]/85 border border-white/[0.08] grid grid-cols-1 md:grid-cols-2 gap-8 backdrop-blur-2xl">
+          <div className="p-6 sm:p-8 rounded-3xl bg-[#0c0716]/95 border-2 border-fuchsia-500/25 grid grid-cols-1 md:grid-cols-2 gap-8 shadow-xl">
             <div className="space-y-3">
               <div className="flex items-center gap-2">
                 <ShieldCheck className="w-5 h-5 text-fuchsia-400" />
                 <h4 className="text-base font-bold text-white uppercase">Terms of Service</h4>
               </div>
-              <p className="text-xs text-zinc-400 leading-relaxed">
+              <p className="text-xs text-zinc-400 leading-relaxed font-normal">
                 By adding PingPlex to your Discord server or configuring webhook channels, you agree to comply with Discord Developer Terms of Service and official platform API policies (YouTube, Twitch, TikTok, X, Reddit).
               </p>
               <div className="space-y-1 text-xs font-mono text-zinc-400">
@@ -993,7 +735,7 @@ export default function PingPlexLandingPage() {
                 <Lock className="w-5 h-5 text-purple-400" />
                 <h4 className="text-base font-bold text-white uppercase">Privacy Policy</h4>
               </div>
-              <p className="text-xs text-zinc-400 leading-relaxed">
+              <p className="text-xs text-zinc-400 leading-relaxed font-normal">
                 PingPlex operates purely as an outward alert dispatcher. The application never reads, stores, or processes general server messages, member DMs, or user profiles.
               </p>
               <div className="space-y-1 text-xs font-mono text-zinc-400">

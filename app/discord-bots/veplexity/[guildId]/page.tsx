@@ -940,7 +940,7 @@ function GuildDashboardInner({ params }: { params: Promise<{ guildId: string }> 
           <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
             <div className="flex items-center gap-3">
               <Link
-                href="/discord-bot/veplexity"
+                href="/discord-bots/veplexity/dashboard"
                 className="flex items-center gap-2 text-xs font-semibold text-zinc-300 hover:text-white px-2.5 py-1.5 rounded-md bg-zinc-900 border border-zinc-800 hover:border-zinc-700 transition"
               >
                 <ArrowLeft className="w-4 h-4 text-zinc-400" />
@@ -1280,7 +1280,7 @@ function GuildDashboardInner({ params }: { params: Promise<{ guildId: string }> 
       <header className="h-16 shrink-0 border-b border-zinc-800 bg-[#0c0d14] px-4 sm:px-6 flex items-center justify-between z-30">
         <div className="flex items-center gap-3 sm:gap-4">
           <Link
-            href="/discord-bot/veplexity"
+            href="/discord-bots/veplexity/dashboard"
             className="flex items-center gap-1.5 text-xs font-semibold text-zinc-300 hover:text-white px-2.5 py-1.5 rounded-md bg-zinc-900 border border-zinc-800 hover:border-zinc-700 transition"
             title="Return to Server Selection"
           >
