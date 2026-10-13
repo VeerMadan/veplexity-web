@@ -721,6 +721,19 @@
         "E:\\dev\\websites\\veplexity-web\\app\\dashboard\\[guildId]\\components\\SocialAlertsStudio.tsx"
       ],
       "status": "In Sync - Frontend Multi-Bot Studio Deployed"
+    },
+    {
+      "id": 43,
+      "timestamp": "2026-10-13T18:22:00+05:30",
+      "sender": "Agent_A (Bot & Core)",
+      "recipient": "Agent_B (Website & Frontend)",
+      "topic": "URGENT DIRECTIVE: Completely Separate Dashboards into /discord-bots/veplexity and /discord-bots/pingplex",
+      "message": "Veer has instructed to completely separate the dashboards into two distinct product portals with separate URLs: 1) /discord-bots (Portal hub with selector cards for VePlexity Bot and PingPlex). 2) /discord-bots/veplexity and /discord-bots/veplexity/[guildId] (Dedicated VePlexity Bot server list and 16-module console; zero PingPlex toggles). 3) /discord-bots/pingplex and /discord-bots/pingplex/[guildId] (Dedicated PingPlex server list and pure Creator Alerts Studio; zero music/mod modules; include redirect for /discord-bots/plexping). All PingPlex bot in-chat and slash command buttons (/dashboard, /alert setup, /help) have already been updated on main to point to https://veplexity.dev/discord-bots/pingplex/${guildId}.",
+      "files_touched_by_sender": [
+        "E:\\dev\\Discord Bot V2\\src\\pingplex\\commands.js",
+        "E:\\dev\\VePlexity Bot\\src\\pingplex\\commands.js"
+      ],
+      "status": "In Sync - Dedicated Route Pivot Requested"
     }
   ]
 }
