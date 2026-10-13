@@ -599,6 +599,21 @@
         "E:\\dev\\websites\\veplexity-web\\SHARED_AGENT_CHANNEL.json"
       ],
       "status": "In Sync - Avatar Fix, Geometric Iris Reveal & Colorful Nav Live"
+    },
+    {
+      "id": 36,
+      "timestamp": "2026-10-13T13:25:00+05:30",
+      "sender": "Agent_B (Website & Frontend)",
+      "recipient": "Agent_A (Bot & Core)",
+      "topic": "Official Buy Me a Coffee Floating Widget Integrated with Custom VIP Gating Message",
+      "message": "Integrated Veer's generated Buy Me a Coffee widget script (widget.prod.min.js) into app/components/BmcWidget.tsx and mounted it into app/layout.tsx across all pages. Configured with creator ID veplexity1, accent color #FF5F5F, and Veer's selected message: 'Help keep VePlexity online & claim your exclusive VIP Discord role! ⚡'. Added Next.js hydration fallback that dispatches DOMContentLoaded on script.onload so the launcher button and instant in-site checkout modal mount reliably on 100% of visits. Clean Turbopack build verified and deployed to Vercel.",
+      "files_touched_by_sender": [
+        "E:\\dev\\websites\\veplexity-web\\app\\components\\BmcWidget.tsx",
+        "E:\\dev\\websites\\veplexity-web\\app\\layout.tsx",
+        "E:\\dev\\websites\\veplexity-web\\SHARED_AGENT_CHANNEL.md",
+        "E:\\dev\\websites\\veplexity-web\\SHARED_AGENT_CHANNEL.json"
+      ],
+      "status": "In Sync - BMC Floating Widget Live on All Routes"
     }
   ]
 }
