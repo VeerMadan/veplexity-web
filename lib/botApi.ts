@@ -1,6 +1,9 @@
 const BOT_API_URL = process.env.BOT_API_URL || 'http://localhost:8081';
 const BOT_API_KEY = process.env.BOT_API_KEY || 'veplexity_secret_123';
 
+export const PINGPLEX_API_URL = process.env.PINGPLEX_API_URL || 'https://pingplex.onrender.com';
+const PINGPLEX_API_KEY = process.env.PINGPLEX_API_KEY || process.env.BOT_API_KEY || 'veplexity_secret_123';
+
 /**
  * Secure proxy helper to communicate with the VePlexity Commercial Bot API
  */
@@ -35,3 +38,39 @@ export async function fetchBotApi(path: string, options: RequestInit = {}) {
 
   return res.json();
 }
+
+/**
+ * Secure proxy helper to communicate with the standalone PingPlex Bot API
+ */
+export async function fetchPingPlexApi(path: string, options: RequestInit = {}) {
+  const cleanPath = path.startsWith('/') ? path : `/${path}`;
+  const url = `${PINGPLEX_API_URL.replace(/\/$/, '')}${cleanPath}`;
+
+  const headers: Record<string, string> = {
+    'Content-Type': 'application/json',
+    'x-api-key': PINGPLEX_API_KEY,
+    ...((options.headers as Record<string, string>) || {}),
+  };
+
+  const res = await fetch(url, {
+    ...options,
+    headers,
+    signal: AbortSignal.timeout(10000),
+    cache: 'no-store'
+  });
+
+  if (!res.ok) {
+    const errorText = await res.text().catch(() => res.statusText);
+    let parsedMessage = errorText;
+    try {
+      const json = JSON.parse(errorText);
+      if (json.error) parsedMessage = json.error;
+    } catch {}
+    const err: any = new Error(parsedMessage || `PingPlex API error: ${res.status}`);
+    err.status = res.status;
+    throw err;
+  }
+
+  return res.json();
+}
+

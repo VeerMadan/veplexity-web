@@ -156,7 +156,7 @@ function PingPlexGuildStudioInner({ params }: { params: Promise<{ guildId: strin
       setLoading(true);
       setNotInvited(false);
       setFetchError(null);
-      const res = await fetch(`/api/bot/guilds/${guildId}`);
+      const res = await fetch(`/api/pingplex/guilds/${guildId}`);
       if (!res.ok) {
         const err = await res.json().catch(() => ({}));
         if (res.status === 404 || err.notInvited) {
@@ -167,7 +167,7 @@ function PingPlexGuildStudioInner({ params }: { params: Promise<{ guildId: strin
         throw new Error(err.error || "Failed to load guild details");
       }
       const data: GuildDetails = await res.json();
-      if (!data.bots?.pingplex) {
+      if (!data.bots?.pingplex && !data.bot?.joined) {
         setNotInvited(true);
         setFetchError("PingPlex is not currently a member of this server.");
         setGuild(data);
@@ -200,7 +200,7 @@ function PingPlexGuildStudioInner({ params }: { params: Promise<{ guildId: strin
         notifications: notificationsConfig,
       };
 
-      const res = await fetch(`/api/bot/guilds/${guildId}`, {
+      const res = await fetch(`/api/pingplex/guilds/${guildId}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
@@ -222,7 +222,7 @@ function PingPlexGuildStudioInner({ params }: { params: Promise<{ guildId: strin
 
   const handleSendTestNotification = async (platform: string, channelId: string) => {
     try {
-      const res = await fetch(`/api/bot/guilds/${guildId}/notifications/test`, {
+      const res = await fetch(`/api/pingplex/guilds/${guildId}/notifications/test`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ platform, channelId }),

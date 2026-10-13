@@ -1,5 +1,5 @@
 import { auth } from "@/auth";
-import { fetchBotApi } from "@/lib/botApi";
+import { fetchBotApi, fetchPingPlexApi } from "@/lib/botApi";
 
 export const dynamic = "force-dynamic";
 
@@ -41,20 +41,32 @@ export async function GET() {
       }
     });
 
-    // 3. Fetch dual-client bot guilds from backend
+    // 3. Fetch guilds from both VePlexity and PingPlex backends concurrently
     const botGuildMap = new Map<string, { veplexity: boolean; pingplex: boolean }>();
-    try {
-      const botGuilds = await fetchBotApi("/api/guilds");
-      if (Array.isArray(botGuilds)) {
-        botGuilds.forEach((bg: any) => {
-          botGuildMap.set(bg.id, {
-            veplexity: bg.bots ? Boolean(bg.bots.veplexity) : true,
-            pingplex: bg.bots ? Boolean(bg.bots.pingplex) : false,
-          });
-        });
-      }
-    } catch (e) {
-      console.warn("[UserGuilds API] Could not fetch bot guilds list:", e);
+
+    const [veplexityResult, pingplexResult] = await Promise.allSettled([
+      fetchBotApi("/api/guilds"),
+      fetchPingPlexApi("/api/guilds"),
+    ]);
+
+    if (veplexityResult.status === "fulfilled" && Array.isArray(veplexityResult.value)) {
+      veplexityResult.value.forEach((bg: any) => {
+        const current = botGuildMap.get(bg.id) || { veplexity: false, pingplex: false };
+        current.veplexity = true;
+        botGuildMap.set(bg.id, current);
+      });
+    } else if (veplexityResult.status === "rejected") {
+      console.warn("[UserGuilds API] Could not fetch VePlexity bot guilds:", (veplexityResult as any).reason?.message);
+    }
+
+    if (pingplexResult.status === "fulfilled" && Array.isArray(pingplexResult.value)) {
+      pingplexResult.value.forEach((bg: any) => {
+        const current = botGuildMap.get(bg.id) || { veplexity: false, pingplex: false };
+        current.pingplex = true;
+        botGuildMap.set(bg.id, current);
+      });
+    } else if (pingplexResult.status === "rejected") {
+      console.warn("[UserGuilds API] Could not fetch PingPlex bot guilds:", (pingplexResult as any).reason?.message);
     }
 
     // 4. Map with dual-bot status

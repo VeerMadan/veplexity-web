@@ -430,12 +430,60 @@ export function SocialAlertsStudio({
           </div>
 
           {/* Message Template Builder */}
-          <div className="space-y-2">
+          <div className="space-y-3">
             <div className="flex items-center justify-between">
               <label className="text-xs font-bold text-zinc-300 uppercase tracking-wider">
                 Notification Message Template
               </label>
               <span className="text-[10px] font-mono text-zinc-500">Discord Markdown Supported</span>
+            </div>
+
+            {/* 1-Click Message Template Presets */}
+            <div className="space-y-1.5 p-3 rounded-xl bg-[#0b0d14] border border-zinc-800/80">
+              <div className="flex items-center justify-between">
+                <span className="text-[10px] font-mono uppercase tracking-wider text-fuchsia-400 font-bold flex items-center gap-1.5">
+                  <span>⚡ 1-CLICK PRESET TEMPLATES</span>
+                </span>
+                <span className="text-[10px] text-zinc-500">Click to load preset</span>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-2 pt-1">
+                {[
+                  {
+                    icon: "🔥",
+                    name: "Hype Alert",
+                    template: "{role} 🚨 **{author}** just dropped something CRAZY! Go check it out: {url}",
+                  },
+                  {
+                    icon: "🎮",
+                    name: "Stream Live",
+                    template: "{role} 🔴 **{author}** is now LIVE playing **{game}**! Come chill: {url}",
+                  },
+                  {
+                    icon: "✨",
+                    name: "Minimalist Clean",
+                    template: "{role} **{author}** • {title} \n{url}",
+                  },
+                  {
+                    icon: "☕",
+                    name: "Community Chill",
+                    template: "{role} New drop from **{author}**! Grab snacks and enjoy: {url}",
+                  },
+                ].map((preset, idx) => (
+                  <button
+                    key={idx}
+                    type="button"
+                    onClick={() => {
+                      dashboardAudio.playClick();
+                      updatePlatformConfig({ message: preset.template });
+                    }}
+                    title={preset.template}
+                    className="px-2.5 py-1.5 rounded-lg bg-[#141624] hover:bg-fuchsia-950/40 border border-zinc-800 hover:border-fuchsia-500/50 text-[11px] font-semibold text-zinc-300 hover:text-white transition flex items-center gap-1.5 cursor-pointer text-left truncate group shadow-xs"
+                  >
+                    <span>{preset.icon}</span>
+                    <span className="truncate group-hover:text-fuchsia-300">{preset.name}</span>
+                  </button>
+                ))}
+              </div>
             </div>
 
             <textarea
