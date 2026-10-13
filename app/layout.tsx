@@ -13,6 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 import Providers from "./Providers";
+import BmcWidget from "./components/BmcWidget";
 
 export const metadata: Metadata = {
   title: "VePlexity — Software Engineering, Digital Ecosystems & Labs",
@@ -37,6 +38,7 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col bg-[#070308] text-white selection:bg-fuchsia-500/30 selection:text-white font-sans">
         <Providers>
           {children}
+          <BmcWidget />
         </Providers>
       </body>
     </html>
