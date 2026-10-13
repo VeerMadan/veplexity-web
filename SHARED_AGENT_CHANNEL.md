@@ -1738,25 +1738,22 @@
 > - Active link detection automatically highlights 'Discord Bots' across `/discord-bot`, `/discord-bots`, and sub-routes.
 >
 > ### 2. Bot Catalog Hub (`/discord-bot` & `/discord-bots`)
-> - Features Veer's official avatars loaded from `public/bots/veplexity-avatar.png` (from `E:\VePlexity\PP.png`) and `public/bots/pingplex-avatar.png` (from `E:\VePlexity\PP pfp.png`).
-> - Both bot cards feature **'Explore Bot'** as the primary action leading directly to their dedicated landing pages (`/discord-bot/veplexity` and `/discord-bot/pingplex`).
-> - Included direct secondary CTAs for **'Add to Server'** (`/invite` and `/invite/pingplex`) and in-page links to Terms and Privacy.
+> - Features Veer's verified logos:
+>   - **VePlexity Bot**: `E:\VePlexity\vp no bg.png` (`public/bots/veplexity-avatar.png`).
+>   - **PingPlex Bot**: `E:\VePlexity\PP.png` (`public/bots/pingplex-avatar.png`).
+> - Both bot cards feature **'Explore Bot'** as the primary action triggering hardware-accelerated **CardZoomRevealCanvas** zoom-in expansion animations before navigating to `/discord-bot/veplexity` and `/discord-bot/pingplex`.
+> - Reversible scroll animations (`viewport={{ once: false }}`) with dynamic glowing pill reveals.
+> - Direct secondary CTAs for **'Add to Server'** (`/invite` and `/invite/pingplex`) and enlisted legal links.
 >
 > ### 3. Dedicated Landing Pages (`/discord-bot/veplexity` & `/discord-bot/pingplex`)
-> - **VePlexity Bot** (`/discord-bot/veplexity`):
->   - High-res official avatar hero with glowing ambient ring and verified badge.
->   - Dual CTAs: **Add to Server** and **Launch Dashboard** (auth-aware).
->   - Interactive live simulators: 24/7 Lossless Audio DJ (with bass boost & volume slider), Proactive AutoMod Defense matrix, XP Rank Card visualizer, Google Gemini Multi-Modal AI chat simulator, and Dynamic Temp Voice Hub visualizer.
->   - Complete categorized 100-commands directory with real-time search filtering.
->   - Integrated Server Management Console with flight canvas transition into `/discord-bots/veplexity/[guildId]`.
->   - In-page direct links to Terms of Service (`/discord-bot/veplexity/terms`) and Privacy Policy (`/discord-bot/veplexity/privacy`).
-> - **PingPlex** (`/discord-bot/pingplex`):
->   - Official PingPlex avatar hero with creator alert engine styling.
->   - Dual CTAs: **Add to Server** and **Launch Dashboard**.
->   - Interactive multi-platform Discord webhook simulator (YouTube, Twitch, TikTok, X, Reddit) and 1-click message preset style selectors.
->   - Command reference directory with real-time search.
->   - Integrated Studio Console with flight canvas transition into `/discord-bots/pingplex/[guildId]`.
->   - In-page direct links to Terms of Service (`/discord-bot/pingplex/terms`) and Privacy Policy (`/discord-bot/pingplex/privacy`).
+> - **Interactive Command Console & Live Discord Visualizer**:
+>   - Replaced static command grids with an interactive workbench.
+>   - Left side: sleek scrollable command sidebar with live search and category filters.
+>   - Right side: high-fidelity Discord chat visualizer displaying simulated channels (`#bot-commands`, `#creator-alerts`), user slash command execution bubbles, and rich bot embed responses with Discord buttons, fields, and rank card visualizers!
+> - **Zoom-In Reveal on Dashboard Launch**:
+>   - Clicking **'Launch Dashboard'** triggers the hardware-accelerated zoom expansion animation directly into the server management console or Discord OAuth.
+> - **Enlisted Legal Architecture**:
+>   - Dedicated section cleanly enlisting and linking all legal documents: Terms of Service, Privacy Policies, data retention, and Discord Developer compliance.
 >
 > ### 4. Route Harmonization & Turbopack Verification
 > - Configured Next.js rewrites in `next.config.ts` mapping `/discord-bot` and `/discord-bot/:path*` to `/discord-bots/:path*`.
