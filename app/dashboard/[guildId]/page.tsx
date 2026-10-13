@@ -933,12 +933,32 @@ export default function GuildDashboard({ params }: { params: Promise<{ guildId: 
 
   if (loading && !guild) {
     return (
-      <main className="min-h-screen bg-[#090a0f] text-white flex flex-col items-center justify-center font-sans">
-        <ServerDestinationReveal
-          isReady={false}
-          fallbackServerName="Connecting Server..."
-          fallbackServerIcon={null}
-        />
+      <main className="min-h-screen bg-[#090a0f] text-white flex flex-col font-sans">
+        <header className="h-16 border-b border-zinc-800/80 bg-[#0c0d14] px-4 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 rounded-lg bg-zinc-800 animate-pulse" />
+            <div className="w-32 h-4 rounded bg-zinc-800 animate-pulse" />
+          </div>
+          <div className="w-24 h-8 rounded-lg bg-zinc-800 animate-pulse" />
+        </header>
+        <div className="flex-1 flex overflow-hidden">
+          <aside className="w-64 border-r border-zinc-800 bg-[#0c0d14] p-4 space-y-3 hidden md:block">
+            <div className="w-full h-8 rounded-lg bg-zinc-800 animate-pulse" />
+            <div className="space-y-2 pt-4">
+              {[...Array(8)].map((_, i) => (
+                <div key={i} className="w-full h-7 rounded-lg bg-zinc-900 animate-pulse" />
+              ))}
+            </div>
+          </aside>
+          <div className="flex-1 p-6 space-y-6 overflow-y-auto">
+            <div className="w-full h-28 rounded-2xl bg-zinc-900/80 border border-zinc-800 animate-pulse" />
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {[...Array(6)].map((_, i) => (
+                <div key={i} className="h-44 rounded-2xl bg-zinc-900/60 border border-zinc-800 animate-pulse" />
+              ))}
+            </div>
+          </div>
+        </div>
       </main>
     );
   }
@@ -1220,8 +1240,9 @@ export default function GuildDashboard({ params }: { params: Promise<{ guildId: 
             <div>
               <div className="flex items-center gap-2">
                 <span className="font-bold text-sm sm:text-base text-white truncate max-w-xs sm:max-w-sm">{guild?.name}</span>
-                <span className="text-[10px] px-2 py-0.5 rounded bg-zinc-900 text-zinc-400 font-mono hidden md:inline border border-zinc-800">
-                  {guild?.id}
+                <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber-500/15 text-amber-400 font-mono hidden md:inline-flex items-center gap-1.5 border border-amber-500/30 font-bold">
+                  <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
+                  LIMITED ACCESS DEMO
                 </span>
               </div>
             </div>
@@ -1262,11 +1283,10 @@ export default function GuildDashboard({ params }: { params: Promise<{ guildId: 
             href="https://www.buymeacoffee.com/veplexity1"
             target="_blank"
             rel="noopener noreferrer"
-            className="btn-bmc px-3 py-1.5 text-xs flex items-center gap-1.5 cursor-pointer shadow-sm"
+            className="hover:opacity-90 hover:scale-105 transition-all"
             title="Support Creator on Buy Me a Coffee"
           >
-            <BmcCupIcon className="w-3.5 h-3.5 text-black" />
-            <span className="hidden sm:inline">Support</span>
+            <img src="/bmc/SVG Files/bmc-button.svg" alt="Buy Me a Coffee" className="h-8 w-auto rounded-lg shadow-sm" />
           </a>
 
           <button
@@ -1274,7 +1294,7 @@ export default function GuildDashboard({ params }: { params: Promise<{ guildId: 
             disabled={saving || !hasUnsavedChanges}
             className={`py-1.5 px-3.5 sm:px-4 rounded-md font-semibold text-xs sm:text-sm transition flex items-center gap-2 ${
               hasUnsavedChanges
-                ? "bg-[#5865F2] hover:bg-[#4752c4] text-white cursor-pointer shadow-sm"
+                ? "bg-emerald-500 hover:bg-emerald-600 text-zinc-950 font-bold cursor-pointer shadow-sm"
                 : "bg-zinc-800 text-zinc-500 border border-zinc-700/60 cursor-not-allowed opacity-60"
             }`}
           >
@@ -1295,14 +1315,19 @@ export default function GuildDashboard({ params }: { params: Promise<{ guildId: 
                   dashboardAudio.playClick();
                   setActiveTab("overview");
                 }}
-                className={`w-full text-left px-3 py-2 rounded-lg text-xs font-semibold flex items-center gap-2.5 transition cursor-pointer select-none ${
+                className={`w-full text-left px-3 py-2 rounded-lg text-xs font-semibold flex items-center justify-between transition-all cursor-pointer select-none ${
                   activeTab === "overview"
-                    ? "bg-[#5865F2]/10 text-[#5865F2] border border-[#5865F2]/25"
+                    ? "bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 shadow-xs"
                     : "text-zinc-400 hover:text-white hover:bg-zinc-800/60 border border-transparent"
                 }`}
               >
-                <Layers className="w-4 h-4 text-[#5865F2] shrink-0" />
-                <span className="text-xs font-bold">Server Overview</span>
+                <div className="flex items-center gap-2.5">
+                  {activeTab === "overview" && (
+                    <span className="w-1 h-4 rounded-full bg-emerald-400 shrink-0" />
+                  )}
+                  <Layers className={`w-4 h-4 shrink-0 ${activeTab === "overview" ? "text-emerald-400" : "text-zinc-500"}`} />
+                  <span className="text-xs font-bold">Server Overview</span>
+                </div>
               </button>
             </div>
 
@@ -1312,24 +1337,193 @@ export default function GuildDashboard({ params }: { params: Promise<{ guildId: 
               </p>
               <nav className="space-y-0.5">
                 {[
-                  { id: "notifications", label: "Social Alerts (Pingcord)", icon: Radio, tag: "Live" },
-                  { id: "moderation", label: "Bot Masters & Roles", icon: Shield },
-                  { id: "logging", label: "Audit & Logging Channels", icon: FileText },
-                  { id: "automod", label: "Auto-Mod Security", icon: Lock },
-                  { id: "welcome", label: "Welcome & Goodbye", icon: Bell },
-                  { id: "leveling", label: "Leveling & XP System", icon: Award, tag: "Free VIP" },
-                  { id: "rewards", label: "Voice & Text Rewards", icon: Gift, tag: "New" },
-                  { id: "boosters", label: "Server Boosters", icon: Zap, tag: "Free VIP" },
-                  { id: "reactionroles", label: "Reaction Roles", icon: Users, tag: "Free VIP" },
-                  { id: "autoresponders", label: "Auto-Responders", icon: MessageCircle, tag: "Free VIP" },
-                  { id: "starboard", label: "Starboard (Hall of Fame)", icon: Star },
-                  { id: "suggestions", label: "Suggestions Box", icon: ThumbsUp },
-                  { id: "tempvc", label: "Temporary Voice Hubs", icon: Mic },
-                  { id: "music", label: "Music & DJ Audio (24/7)", icon: Music, tag: "24/7 Stay" },
-                  { id: "ai", label: "Gemini AI Chatbot", icon: Bot },
-                  { id: "community", label: "Birthdays & Counting", icon: Gamepad2 },
-                  { id: "announce", label: "Message Builder", icon: Megaphone },
-                  { id: "perks", label: "VIP Perks & Support", icon: Coffee },
+                  {
+                    id: "notifications",
+                    label: "Social Alerts (Pingcord)",
+                    icon: Radio,
+                    tag: "Live",
+                    activeBg: "bg-purple-500/15",
+                    activeText: "text-purple-300",
+                    activeBorder: "border-purple-500/30",
+                    activeIcon: "text-purple-400",
+                    indicator: "bg-purple-400",
+                  },
+                  {
+                    id: "moderation",
+                    label: "Bot Masters & Roles",
+                    icon: Shield,
+                    activeBg: "bg-red-500/15",
+                    activeText: "text-red-300",
+                    activeBorder: "border-red-500/30",
+                    activeIcon: "text-red-400",
+                    indicator: "bg-red-500",
+                  },
+                  {
+                    id: "automod",
+                    label: "Auto-Mod Security",
+                    icon: Lock,
+                    activeBg: "bg-rose-500/15",
+                    activeText: "text-rose-300",
+                    activeBorder: "border-rose-500/30",
+                    activeIcon: "text-rose-400",
+                    indicator: "bg-rose-500",
+                  },
+                  {
+                    id: "logging",
+                    label: "Audit & Logging Channels",
+                    icon: FileText,
+                    activeBg: "bg-amber-500/15",
+                    activeText: "text-amber-300",
+                    activeBorder: "border-amber-500/30",
+                    activeIcon: "text-amber-400",
+                    indicator: "bg-amber-500",
+                  },
+                  {
+                    id: "welcome",
+                    label: "Welcome & Goodbye",
+                    icon: Bell,
+                    activeBg: "bg-emerald-500/15",
+                    activeText: "text-emerald-300",
+                    activeBorder: "border-emerald-500/30",
+                    activeIcon: "text-emerald-400",
+                    indicator: "bg-emerald-500",
+                  },
+                  {
+                    id: "leveling",
+                    label: "Leveling & XP System",
+                    icon: Award,
+                    tag: "Free VIP",
+                    activeBg: "bg-yellow-500/15",
+                    activeText: "text-yellow-300",
+                    activeBorder: "border-yellow-500/30",
+                    activeIcon: "text-yellow-400",
+                    indicator: "bg-yellow-400",
+                  },
+                  {
+                    id: "rewards",
+                    label: "Voice & Text Rewards",
+                    icon: Gift,
+                    tag: "New",
+                    activeBg: "bg-cyan-500/15",
+                    activeText: "text-cyan-300",
+                    activeBorder: "border-cyan-500/30",
+                    activeIcon: "text-cyan-400",
+                    indicator: "bg-cyan-400",
+                  },
+                  {
+                    id: "music",
+                    label: "Music & DJ Audio (24/7)",
+                    icon: Music,
+                    tag: "24/7 Stay",
+                    activeBg: "bg-sky-500/15",
+                    activeText: "text-sky-300",
+                    activeBorder: "border-sky-500/30",
+                    activeIcon: "text-sky-400",
+                    indicator: "bg-sky-400",
+                  },
+                  {
+                    id: "tempvc",
+                    label: "Temporary Voice Hubs",
+                    icon: Mic,
+                    activeBg: "bg-teal-500/15",
+                    activeText: "text-teal-300",
+                    activeBorder: "border-teal-500/30",
+                    activeIcon: "text-teal-400",
+                    indicator: "bg-teal-400",
+                  },
+                  {
+                    id: "reactionroles",
+                    label: "Reaction Roles",
+                    icon: Users,
+                    tag: "Free VIP",
+                    activeBg: "bg-pink-500/15",
+                    activeText: "text-pink-300",
+                    activeBorder: "border-pink-500/30",
+                    activeIcon: "text-pink-400",
+                    indicator: "bg-pink-400",
+                  },
+                  {
+                    id: "autoresponders",
+                    label: "Auto-Responders",
+                    icon: MessageCircle,
+                    tag: "Free VIP",
+                    activeBg: "bg-orange-500/15",
+                    activeText: "text-orange-300",
+                    activeBorder: "border-orange-500/30",
+                    activeIcon: "text-orange-400",
+                    indicator: "bg-orange-400",
+                  },
+                  {
+                    id: "starboard",
+                    label: "Starboard (Hall of Fame)",
+                    icon: Star,
+                    activeBg: "bg-amber-500/15",
+                    activeText: "text-amber-300",
+                    activeBorder: "border-amber-500/30",
+                    activeIcon: "text-amber-400",
+                    indicator: "bg-amber-400",
+                  },
+                  {
+                    id: "suggestions",
+                    label: "Suggestions Box",
+                    icon: ThumbsUp,
+                    activeBg: "bg-blue-500/15",
+                    activeText: "text-blue-300",
+                    activeBorder: "border-blue-500/30",
+                    activeIcon: "text-blue-400",
+                    indicator: "bg-blue-400",
+                  },
+                  {
+                    id: "community",
+                    label: "Birthdays & Counting",
+                    icon: Gamepad2,
+                    activeBg: "bg-fuchsia-500/15",
+                    activeText: "text-fuchsia-300",
+                    activeBorder: "border-fuchsia-500/30",
+                    activeIcon: "text-fuchsia-400",
+                    indicator: "bg-fuchsia-400",
+                  },
+                  {
+                    id: "announce",
+                    label: "Message Builder",
+                    icon: Megaphone,
+                    activeBg: "bg-violet-500/15",
+                    activeText: "text-violet-300",
+                    activeBorder: "border-violet-500/30",
+                    activeIcon: "text-violet-400",
+                    indicator: "bg-violet-400",
+                  },
+                  {
+                    id: "boosters",
+                    label: "Server Boosters",
+                    icon: Zap,
+                    tag: "Free VIP",
+                    activeBg: "bg-purple-500/15",
+                    activeText: "text-purple-300",
+                    activeBorder: "border-purple-500/30",
+                    activeIcon: "text-purple-400",
+                    indicator: "bg-purple-400",
+                  },
+                  {
+                    id: "ai",
+                    label: "Gemini AI Chatbot",
+                    icon: Bot,
+                    activeBg: "bg-teal-500/15",
+                    activeText: "text-teal-300",
+                    activeBorder: "border-teal-500/30",
+                    activeIcon: "text-teal-400",
+                    indicator: "bg-teal-400",
+                  },
+                  {
+                    id: "perks",
+                    label: "VIP Perks & Support",
+                    icon: Coffee,
+                    activeBg: "bg-yellow-500/15",
+                    activeText: "text-yellow-300",
+                    activeBorder: "border-yellow-500/30",
+                    activeIcon: "text-yellow-400",
+                    indicator: "bg-yellow-400",
+                  },
                 ].map((item) => {
                   const Icon = item.icon;
                   const active = activeTab === item.id;
@@ -1340,14 +1534,17 @@ export default function GuildDashboard({ params }: { params: Promise<{ guildId: 
                         dashboardAudio.playClick();
                         setActiveTab(item.id as TabType);
                       }}
-                      className={`w-full text-left px-3 py-2 rounded-lg text-xs font-medium flex items-center justify-between transition cursor-pointer select-none group ${
+                      className={`w-full text-left px-3 py-2 rounded-lg text-xs font-semibold flex items-center justify-between transition-all cursor-pointer select-none group relative ${
                         active
-                          ? "bg-[#5865F2]/10 text-[#5865F2] border border-[#5865F2]/25 font-semibold"
+                          ? `${item.activeBg} ${item.activeText} border ${item.activeBorder} shadow-xs`
                           : "text-zinc-400 hover:text-white hover:bg-zinc-800/60 border border-transparent"
                       }`}
                     >
                       <div className="flex items-center gap-2.5 min-w-0">
-                        <Icon className={`w-4 h-4 shrink-0 ${active ? "text-[#5865F2]" : "text-zinc-500 group-hover:text-zinc-300"}`} />
+                        {active && (
+                          <span className={`w-1 h-4 rounded-full ${item.indicator} shrink-0`} />
+                        )}
+                        <Icon className={`w-4 h-4 shrink-0 transition-colors ${active ? item.activeIcon : "text-zinc-500 group-hover:text-zinc-300"}`} />
                         <span className="truncate">{item.label}</span>
                       </div>
                       {item.tag && (
@@ -1364,20 +1561,19 @@ export default function GuildDashboard({ params }: { params: Promise<{ guildId: 
 
           <div className="p-3.5 rounded-xl bg-zinc-900 border border-zinc-800 text-zinc-200 space-y-2 mt-4">
             <div className="flex items-center gap-2">
-              <BmcCupIcon className="w-4 h-4 text-[#FFDD00]" />
+              <img src="/bmc/SVG Files/bmc-logo.svg" alt="BMC" className="w-4 h-4 object-contain" />
               <p className="font-bold text-xs text-white">Support VePlexity</p>
             </div>
             <p className="text-[11px] text-zinc-400 leading-normal">
-              Help sustain 24/7 lossless audio nodes, cloud hosting & continuous updates.
+              Help sustain 24/7 lossless audio nodes, cloud hosting &amp; continuous updates.
             </p>
             <a
               href="https://www.buymeacoffee.com/veplexity1"
               target="_blank"
               rel="noopener noreferrer"
-              className="w-full btn-bmc py-1.5 px-3 text-xs flex items-center justify-center gap-1.5"
+              className="block pt-1 hover:opacity-90 transition-opacity"
             >
-              <BmcCupIcon className="w-3.5 h-3.5 text-black" />
-              <span>Buy a Coffee</span>
+              <img src="/bmc/SVG Files/bmc-button.svg" alt="Buy a Coffee" className="w-full h-8 object-contain rounded-md" />
             </a>
           </div>
         </aside>

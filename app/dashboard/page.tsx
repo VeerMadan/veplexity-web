@@ -11,7 +11,7 @@ import {
   Search, ShieldCheck, Filter, AlertCircle, Coffee
 } from "lucide-react";
 import { DiscordLogo, BmcCupIcon } from "@/app/components/BrandIcons";
-import { ServerFlightVeil, FlightRect } from "@/app/components/ServerRevealTransition";
+import { dashboardAudio } from "@/lib/dashboardAudio";
 
 interface GuildItem {
   id: string;
@@ -36,11 +36,6 @@ export default function DashboardPage() {
   const [error, setError] = useState<string | null>(null);
   const [authError, setAuthError] = useState<string | null>(null);
   const [authErrorDetail, setAuthErrorDetail] = useState<string | null>(null);
-
-  // Shared-element button-to-fullscreen reveal flight (mvk-builders architecture)
-  const [flightRect, setFlightRect] = useState<FlightRect | null>(null);
-  const [flightGuild, setFlightGuild] = useState<GuildItem | null>(null);
-  const [isFlightActive, setIsFlightActive] = useState(false);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -135,38 +130,15 @@ export default function DashboardPage() {
     }, 2500);
   };
 
-  // Shared-element button-to-fullscreen reveal flight (mvk-builders architecture)
+  // Direct instantaneous navigation to server dashboard
   const handleManageClick = (e: React.MouseEvent, guild: GuildItem) => {
     e.preventDefault();
     e.stopPropagation();
-    const rect = e.currentTarget.getBoundingClientRect();
-    const flightData: FlightRect = {
-      top: rect.top,
-      left: rect.left,
-      width: rect.width,
-      height: rect.height,
-    };
-
+    dashboardAudio.playClick();
     try {
-      sessionStorage.setItem(
-        "vep_server_flight",
-        JSON.stringify({
-          ...flightData,
-          id: guild.id,
-          name: guild.name,
-          icon: guild.iconUrl,
-        })
-      );
+      sessionStorage.setItem("vep_dashboard_reveal", "true");
     } catch {}
-
-    setFlightRect(flightData);
-    setFlightGuild(guild);
-    setIsFlightActive(true);
-
-    // Navigate right as flight reaches full bleed
-    setTimeout(() => {
-      router.push(`/dashboard/${guild.id}`);
-    }, 580);
+    router.push(`/dashboard/${guild.id}`);
   };
 
   const filteredGuilds = guilds
@@ -270,14 +242,6 @@ export default function DashboardPage() {
   // ─── AUTHENTICATED SERVER SELECTOR ──────────────────────────────────────────
   return (
     <main className="min-h-screen bg-[#090a0f] text-zinc-100 flex flex-col font-sans">
-      {/* Shared-Element Button-to-Fullscreen Reveal Flight Veil */}
-      <ServerFlightVeil
-        isOpen={isFlightActive}
-        sourceRect={flightRect}
-        serverName={flightGuild?.name || "Server"}
-        serverIcon={flightGuild?.iconUrl}
-      />
-
       {/* Navigation Header */}
       <header className="border-b border-zinc-800/80 bg-[#0c0d14] sticky top-0 z-40">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
@@ -305,11 +269,14 @@ export default function DashboardPage() {
               href="https://www.buymeacoffee.com/veplexity1"
               target="_blank"
               rel="noopener noreferrer"
-              className="btn-bmc px-3.5 py-1.5 rounded-lg text-xs font-bold flex items-center gap-2"
-              title="Support Creator"
+              className="hover:opacity-90 hover:scale-105 transition-all"
+              title="Support on Buy Me a Coffee"
             >
-              <BmcCupIcon className="w-4 h-4 text-black" />
-              <span className="hidden sm:inline">SUPPORT ON BMC</span>
+              <img 
+                src="/bmc/SVG Files/bmc-button.svg" 
+                alt="Buy Me a Coffee" 
+                className="h-8 w-auto rounded-lg shadow-sm" 
+              />
             </a>
 
             {session?.user && (
@@ -348,7 +315,21 @@ export default function DashboardPage() {
       )}
 
       {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 flex-1 w-full space-y-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-1 w-full space-y-7">
+        {/* Limited Access Demo Alert Banner */}
+        <div className="p-3 sm:p-3.5 rounded-xl bg-amber-500/10 border border-amber-500/25 flex items-center justify-between gap-3 text-xs">
+          <div className="flex items-center gap-2.5 min-w-0">
+            <span className="px-2 py-0.5 rounded-md bg-amber-500/20 text-amber-400 font-mono text-[10px] font-bold tracking-wider shrink-0 border border-amber-500/30">
+              LIMITED ACCESS DEMO
+            </span>
+            <span className="text-zinc-300 font-medium truncate">
+              This is a limited access demonstration preview. Dashboard configurations and bot interactions are running in live preview mode.
+            </span>
+          </div>
+          <span className="text-[10px] font-mono text-amber-400/80 shrink-0 hidden sm:inline">
+            v2.0 PREVIEW
+          </span>
+        </div>
         
         {/* Banner Section */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-zinc-800/80 pb-6">
@@ -357,7 +338,7 @@ export default function DashboardPage() {
               <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
                 Select a Server
               </h1>
-              <span className="text-xs px-2.5 py-0.5 rounded-full bg-[#5865F2]/10 border border-[#5865F2]/30 text-[#5865F2] font-mono font-bold">
+              <span className="text-xs px-2.5 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 font-mono font-bold">
                 {guilds.length} SERVERS
               </span>
             </div>
@@ -382,7 +363,7 @@ export default function DashboardPage() {
               title="Refresh server list"
               className="px-3.5 py-2.5 rounded-full btn-secondary flex items-center gap-2 text-xs font-bold cursor-pointer"
             >
-              <RefreshCw className={`w-3.5 h-3.5 ${isRefreshing ? "animate-spin text-[#5865F2]" : ""}`} />
+              <RefreshCw className={`w-3.5 h-3.5 ${isRefreshing ? "animate-spin text-emerald-400" : ""}`} />
               <span className="hidden sm:inline">Refresh</span>
             </button>
           </div>
@@ -400,7 +381,7 @@ export default function DashboardPage() {
               onClick={() => setFilterMode(mode.id as any)}
               className={`px-4 py-1.5 rounded-full text-xs font-semibold transition cursor-pointer select-none ${
                 filterMode === mode.id
-                  ? "bg-[#5865F2] text-white shadow-sm"
+                  ? "bg-zinc-100 text-zinc-950 font-bold shadow-sm"
                   : "bg-[#12141c] text-zinc-400 hover:text-white border border-zinc-800"
               }`}
             >
@@ -410,16 +391,16 @@ export default function DashboardPage() {
         </div>
 
         {/* Official BMC Patronage Callout */}
-        <div className="p-5 sm:p-6 rounded-2xl bg-[#0d0f15] border border-zinc-800/80 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div className="p-5 sm:p-6 rounded-2xl bg-[#0d0f15] border border-[#FFDD00]/25 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-5 relative overflow-hidden">
           <div className="flex items-center gap-4">
-            <div className="w-12 h-12 rounded-xl bg-[#FFDD00]/10 border border-[#FFDD00]/30 flex items-center justify-center text-[#FFDD00] shrink-0">
-              <BmcCupIcon className="w-6 h-6 text-[#FFDD00]" />
+            <div className="w-13 h-13 rounded-xl bg-[#FFDD00]/10 border border-[#FFDD00]/30 flex items-center justify-center shrink-0">
+              <img src="/bmc/SVG Files/bmc-logo.svg" alt="BMC Logo" className="w-7 h-7 object-contain" />
             </div>
             <div>
               <div className="text-sm font-bold text-white flex items-center gap-2">
                 <span>Support 24/7 Lossless Audio &amp; Hosting Nodes</span>
-                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-[#FFDD00]/10 text-[#FFDD00] border border-[#FFDD00]/20 font-bold">
-                  OFFICIAL BMC
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-[#FFDD00]/15 text-[#FFDD00] border border-[#FFDD00]/30 font-bold">
+                  OFFICIAL PARTNER
                 </span>
               </div>
               <p className="text-xs text-zinc-400 mt-0.5">
@@ -427,15 +408,14 @@ export default function DashboardPage() {
               </p>
             </div>
           </div>
-          <div className="flex items-center gap-2 shrink-0">
+          <div className="flex items-center gap-3 shrink-0">
             <a
               href="https://www.buymeacoffee.com/veplexity1"
               target="_blank"
               rel="noopener noreferrer"
-              className="btn-bmc px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-2"
+              className="hover:opacity-95 hover:scale-105 transition-all shadow-md"
             >
-              <BmcCupIcon className="w-4 h-4 text-black" />
-              <span>BUY A COFFEE</span>
+              <img src="/bmc/SVG Files/bmc-button.svg" alt="Buy Me A Coffee" className="h-10 w-auto rounded-lg" />
             </a>
           </div>
         </div>
@@ -525,9 +505,9 @@ export default function DashboardPage() {
                     </div>
 
                     {/* Centered Large Circular Avatar */}
-                    <div className="flex flex-col items-center px-6 pb-6 pt-0 -mt-10 text-center flex-1 justify-between gap-5">
+                    <div className="relative z-10 flex flex-col items-center px-6 pb-6 pt-0 -mt-10 text-center flex-1 justify-between gap-5">
                       <div className="flex flex-col items-center gap-3 w-full">
-                        <div className="w-20 h-20 sm:w-22 sm:h-22 rounded-full bg-[#12141c] border-4 border-[#0e1017] shadow-xl overflow-hidden flex items-center justify-center font-bold text-lg text-zinc-200 shrink-0 group-hover:scale-105 transition-transform duration-200">
+                        <div className="w-20 h-20 sm:w-22 sm:h-22 rounded-full bg-[#12141c] border-4 border-[#0e1017] shadow-xl overflow-hidden flex items-center justify-center font-bold text-lg text-zinc-200 shrink-0 relative z-20 group-hover:scale-105 transition-transform duration-200">
                           {guild.iconUrl ? (
                             <img
                               src={guild.iconUrl}
@@ -559,7 +539,7 @@ export default function DashboardPage() {
                         {guild.botJoined ? (
                           <button
                             onClick={(e) => handleManageClick(e, guild)}
-                            className="w-full py-2.5 px-4 rounded-xl btn-discord text-xs font-bold transition flex items-center justify-center gap-2 cursor-pointer shadow-md hover:shadow-[#5865F2]/20 active:scale-95 group/btn"
+                            className="w-full py-2.5 px-4 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-zinc-950 text-xs font-black transition-all flex items-center justify-center gap-2 cursor-pointer shadow-md hover:shadow-emerald-500/20 active:scale-95 group/btn"
                           >
                             <span>Go</span>
                             <ChevronRight className="w-4 h-4 transition-transform group-hover/btn:translate-x-0.5" />

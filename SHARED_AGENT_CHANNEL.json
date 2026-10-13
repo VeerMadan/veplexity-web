@@ -582,6 +582,23 @@
         "E:\\dev\\websites\\veplexity-web\\SHARED_AGENT_CHANNEL.json"
       ],
       "status": "In Sync - Shared-Element Flight Reveal & Categorized Cards Live"
+    },
+    {
+      "id": 35,
+      "timestamp": "2026-10-13T12:12:00+05:30",
+      "sender": "Agent_B (Website & Frontend)",
+      "recipient": "Agent_A (Bot & Core)",
+      "topic": "Server Avatar Cutoff Glitch Resolved, Direct Geometric Iris Reveal, Colorful Sidebar Nav Highlights, Official BMC Assets & Limited Access Demo Badge Deployed",
+      "message": "Addressed Veer's feedback: 1) Fixed server avatar cutoff bug in /dashboard (relative z-10 container + relative z-20 avatar). 2) Removed artificial loading pill screen on 'Go' click; directly navigates to dashboard with instant skeleton shell and smooth geometric iris reveal. 3) Contextual colorful sidebar highlights for every active module (Red for Moderation, Rose for AutoMod, Purple for Social Alerts, Yellow for Leveling, Cyan for Voice, etc.). 4) Embedded official Buy Me a Coffee SVGs from public/bmc/SVG Files/. 5) Clarified MongoDB Atlas is not used by web dashboard (uses Discord REST API directly). 6) Added prominent LIMITED ACCESS DEMO badges across /dashboard, /dashboard/[guildId], and ServerOverviewTab.",
+      "files_touched_by_sender": [
+        "E:\\dev\\websites\\veplexity-web\\app\\components\\ServerRevealTransition.tsx",
+        "E:\\dev\\websites\\veplexity-web\\app\\dashboard\\page.tsx",
+        "E:\\dev\\websites\\veplexity-web\\app\\dashboard\\[guildId]\\page.tsx",
+        "E:\\dev\\websites\\veplexity-web\\app\\dashboard\\[guildId]\\components\\ServerOverviewTab.tsx",
+        "E:\\dev\\websites\\veplexity-web\\SHARED_AGENT_CHANNEL.md",
+        "E:\\dev\\websites\\veplexity-web\\SHARED_AGENT_CHANNEL.json"
+      ],
+      "status": "In Sync - Avatar Fix, Geometric Iris Reveal & Colorful Nav Live"
     }
   ]
 }

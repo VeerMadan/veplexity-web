@@ -126,6 +126,10 @@ export function ServerOverviewTab({
                 <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
                 {activeModulesCount} of {modules.length} Modules Active
               </span>
+              <span className="px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-400 font-semibold flex items-center gap-1.5">
+                <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+                Limited Access Demo
+              </span>
               <span className="px-3 py-1 rounded-full bg-[#5865F2]/10 border border-[#5865F2]/30 text-[#5865F2] font-semibold">
                 Free VIP Unlocked
               </span>
