@@ -142,7 +142,34 @@ export default function PrivacyPolicyPage() {
 
           <section className="space-y-3">
             <h2 className="text-xl font-bold text-white uppercase tracking-wide">
-              7. Privacy Contact
+              7. Dedicated Bot Privacy Policies
+            </h2>
+            <p>For dedicated bot telemetry and data storage policies, consult:</p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+              <Link
+                href="/discord-bot/veplexity/privacy"
+                className="p-4 rounded-xl bg-[#12081f] border border-orange-500/30 hover:border-orange-500/60 transition group flex flex-col justify-between"
+              >
+                <span className="font-bold text-white group-hover:text-orange-400 transition-colors">
+                  VePlexity Bot Privacy Policy →
+                </span>
+                <span className="text-xs text-zinc-400 font-mono mt-1">MongoDB Atlas • XP Data • Zero Message Logging</span>
+              </Link>
+              <Link
+                href="/discord-bot/pingplex/privacy"
+                className="p-4 rounded-xl bg-[#12081f] border border-fuchsia-500/30 hover:border-fuchsia-500/60 transition group flex flex-col justify-between"
+              >
+                <span className="font-bold text-white group-hover:text-fuchsia-400 transition-colors">
+                  PingPlex Studio Privacy Policy →
+                </span>
+                <span className="text-xs text-zinc-400 font-mono mt-1">Webhook Pointers • Public RSS • Render</span>
+              </Link>
+            </div>
+          </section>
+
+          <section className="space-y-3">
+            <h2 className="text-xl font-bold text-white uppercase tracking-wide">
+              8. Privacy Contact
             </h2>
             <p>To exercise your data privacy rights or report a vulnerability, contact:</p>
             <ul className="list-disc pl-6 space-y-1 text-zinc-300 font-mono text-xs">

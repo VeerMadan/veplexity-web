@@ -940,7 +940,7 @@ function GuildDashboardInner({ params }: { params: Promise<{ guildId: string }> 
           <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
             <div className="flex items-center gap-3">
               <Link
-                href="/discord-bots/veplexity"
+                href="/discord-bot/veplexity"
                 className="flex items-center gap-2 text-xs font-semibold text-zinc-300 hover:text-white px-2.5 py-1.5 rounded-md bg-zinc-900 border border-zinc-800 hover:border-zinc-700 transition"
               >
                 <ArrowLeft className="w-4 h-4 text-zinc-400" />
@@ -1006,7 +1006,7 @@ function GuildDashboardInner({ params }: { params: Promise<{ guildId: string }> 
               <span>Re-check Connection</span>
             </button>
             <Link
-              href="/discord-bots/veplexity"
+              href="/discord-bot/veplexity"
               className="px-4 py-2 rounded-xl text-zinc-500 hover:text-zinc-300 text-xs font-semibold transition"
             >
               Select Another Server
@@ -1033,7 +1033,7 @@ function GuildDashboardInner({ params }: { params: Promise<{ guildId: string }> 
               Retry
             </button>
             <Link
-              href="/discord-bots/veplexity"
+              href="/discord-bot/veplexity"
               className="px-4 py-2 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-zinc-300 text-xs font-bold transition"
             >
               Return to Servers
@@ -1280,7 +1280,7 @@ function GuildDashboardInner({ params }: { params: Promise<{ guildId: string }> 
       <header className="h-16 shrink-0 border-b border-zinc-800 bg-[#0c0d14] px-4 sm:px-6 flex items-center justify-between z-30">
         <div className="flex items-center gap-3 sm:gap-4">
           <Link
-            href="/discord-bots/veplexity"
+            href="/discord-bot/veplexity"
             className="flex items-center gap-1.5 text-xs font-semibold text-zinc-300 hover:text-white px-2.5 py-1.5 rounded-md bg-zinc-900 border border-zinc-800 hover:border-zinc-700 transition"
             title="Return to Server Selection"
           >

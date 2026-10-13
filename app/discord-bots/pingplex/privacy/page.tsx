@@ -123,7 +123,7 @@ export default function PingPlexPrivacyPage() {
         {/* Footer Navigation */}
         <div className="pt-8 border-t border-zinc-800 flex items-center justify-between">
           <Link
-            href="/discord-bots/pingplex"
+            href="/discord-bot/pingplex"
             className="inline-flex items-center gap-2 text-xs font-mono font-bold text-zinc-400 hover:text-white transition-colors"
           >
             <ArrowLeft className="w-4 h-4" />
@@ -131,7 +131,7 @@ export default function PingPlexPrivacyPage() {
           </Link>
 
           <Link
-            href="/discord-bots/pingplex/terms"
+            href="/discord-bot/pingplex/terms"
             className="inline-flex items-center gap-2 text-xs font-mono font-bold text-fuchsia-400 hover:text-fuchsia-300 transition-colors"
           >
             <span>PingPlex Terms of Service →</span>

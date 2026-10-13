@@ -34,14 +34,14 @@ export default function Footer() {
 
         {/* Links */}
         <div className="flex flex-wrap justify-center gap-6 sm:gap-8 mb-12">
-          <Link href="/bot/veplexity" className="text-sm font-bold uppercase tracking-widest text-zinc-400 hover:text-orange-400 transition-colors">
+          <Link href="/discord-bot" className="text-sm font-bold uppercase tracking-widest text-zinc-400 hover:text-rose-400 transition-colors">
+            Discord Bots
+          </Link>
+          <Link href="/discord-bot/veplexity" className="text-sm font-bold uppercase tracking-widest text-zinc-400 hover:text-orange-400 transition-colors">
             VePlexity Bot
           </Link>
-          <Link href="/bot/pingplex" className="text-sm font-bold uppercase tracking-widest text-zinc-400 hover:text-fuchsia-400 transition-colors">
+          <Link href="/discord-bot/pingplex" className="text-sm font-bold uppercase tracking-widest text-zinc-400 hover:text-fuchsia-400 transition-colors">
             PingPlex
-          </Link>
-          <Link href="/discord-bots" className="text-sm font-bold uppercase tracking-widest text-zinc-400 hover:text-rose-400 transition-colors">
-            Consoles
           </Link>
           <Link href="/news-wire" className="text-sm font-bold uppercase tracking-widest text-zinc-400 hover:text-fuchsia-400 transition-colors">
             Newswire

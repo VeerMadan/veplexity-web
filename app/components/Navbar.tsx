@@ -4,7 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { Menu, X, ArrowUpRight, Bot } from "lucide-react";
+import { Menu, X, ArrowUpRight } from "lucide-react";
 import { DiscordLogo } from "./BrandIcons";
 
 export default function Navbar() {
@@ -13,12 +13,25 @@ export default function Navbar() {
 
   const navLinks = [
     { name: "Overview", href: "/" },
-    { name: "VePlexity Bot", href: "/bot/veplexity" },
-    { name: "PingPlex", href: "/bot/pingplex" },
-    { name: "Bots Hub", href: "/bot" },
+    { name: "Discord Bots", href: "/discord-bot" },
     { name: "Newswire", href: "/news-wire" },
     { name: "Support", href: "/support" },
   ];
+
+  const isLinkActive = (href: string) => {
+    if (href === "/") return pathname === "/";
+    if (href === "/discord-bot") {
+      return (
+        pathname === "/discord-bot" ||
+        pathname.startsWith("/discord-bot/") ||
+        pathname === "/discord-bots" ||
+        pathname.startsWith("/discord-bots/") ||
+        pathname === "/bot" ||
+        pathname.startsWith("/bot/")
+      );
+    }
+    return pathname === href || pathname.startsWith(href + "/");
+  };
 
   return (
     <header className="sticky top-0 z-50 w-full bg-[#070308]/90 backdrop-blur-xl border-b border-white/5">
@@ -50,13 +63,13 @@ export default function Navbar() {
           {/* Desktop Navigation */}
           <nav className="hidden lg:flex items-center gap-1">
             {navLinks.map((item) => {
-              const isActive = pathname === item.href;
+              const active = isLinkActive(item.href);
               return (
                 <Link
                   key={item.name}
                   href={item.href}
                   className={`px-4 py-2 text-xs font-bold uppercase tracking-wider rounded-xl transition-all ${
-                    isActive
+                    active
                       ? "text-white bg-white/10 border border-white/10 font-black shadow-[0_0_15px_rgba(217,70,239,0.2)]"
                       : "text-zinc-400 hover:text-white hover:bg-white/5"
                   }`}
@@ -81,11 +94,11 @@ export default function Navbar() {
           </a>
 
           <Link
-            href="/discord-bots"
+            href="/discord-bot"
             className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-orange-500 via-rose-500 to-fuchsia-600 hover:from-orange-400 hover:to-rose-500 text-white font-bold text-xs rounded-xl shadow-[0_0_20px_rgba(244,63,94,0.3)] transition"
           >
             <DiscordLogo className="w-3.5 h-3.5" fill="#ffffff" />
-            <span>Bot Consoles</span>
+            <span>Discord Bots</span>
           </Link>
         </div>
 
@@ -103,14 +116,14 @@ export default function Navbar() {
       {mobileMenuOpen && (
         <div className="lg:hidden border-b border-white/10 bg-[#0c0512] px-6 py-6 space-y-2">
           {navLinks.map((item) => {
-            const isActive = pathname === item.href;
+            const active = isLinkActive(item.href);
             return (
               <Link
                 key={item.name}
                 href={item.href}
                 onClick={() => setMobileMenuOpen(false)}
                 className={`block px-4 py-2.5 text-sm font-bold uppercase tracking-wider rounded-xl transition-colors ${
-                  isActive
+                  active
                     ? "text-white bg-white/10 border border-white/10"
                     : "text-zinc-400 hover:text-white hover:bg-white/5"
                 }`}
@@ -129,12 +142,12 @@ export default function Navbar() {
               Creator Portfolio: veermadan.dev ↗
             </a>
             <Link
-              href="/discord-bots"
+              href="/discord-bot"
               onClick={() => setMobileMenuOpen(false)}
               className="w-full py-2.5 px-4 text-center text-xs font-bold text-white bg-gradient-to-r from-orange-500 via-rose-500 to-fuchsia-600 hover:from-orange-400 hover:to-rose-500 rounded-xl shadow-lg transition flex items-center justify-center gap-2"
             >
               <DiscordLogo className="w-3.5 h-3.5" fill="#ffffff" />
-              <span>Launch Bot Consoles</span>
+              <span>Explore Discord Bots</span>
             </Link>
           </div>
         </div>

@@ -85,10 +85,10 @@ export default function Home() {
               className="flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto"
             >
               <Link 
-                href="/bot" 
+                href="/discord-bot" 
                 className="w-full sm:w-auto px-9 py-5 bg-gradient-to-br from-orange-500 to-fuchsia-600 text-white font-black uppercase tracking-widest rounded-2xl flex items-center justify-center gap-3 transition-transform hover:scale-105 shadow-[0_0_30px_rgba(217,70,239,0.4)]"
               >
-                <Bot className="w-6 h-6" /> Explore VePlexity Bot
+                <Bot className="w-6 h-6" /> Explore Discord Bots
               </Link>
 
               <a 

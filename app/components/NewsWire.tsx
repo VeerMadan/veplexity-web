@@ -26,7 +26,7 @@ export default function NewsWire() {
       title: "Dual-Engine Hybrid Command Runner Deployed Across Bots",
       summary: "Major architecture update enables instant prefix execution (., ?, !) with rapid-fire typing aliases (.purge, .afk, .bal, .p) alongside 100 slash commands, featuring 5s auto-deleting audit alerts and full dashboard activity rewards.",
       linkText: "Inspect Architecture",
-      linkHref: "/bot",
+      linkHref: "/discord-bot",
       isExternal: false,
     },
     {
@@ -37,7 +37,7 @@ export default function NewsWire() {
       title: "VePlexity Commercial Discord Bot Enters Production",
       summary: "Massive overhaul deployed across 24/7 cloud nodes with 100 slash commands, lossless audio, Gemini AI smart chatbot, and a web dashboard.",
       linkText: "Explore Commercial Bot",
-      linkHref: "/bot",
+      linkHref: "/discord-bot/veplexity",
       isExternal: false,
     },
     {

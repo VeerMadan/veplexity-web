@@ -127,7 +127,7 @@ export default function VePlexityTermsPage() {
         {/* Footer Navigation */}
         <div className="pt-8 border-t border-zinc-800 flex items-center justify-between">
           <Link
-            href="/discord-bots/veplexity"
+            href="/discord-bot/veplexity"
             className="inline-flex items-center gap-2 text-xs font-mono font-bold text-zinc-400 hover:text-white transition-colors"
           >
             <ArrowLeft className="w-4 h-4" />
@@ -135,7 +135,7 @@ export default function VePlexityTermsPage() {
           </Link>
 
           <Link
-            href="/discord-bots/veplexity/privacy"
+            href="/discord-bot/veplexity/privacy"
             className="inline-flex items-center gap-2 text-xs font-mono font-bold text-rose-400 hover:text-rose-300 transition-colors"
           >
             <span>VePlexity Privacy Policy →</span>

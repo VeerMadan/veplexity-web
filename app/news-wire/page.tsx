@@ -39,7 +39,7 @@ export default function NewsWirePage() {
       ],
       link: {
         label: "Inspect Bot Architecture",
-        href: "/bot",
+        href: "/discord-bot",
         isExternal: false,
       },
     },
@@ -59,7 +59,7 @@ export default function NewsWirePage() {
       ],
       link: {
         label: "Inspect Bot Architecture",
-        href: "/bot",
+        href: "/discord-bot/veplexity",
         isExternal: false,
       },
     },

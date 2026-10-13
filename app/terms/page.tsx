@@ -116,7 +116,34 @@ export default function TermsOfServicePage() {
 
           <section className="space-y-3">
             <h2 className="text-xl font-bold text-white uppercase tracking-wide">
-              7. Contact &amp; Inquiries
+              7. Dedicated Bot-Specific Terms
+            </h2>
+            <p>For application-specific legal terms and permissions architecture, consult:</p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+              <Link
+                href="/discord-bot/veplexity/terms"
+                className="p-4 rounded-xl bg-[#12081f] border border-orange-500/30 hover:border-orange-500/60 transition group flex flex-col justify-between"
+              >
+                <span className="font-bold text-white group-hover:text-orange-400 transition-colors">
+                  VePlexity Bot Terms of Service →
+                </span>
+                <span className="text-xs text-zinc-400 font-mono mt-1">100 Commands • Audio DSP • AutoMod</span>
+              </Link>
+              <Link
+                href="/discord-bot/pingplex/terms"
+                className="p-4 rounded-xl bg-[#12081f] border border-fuchsia-500/30 hover:border-fuchsia-500/60 transition group flex flex-col justify-between"
+              >
+                <span className="font-bold text-white group-hover:text-fuchsia-400 transition-colors">
+                  PingPlex Studio Terms of Service →
+                </span>
+                <span className="text-xs text-zinc-400 font-mono mt-1">Stream Alerts • Webhooks • Free Feeds</span>
+              </Link>
+            </div>
+          </section>
+
+          <section className="space-y-3">
+            <h2 className="text-xl font-bold text-white uppercase tracking-wide">
+              8. Contact &amp; Inquiries
             </h2>
             <p>For questions or support regarding these Terms, contact our legal &amp; engineering team:</p>
             <ul className="list-disc pl-6 space-y-1 text-zinc-300 font-mono text-xs">

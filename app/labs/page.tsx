@@ -112,7 +112,7 @@ export default function LabsPage() {
       ],
       techStack: ["Node.js", "Discord.js v14", "MongoDB Atlas", "Docker", "Render", "Gemini AI"],
       actions: [
-        { label: "Explore Bot Page", href: "/bot", external: false },
+        { label: "Explore Bot Page", href: "/discord-bot/veplexity", external: false },
         { label: "Add to Server", href: "/invite", external: false },
       ],
       highlights: [
