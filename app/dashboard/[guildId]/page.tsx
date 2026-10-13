@@ -1307,8 +1307,8 @@ export default function GuildDashboard({ params }: { params: Promise<{ guildId: 
       {/* Main Full-Width Application Body */}
       <div className="flex-1 flex overflow-hidden w-full relative">
         {/* ─── LEFT NAVIGATION SIDEBAR ─────────────────────────────────── */}
-        <aside className="w-64 xl:w-72 shrink-0 border-r border-zinc-800 bg-[#0c0d14] flex flex-col justify-between overflow-y-auto p-3.5 z-20">
-          <div className="space-y-4">
+        <aside className="w-60 lg:w-64 shrink-0 border-r border-zinc-800 bg-[#0c0d14] flex flex-col justify-between overflow-y-auto p-3 z-20">
+          <div className="space-y-3.5">
             <div>
               <button
                 onClick={() => {
@@ -1559,27 +1559,25 @@ export default function GuildDashboard({ params }: { params: Promise<{ guildId: 
             </div>
           </div>
 
-          <div className="p-3.5 rounded-xl bg-zinc-900 border border-zinc-800 text-zinc-200 space-y-2 mt-4">
-            <div className="flex items-center gap-2">
-              <img src="/bmc/SVG Files/bmc-logo.svg" alt="BMC" className="w-4 h-4 object-contain" />
-              <p className="font-bold text-xs text-white">Support VePlexity</p>
-            </div>
-            <p className="text-[11px] text-zinc-400 leading-normal">
-              Help sustain 24/7 lossless audio nodes, cloud hosting &amp; continuous updates.
-            </p>
+          <div className="pt-2.5 mt-2.5 border-t border-zinc-800/80">
             <a
               href="https://www.buymeacoffee.com/veplexity1"
               target="_blank"
               rel="noopener noreferrer"
-              className="block pt-1 hover:opacity-90 transition-opacity"
+              className="p-2.5 rounded-xl bg-zinc-900/90 hover:bg-zinc-800 border border-zinc-800 text-zinc-300 hover:text-white transition flex items-center justify-between gap-2 group shadow-sm"
+              title="Support VePlexity on Buy Me a Coffee"
             >
-              <img src="/bmc/SVG Files/bmc-button.svg" alt="Buy a Coffee" className="w-full h-8 object-contain rounded-md" />
+              <div className="flex items-center gap-2 min-w-0">
+                <img src="/bmc/SVG Files/bmc-logo.svg" alt="BMC" className="w-4 h-4 object-contain shrink-0" />
+                <span className="text-[11px] font-bold truncate">Support Creator</span>
+              </div>
+              <ChevronRight className="w-3.5 h-3.5 text-zinc-500 group-hover:text-white transition-transform group-hover:translate-x-0.5" />
             </a>
           </div>
         </aside>
 
         {/* ─── SCROLLABLE MAIN CONTENT WORKSPACE ───────────────────────── */}
-        <main className="flex-1 h-full overflow-y-auto p-6 sm:p-8 lg:p-10 space-y-6 bg-[#090a0f]">
+        <main className="flex-1 h-full overflow-y-auto p-4 sm:p-5 lg:p-6 space-y-5 bg-[#090a0f]">
           {/* Subpage Breadcrumb Header when not on overview */}
           {activeTab !== "overview" && (
             <div className="flex items-center justify-between pb-4 border-b border-zinc-800 w-full">

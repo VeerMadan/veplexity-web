@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import { DiscordLogo, BmcCupIcon } from "@/app/components/BrandIcons";
 import { dashboardAudio } from "@/lib/dashboardAudio";
+import { ServerFlightCanvas, FlightRect, FlightGuildData } from "@/app/components/ServerRevealTransition";
 
 interface GuildItem {
   id: string;
@@ -36,6 +37,8 @@ export default function DashboardPage() {
   const [error, setError] = useState<string | null>(null);
   const [authError, setAuthError] = useState<string | null>(null);
   const [authErrorDetail, setAuthErrorDetail] = useState<string | null>(null);
+  const [flightRect, setFlightRect] = useState<FlightRect | null>(null);
+  const [flightGuild, setFlightGuild] = useState<FlightGuildData | null>(null);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -130,15 +133,40 @@ export default function DashboardPage() {
     }, 2500);
   };
 
-  // Direct instantaneous navigation to server dashboard
+  // Shared-element button-to-fullscreen reveal flight to server dashboard
   const handleManageClick = (e: React.MouseEvent, guild: GuildItem) => {
     e.preventDefault();
     e.stopPropagation();
     dashboardAudio.playClick();
+
+    const rect = e.currentTarget.getBoundingClientRect();
+    const flightData: FlightGuildData = {
+      id: guild.id,
+      name: guild.name,
+      iconUrl: guild.iconUrl,
+      initials: guild.name
+        .split(" ")
+        .map((w) => w[0])
+        .join("")
+        .substring(0, 3)
+        .toUpperCase(),
+    };
+
     try {
-      sessionStorage.setItem("vep_dashboard_reveal", "true");
+      sessionStorage.setItem("vep_server_flight", JSON.stringify(flightData));
     } catch {}
-    router.push(`/dashboard/${guild.id}`);
+
+    setFlightRect({
+      top: rect.top,
+      left: rect.left,
+      width: rect.width,
+      height: rect.height,
+    });
+    setFlightGuild(flightData);
+
+    setTimeout(() => {
+      router.push(`/dashboard/${guild.id}`);
+    }, 520);
   };
 
   const filteredGuilds = guilds
@@ -578,6 +606,13 @@ export default function DashboardPage() {
           </>
         )}
       </div>
+
+      {/* Shared-Element Button-to-Fullscreen Flight Canvas */}
+      <ServerFlightCanvas
+        rect={flightRect}
+        guild={flightGuild}
+        isExpanding={Boolean(flightRect)}
+      />
     </main>
   );
 }
