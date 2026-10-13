@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { Coffee, Heart, Sparkles, Shield, Zap, ExternalLink, QrCode, ArrowRight, CheckCircle2 } from "lucide-react";
+import UpiPaymentCard from "./UpiPaymentCard";
 
 export default function SupportHub() {
   const perks = [
@@ -165,6 +166,11 @@ export default function SupportHub() {
 
           </div>
 
+        </div>
+
+        {/* Dedicated Direct UPI Section */}
+        <div className="mt-12">
+          <UpiPaymentCard />
         </div>
 
       </div>

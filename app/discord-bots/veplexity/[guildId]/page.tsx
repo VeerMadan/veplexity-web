@@ -21,6 +21,7 @@ import { ServerDestinationReveal } from "@/app/components/ServerRevealTransition
 import { ServerOverviewTab, OverviewModuleItem } from "@/app/dashboard/[guildId]/components/ServerOverviewTab";
 import { dashboardAudio } from "@/lib/dashboardAudio";
 import { DiscordLogo, BmcCupIcon } from "@/app/components/BrandIcons";
+import UpiPaymentCard from "@/app/components/UpiPaymentCard";
 import { motion, AnimatePresence } from "framer-motion";
 
 interface RoleItem {
@@ -4276,6 +4277,11 @@ function GuildDashboardInner({ params }: { params: Promise<{ guildId: string }> 
                       <span>Join discord.gg/R6ZrqpWEcc</span>
                     </a>
                   </div>
+                </div>
+
+                {/* Direct UPI Payment Section */}
+                <div className="pt-2">
+                  <UpiPaymentCard />
                 </div>
               </div>
             </div>

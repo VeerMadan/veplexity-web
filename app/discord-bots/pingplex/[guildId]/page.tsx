@@ -16,6 +16,7 @@ import {
   SocialAlertsStudio, 
   NotificationsConfig 
 } from "@/app/dashboard/[guildId]/components/SocialAlertsStudio";
+import UpiPaymentCard from "@/app/components/UpiPaymentCard";
 
 interface GuildDetails {
   id: string;
@@ -749,6 +750,11 @@ function PingPlexGuildStudioInner({ params }: { params: Promise<{ guildId: strin
                     <DiscordLogo className="w-4 h-4 text-[#5865F2]" />
                     <span>Join Discord Community</span>
                   </a>
+                </div>
+
+                {/* Direct UPI Payment Section */}
+                <div className="pt-2">
+                  <UpiPaymentCard />
                 </div>
               </div>
             </div>

@@ -338,14 +338,20 @@ export default function DiscordBotsHubPage() {
               <p className="text-[11px] text-zinc-400">Back operating infrastructure on Buy Me a Coffee to keep lossless audio nodes and webhook workers online 24/7.</p>
             </div>
           </div>
-          <a
-            href="https://www.buymeacoffee.com/veplexity1"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="hover:scale-105 transition-transform shrink-0"
-          >
-            <img src="/bmc/SVG Files/bmc-button.svg" alt="Buy Me A Coffee" className="h-8 w-auto rounded-lg" />
-          </a>
+          <div className="flex items-center gap-2.5 shrink-0 flex-wrap justify-center sm:justify-end">
+            <div className="px-3 py-1.5 rounded-xl bg-orange-500/10 border border-orange-500/30 flex items-center gap-1.5 text-[11px] font-mono text-orange-400">
+              <span>🇮🇳 UPI:</span>
+              <span className="font-bold text-white select-all">madan.45@superyes</span>
+            </div>
+            <a
+              href="https://www.buymeacoffee.com/veplexity1"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:scale-105 transition-transform shrink-0"
+            >
+              <img src="/bmc/SVG Files/bmc-button.svg" alt="Buy Me A Coffee" className="h-8 w-auto rounded-lg" />
+            </a>
+          </div>
         </motion.div>
       </main>
 

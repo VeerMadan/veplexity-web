@@ -5,6 +5,7 @@ import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import Link from "next/link";
 import { Heart, Check, ExternalLink, QrCode } from "lucide-react";
+import UpiPaymentCard from "../components/UpiPaymentCard";
 
 export default function SupportPage() {
   const perks = [
@@ -121,6 +122,16 @@ export default function SupportPage() {
               <span>SCAN TO OPEN ON MOBILE</span>
             </div>
           </div>
+        </motion.div>
+
+        {/* Dedicated Direct UPI Section */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="mb-16"
+        >
+          <UpiPaymentCard />
         </motion.div>
 
         {/* Backer Perks */}
