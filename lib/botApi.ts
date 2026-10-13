@@ -28,7 +28,9 @@ export async function fetchBotApi(path: string, options: RequestInit = {}) {
       const json = JSON.parse(errorText);
       if (json.error) parsedMessage = json.error;
     } catch {}
-    throw new Error(parsedMessage || `Bot API error: ${res.status}`);
+    const err: any = new Error(parsedMessage || `Bot API error: ${res.status}`);
+    err.status = res.status;
+    throw err;
   }
 
   return res.json();

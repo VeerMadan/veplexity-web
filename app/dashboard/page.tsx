@@ -20,6 +20,10 @@ interface GuildItem {
   icon: string | null;
   owner: boolean;
   botJoined: boolean;
+  bots?: {
+    veplexity: boolean;
+    pingplex: boolean;
+  };
   iconUrl: string | null;
 }
 
@@ -139,6 +143,11 @@ export default function DashboardPage() {
     e.stopPropagation();
     dashboardAudio.playClick();
 
+    const isPingPlexOnly = guild.bots?.pingplex && !guild.bots?.veplexity;
+    const targetUrl = isPingPlexOnly
+      ? `/dashboard/${guild.id}?bot=pingplex`
+      : `/dashboard/${guild.id}`;
+
     const rect = e.currentTarget.getBoundingClientRect();
     const flightData: FlightGuildData = {
       id: guild.id,
@@ -165,7 +174,7 @@ export default function DashboardPage() {
     setFlightGuild(flightData);
 
     setTimeout(() => {
-      router.push(`/dashboard/${guild.id}`);
+      router.push(targetUrl);
     }, 520);
   };
 
@@ -498,134 +507,212 @@ export default function DashboardPage() {
                 }}
                 className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
               >
-                {filteredGuilds.map((guild) => (
-                  <motion.div
-                    key={guild.id}
-                    variants={{
-                      hidden: { opacity: 0, y: 15 },
-                      show: { opacity: 1, y: 0, transition: { duration: 0.3, ease: [0.16, 1, 0.3, 1] } },
-                    }}
-                    whileHover={{ y: -5, transition: { duration: 0.2 } }}
-                    onClick={(e) => {
-                      if (guild.botJoined) {
-                        handleManageClick(e, guild);
-                      }
-                    }}
-                    className={`rounded-2xl bg-[#0d0f17] overflow-hidden flex flex-col justify-between group border border-zinc-800/80 hover:border-emerald-500/40 hover:shadow-2xl hover:shadow-emerald-500/10 transition-all duration-300 relative ${
-                      guild.botJoined ? "cursor-pointer" : ""
-                    }`}
-                  >
-                    {/* Top Ambient Backdrop with Scanner Hairline */}
-                    <div className="h-24 bg-gradient-to-b from-[#181d2e] via-[#101322] to-[#0d0f17] border-b border-zinc-800/50 relative overflow-hidden">
-                      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(16,185,129,0.12),transparent_70%)] pointer-events-none" />
-                      
-                      {/* Top Bar Badges */}
-                      <div className="absolute top-3 inset-x-3.5 flex items-center justify-between z-10">
-                        <span className="text-[10px] font-mono uppercase tracking-wider text-zinc-500 font-bold">
-                          ID: {guild.id.slice(-6)}
-                        </span>
-                        
-                        {guild.botJoined ? (
-                          <span className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-500/15 border border-emerald-500/40 text-emerald-400 font-mono text-[10px] font-black shadow-xs">
-                            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                            ACTIVE ENGINE
-                          </span>
-                        ) : (
-                          <span className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-amber-500/15 border border-amber-500/30 text-amber-300 font-mono text-[10px] font-bold">
-                            SETUP NEEDED
-                          </span>
-                        )}
-                      </div>
-                    </div>
+                {filteredGuilds.map((guild) => {
+                  const isDual = Boolean(guild.bots?.veplexity && guild.bots?.pingplex);
+                  const isVepOnly = Boolean(guild.bots?.veplexity && !guild.bots?.pingplex);
+                  const isPingOnly = Boolean(guild.bots?.pingplex && !guild.bots?.veplexity);
+                  const isConnected = Boolean(guild.botJoined);
 
-                    {/* Centered Large Circular Avatar in Machined Bezel */}
-                    <div className="relative z-10 flex flex-col items-center px-5 pb-5 pt-0 -mt-12 text-center flex-1 justify-between gap-4">
-                      <div className="flex flex-col items-center gap-3 w-full">
-                        <div className="w-20 h-20 sm:w-22 sm:h-22 rounded-2xl bg-[#121522] border-2 border-zinc-700/80 group-hover:border-emerald-500/60 shadow-2xl overflow-hidden flex items-center justify-center font-bold text-xl text-zinc-200 shrink-0 relative z-20 group-hover:scale-105 transition-all duration-300 p-1">
-                          {guild.iconUrl ? (
-                            <img
-                              src={guild.iconUrl}
-                              alt={guild.name}
-                              className="w-full h-full object-cover rounded-xl"
-                              onError={(e) => {
-                                e.currentTarget.style.display = "none";
-                              }}
-                            />
+                  return (
+                    <motion.div
+                      key={guild.id}
+                      variants={{
+                        hidden: { opacity: 0, y: 15 },
+                        show: { opacity: 1, y: 0, transition: { duration: 0.3, ease: [0.16, 1, 0.3, 1] } },
+                      }}
+                      whileHover={{ y: -5, transition: { duration: 0.2 } }}
+                      onClick={(e) => {
+                        if (isConnected) {
+                          handleManageClick(e, guild);
+                        }
+                      }}
+                      className={`rounded-2xl bg-[#0d0f17] overflow-hidden flex flex-col justify-between group border border-zinc-800/80 transition-all duration-300 relative ${
+                        isConnected ? "cursor-pointer" : ""
+                      } ${
+                        isPingOnly
+                          ? "hover:border-fuchsia-500/50 hover:shadow-2xl hover:shadow-fuchsia-500/10"
+                          : isConnected
+                          ? "hover:border-emerald-500/40 hover:shadow-2xl hover:shadow-emerald-500/10"
+                          : "hover:border-amber-500/30"
+                      }`}
+                    >
+                      {/* Top Ambient Backdrop with Scanner Hairline */}
+                      <div className="h-24 bg-gradient-to-b from-[#181d2e] via-[#101322] to-[#0d0f17] border-b border-zinc-800/50 relative overflow-hidden">
+                        <div
+                          className={`absolute inset-0 pointer-events-none ${
+                            isPingOnly
+                              ? "bg-[radial-gradient(ellipse_at_top,rgba(217,70,239,0.18),transparent_70%)]"
+                              : isVepOnly
+                              ? "bg-[radial-gradient(ellipse_at_top,rgba(59,130,246,0.16),transparent_70%)]"
+                              : "bg-[radial-gradient(ellipse_at_top,rgba(16,185,129,0.14),transparent_70%)]"
+                          }`}
+                        />
+
+                        {/* Top Bar Badges */}
+                        <div className="absolute top-3 inset-x-3.5 flex items-center justify-between z-10">
+                          <span className="text-[10px] font-mono uppercase tracking-wider text-zinc-500 font-bold">
+                            ID: {guild.id.slice(-6)}
+                          </span>
+
+                          {isDual ? (
+                            <span className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-500/15 border border-emerald-500/40 text-emerald-400 font-mono text-[10px] font-black shadow-xs">
+                              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                              DUAL ENGINE ACTIVE
+                            </span>
+                          ) : isVepOnly ? (
+                            <span className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-blue-500/15 border border-blue-500/40 text-blue-400 font-mono text-[10px] font-black shadow-xs">
+                              <span className="w-1.5 h-1.5 rounded-full bg-blue-400 animate-pulse" />
+                              VEPLEXITY ACTIVE
+                            </span>
+                          ) : isPingOnly ? (
+                            <span className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-fuchsia-500/15 border border-fuchsia-500/40 text-fuchsia-300 font-mono text-[10px] font-black shadow-xs">
+                              <span className="w-1.5 h-1.5 rounded-full bg-fuchsia-400 animate-pulse" />
+                              PINGPLEX ACTIVE
+                            </span>
                           ) : (
-                            <span className="text-xl font-mono font-black text-zinc-200">
-                              {guild.name.slice(0, 2).toUpperCase()}
+                            <span className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-amber-500/15 border border-amber-500/30 text-amber-300 font-mono text-[10px] font-bold">
+                              SETUP NEEDED
                             </span>
                           )}
                         </div>
-
-                        {/* Server Title & Roles */}
-                        <div className="space-y-1.5 w-full">
-                          <h3
-                            className="font-black text-base text-white group-hover:text-emerald-300 transition-colors truncate max-w-full tracking-tight"
-                            title={guild.name}
-                          >
-                            {guild.name}
-                          </h3>
-
-                          <div className="flex items-center justify-center gap-2 text-xs flex-wrap">
-                            <span className="px-2 py-0.5 rounded-full bg-zinc-900 border border-zinc-800 text-zinc-400 font-mono text-[10px] font-semibold">
-                              {guild.owner ? "👑 Server Owner" : "🛡️ Administrator"}
-                            </span>
-                          </div>
-                        </div>
-
-                        {/* Feature Badges Strip */}
-                        <div className="w-full py-2 px-3 rounded-xl bg-[#090b12] border border-zinc-800/60 flex items-center justify-around text-[11px] font-mono text-zinc-400">
-                          <span title="24/7 Lossless Audio">🎵 Audio</span>
-                          <span className="text-zinc-700">•</span>
-                          <span title="AutoMod Security">🛡️ Mod</span>
-                          <span className="text-zinc-700">•</span>
-                          <span title="Pingcord Social Alerts">🔔 Alerts</span>
-                          <span className="text-zinc-700">•</span>
-                          <span title="Leveling & XP">🏆 XP</span>
-                        </div>
                       </div>
 
-                      {/* Action Pill Button with Nested Circle */}
-                      <div className="w-full pt-1">
-                        {guild.botJoined ? (
-                          <button
-                            onClick={(e) => handleManageClick(e, guild)}
-                            className="w-full py-2.5 px-4 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-zinc-950 text-xs font-black transition-all flex items-center justify-between cursor-pointer shadow-lg hover:shadow-emerald-500/25 active:scale-98 group/btn"
-                          >
-                            <span className="tracking-wider uppercase">LAUNCH CONSOLE</span>
-                            <div className="w-6 h-6 rounded-full bg-zinc-950/20 flex items-center justify-center transition-transform group-hover/btn:translate-x-1">
-                              <ChevronRight className="w-3.5 h-3.5 text-zinc-950 stroke-[3]" />
-                            </div>
-                          </button>
-                        ) : (
-                          <a
-                            href={`/invite?guild_id=${guild.id}`}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            onClick={() => handleInviteClick(guild.id, guild.name)}
-                            className={`w-full py-2.5 px-4 rounded-xl text-xs font-black transition-all flex items-center justify-between cursor-pointer ${
-                              pendingGuildId === guild.id
-                                ? "bg-zinc-900 border border-[#5865F2] text-[#5865F2] animate-pulse"
-                                : "bg-amber-500/15 hover:bg-amber-500/25 text-amber-300 border border-amber-500/40 shadow-sm"
+                      {/* Centered Large Circular Avatar in Machined Bezel */}
+                      <div className="relative z-10 flex flex-col items-center px-5 pb-5 pt-0 -mt-12 text-center flex-1 justify-between gap-4">
+                        <div className="flex flex-col items-center gap-3 w-full">
+                          <div
+                            className={`w-20 h-20 sm:w-22 sm:h-22 rounded-2xl bg-[#121522] border-2 shadow-2xl overflow-hidden flex items-center justify-center font-bold text-xl text-zinc-200 shrink-0 relative z-20 group-hover:scale-105 transition-all duration-300 p-1 ${
+                              isPingOnly
+                                ? "border-zinc-700/80 group-hover:border-fuchsia-500/70"
+                                : "border-zinc-700/80 group-hover:border-emerald-500/60"
                             }`}
                           >
-                            <span className="tracking-wider uppercase">
-                              {pendingGuildId === guild.id ? "DETECTING BOT..." : "INVITE VEPLEXITY"}
-                            </span>
-                            <div className="w-6 h-6 rounded-full bg-amber-500/20 flex items-center justify-center">
-                              {pendingGuildId === guild.id ? (
-                                <RefreshCw className="w-3 h-3 animate-spin text-amber-300" />
-                              ) : (
-                                <Plus className="w-3.5 h-3.5 text-amber-300 stroke-[3]" />
+                            {guild.iconUrl ? (
+                              <img
+                                src={guild.iconUrl}
+                                alt={guild.name}
+                                className="w-full h-full object-cover rounded-xl"
+                                onError={(e) => {
+                                  e.currentTarget.style.display = "none";
+                                }}
+                              />
+                            ) : (
+                              <span className="text-xl font-mono font-black text-zinc-200">
+                                {guild.name.slice(0, 2).toUpperCase()}
+                              </span>
+                            )}
+                          </div>
+
+                          {/* Server Title & Roles */}
+                          <div className="space-y-1.5 w-full">
+                            <h3
+                              className={`font-black text-base text-white transition-colors truncate max-w-full tracking-tight ${
+                                isPingOnly ? "group-hover:text-fuchsia-300" : "group-hover:text-emerald-300"
+                              }`}
+                              title={guild.name}
+                            >
+                              {guild.name}
+                            </h3>
+
+                            <div className="flex items-center justify-center gap-2 text-xs flex-wrap">
+                              <span className="px-2 py-0.5 rounded-full bg-zinc-900 border border-zinc-800 text-zinc-400 font-mono text-[10px] font-semibold">
+                                {guild.owner ? "👑 Server Owner" : "🛡️ Administrator"}
+                              </span>
+                              {isPingOnly && (
+                                <span className="px-2 py-0.5 rounded-full bg-fuchsia-500/10 border border-fuchsia-500/30 text-fuchsia-300 font-mono text-[10px] font-bold">
+                                  📡 PingPlex Alerts
+                                </span>
                               )}
                             </div>
-                          </a>
-                        )}
+                          </div>
+
+                          {/* Feature Badges Strip */}
+                          {isPingOnly ? (
+                            <div className="w-full py-2 px-3 rounded-xl bg-[#090b12] border border-fuchsia-500/20 flex items-center justify-around text-[11px] font-mono text-fuchsia-300">
+                              <span title="YouTube Video Alerts">🔴 YouTube</span>
+                              <span className="text-zinc-700">•</span>
+                              <span title="Twitch Live Stream Alerts">🟣 Twitch</span>
+                              <span className="text-zinc-700">•</span>
+                              <span title="X Post Alerts">🐦 X</span>
+                              <span className="text-zinc-700">•</span>
+                              <span title="TikTok Alerts">🎵 TikTok</span>
+                            </div>
+                          ) : (
+                            <div className="w-full py-2 px-3 rounded-xl bg-[#090b12] border border-zinc-800/60 flex items-center justify-around text-[11px] font-mono text-zinc-400">
+                              <span title="24/7 Lossless Audio">🎵 Audio</span>
+                              <span className="text-zinc-700">•</span>
+                              <span title="AutoMod Security">🛡️ Mod</span>
+                              <span className="text-zinc-700">•</span>
+                              <span title="Pingcord Social Alerts">🔔 Alerts</span>
+                              <span className="text-zinc-700">•</span>
+                              <span title="Leveling & XP">🏆 XP</span>
+                            </div>
+                          )}
+                        </div>
+
+                        {/* Action Pill Button with Nested Circle */}
+                        <div className="w-full pt-1">
+                          {isConnected ? (
+                            <button
+                              onClick={(e) => handleManageClick(e, guild)}
+                              className={`w-full py-2.5 px-4 rounded-xl text-xs font-black transition-all flex items-center justify-between cursor-pointer shadow-lg active:scale-98 group/btn ${
+                                isPingOnly
+                                  ? "bg-fuchsia-600 hover:bg-fuchsia-500 text-white shadow-fuchsia-500/20 hover:shadow-fuchsia-500/35"
+                                  : "bg-emerald-500 hover:bg-emerald-400 text-zinc-950 shadow-emerald-500/20 hover:shadow-emerald-500/35"
+                              }`}
+                            >
+                              <span className="tracking-wider uppercase">
+                                {isPingOnly ? "LAUNCH PINGPLEX STUDIO" : "LAUNCH CONSOLE"}
+                              </span>
+                              <div
+                                className={`w-6 h-6 rounded-full flex items-center justify-center transition-transform group-hover/btn:translate-x-1 ${
+                                  isPingOnly ? "bg-white/20 text-white" : "bg-zinc-950/20 text-zinc-950"
+                                }`}
+                              >
+                                <ChevronRight className="w-3.5 h-3.5 stroke-[3]" />
+                              </div>
+                            </button>
+                          ) : (
+                            <div className="space-y-1.5 w-full">
+                              <a
+                                href={`/invite?guild_id=${guild.id}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                onClick={() => handleInviteClick(guild.id, guild.name)}
+                                className={`w-full py-2.5 px-3 rounded-xl text-xs font-black transition-all flex items-center justify-between cursor-pointer ${
+                                  pendingGuildId === guild.id
+                                    ? "bg-zinc-900 border border-[#5865F2] text-[#5865F2] animate-pulse"
+                                    : "bg-amber-500/15 hover:bg-amber-500/25 text-amber-300 border border-amber-500/40 shadow-sm"
+                                }`}
+                              >
+                                <span className="tracking-wider uppercase text-[11px]">
+                                  {pendingGuildId === guild.id ? "DETECTING BOT..." : "INVITE VEPLEXITY"}
+                                </span>
+                                <div className="w-5 h-5 rounded-full bg-amber-500/20 flex items-center justify-center">
+                                  {pendingGuildId === guild.id ? (
+                                    <RefreshCw className="w-3 h-3 animate-spin text-amber-300" />
+                                  ) : (
+                                    <Plus className="w-3.5 h-3.5 text-amber-300 stroke-[3]" />
+                                  )}
+                                </div>
+                              </a>
+
+                              <a
+                                href={`/invite/pingplex?guild_id=${guild.id}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="w-full py-1.5 px-3 rounded-lg text-[10px] font-bold text-fuchsia-300 hover:text-fuchsia-200 bg-fuchsia-500/10 hover:bg-fuchsia-500/20 border border-fuchsia-500/30 flex items-center justify-between transition-colors cursor-pointer"
+                              >
+                                <span>OR INVITE PINGPLEX (ALERTS ONLY)</span>
+                                <ExternalLink className="w-3 h-3" />
+                              </a>
+                            </div>
+                          )}
+                        </div>
                       </div>
-                    </div>
-                  </motion.div>
-                ))}
+                    </motion.div>
+                  );
+                })}
               </motion.div>
             )}
           </>

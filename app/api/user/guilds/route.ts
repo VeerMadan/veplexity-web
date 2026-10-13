@@ -41,33 +41,48 @@ export async function GET() {
       }
     });
 
-    // 3. Fetch bot's joined guilds to determine which servers have the bot
-    let botGuildIds = new Set<string>();
+    // 3. Fetch dual-client bot guilds from backend
+    const botGuildMap = new Map<string, { veplexity: boolean; pingplex: boolean }>();
     try {
       const botGuilds = await fetchBotApi("/api/guilds");
       if (Array.isArray(botGuilds)) {
-        botGuilds.forEach((bg: any) => botGuildIds.add(bg.id));
+        botGuilds.forEach((bg: any) => {
+          botGuildMap.set(bg.id, {
+            veplexity: bg.bots ? Boolean(bg.bots.veplexity) : true,
+            pingplex: bg.bots ? Boolean(bg.bots.pingplex) : false,
+          });
+        });
       }
     } catch (e) {
       console.warn("[UserGuilds API] Could not fetch bot guilds list:", e);
     }
 
-    // 4. Map with bot status
-    const result = adminGuilds.map((g) => ({
-      id: g.id,
-      name: g.name,
-      icon: g.icon,
-      owner: !!g.owner,
-      permissions: g.permissions,
-      botJoined: botGuildIds.has(g.id),
-      iconUrl: g.icon
-        ? `https://cdn.discordapp.com/icons/${g.id}/${g.icon}.png?size=128`
-        : null,
-    }));
+    // 4. Map with dual-bot status
+    const result = adminGuilds.map((g) => {
+      const botInfo = botGuildMap.get(g.id) || {
+        veplexity: false,
+        pingplex: false,
+      };
+      const botJoined = botInfo.veplexity || botInfo.pingplex;
+
+      return {
+        id: g.id,
+        name: g.name,
+        icon: g.icon,
+        owner: Boolean(g.owner),
+        permissions: g.permissions,
+        botJoined,
+        bots: botInfo,
+        iconUrl: g.icon
+          ? `https://cdn.discordapp.com/icons/${g.id}/${g.icon}.png?size=128`
+          : null,
+      };
+    });
 
     return Response.json({
       guilds: result,
       botClientId: process.env.DISCORD_CLIENT_ID || "1556640364448714752",
+      pingPlexClientId: process.env.PINGPLEX_CLIENT_ID || "1559520031916687430",
     });
   } catch (error: any) {
     console.error("[UserGuilds API] Error:", error);

@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useState, use, useMemo } from "react";
+import { useEffect, useState, use, useMemo, Suspense } from "react";
+import { useSearchParams } from "next/navigation";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { 
@@ -181,6 +182,10 @@ interface GuildDetails {
     welcomeChannelId: string | null;
     chatbotChannelId: string | null;
   };
+  bots?: {
+    veplexity: boolean;
+    pingplex: boolean;
+  };
 }
 
 type TabType = 
@@ -206,10 +211,12 @@ type TabType =
 
 type LogPreviewType = "messageEdit" | "messageDelete" | "modAction" | "memberJoin" | "memberLeave" | "roleUpdate";
 
-export default function GuildDashboard({ params }: { params: Promise<{ guildId: string }> }) {
+function GuildDashboardInner({ params }: { params: Promise<{ guildId: string }> }) {
   const resolvedParams = use(params);
   const guildId = resolvedParams.guildId;
   const { data: session } = useSession();
+  const searchParams = useSearchParams();
+  const botParam = searchParams?.get("bot");
 
   const [activeTab, setActiveTab] = useState<TabType>("overview");
   const [guild, setGuild] = useState<GuildDetails | null>(null);
@@ -217,6 +224,20 @@ export default function GuildDashboard({ params }: { params: Promise<{ guildId: 
   const [saving, setSaving] = useState(false);
   const [toast, setToast] = useState<{ message: string; type: "success" | "error" } | null>(null);
   const [soundOn, setSoundOn] = useState(dashboardAudio.enabled);
+
+  // Gating & PingPlex mode states
+  const [notInvited, setNotInvited] = useState(false);
+  const [fetchError, setFetchError] = useState<string | null>(null);
+  const [forceBotMode, setForceBotMode] = useState<"veplexity" | "pingplex" | null>(null);
+
+  const isPingPlexOnlyServer = Boolean(guild?.bots?.pingplex && !guild?.bots?.veplexity);
+  const isPingPlexMode = isPingPlexOnlyServer || (forceBotMode ? forceBotMode === "pingplex" : botParam === "pingplex");
+
+  useEffect(() => {
+    if (botParam === "pingplex") {
+      setActiveTab("notifications");
+    }
+  }, [botParam]);
 
   // Smooth Reveal Pill Animation State
   const [revealActive, setRevealActive] = useState(true);
@@ -706,14 +727,25 @@ export default function GuildDashboard({ params }: { params: Promise<{ guildId: 
   const fetchGuildData = async () => {
     try {
       setLoading(true);
+      setNotInvited(false);
+      setFetchError(null);
       const res = await fetch(`/api/bot/guilds/${guildId}`);
       if (!res.ok) {
         const err = await res.json().catch(() => ({}));
+        if (res.status === 404 || err.notInvited) {
+          setNotInvited(true);
+          setFetchError(err.error || "Neither VePlexity Bot nor PingPlex is in this server.");
+          return;
+        }
         throw new Error(err.error || "Failed to load guild details");
       }
       const data: GuildDetails = await res.json();
       setGuild(data);
       populateFromConfig(data);
+
+      if (data.bots?.pingplex && !data.bots?.veplexity) {
+        setActiveTab("notifications");
+      }
 
       // Smooth reveal expansion animation completes into the loaded dashboard!
       setTimeout(() => {
@@ -721,6 +753,7 @@ export default function GuildDashboard({ params }: { params: Promise<{ guildId: 
       }, 1200);
     } catch (err: any) {
       console.error("[GuildDashboard] Fetch error:", err);
+      setFetchError(err.message || "Could not connect to bot backend");
       showToast(err.message || "Could not connect to bot backend", "error");
     } finally {
       setLoading(false);
@@ -931,7 +964,7 @@ export default function GuildDashboard({ params }: { params: Promise<{ guildId: 
     }
   };
 
-  if (loading && !guild) {
+  if (loading && !guild && !notInvited) {
     return (
       <main className="min-h-screen bg-[#090a0f] text-white flex flex-col font-sans">
         <header className="h-16 border-b border-zinc-800/80 bg-[#0c0d14] px-4 flex items-center justify-between">
@@ -957,6 +990,176 @@ export default function GuildDashboard({ params }: { params: Promise<{ guildId: 
                 <div key={i} className="h-44 rounded-2xl bg-zinc-900/60 border border-zinc-800 animate-pulse" />
               ))}
             </div>
+          </div>
+        </div>
+      </main>
+    );
+  }
+
+  // ─── GATING BARRIER: BOT NOT CONNECTED TO GUILD ───────────────────────────
+  if (notInvited) {
+    return (
+      <main className="min-h-screen bg-[#090a0f] text-zinc-100 flex flex-col font-sans">
+        {/* Navigation Header */}
+        <header className="border-b border-zinc-800/80 bg-[#0c0d14] sticky top-0 z-40">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <Link
+                href="/dashboard"
+                className="flex items-center gap-2 text-xs font-semibold text-zinc-300 hover:text-white px-2.5 py-1.5 rounded-md bg-zinc-900 border border-zinc-800 hover:border-zinc-700 transition"
+              >
+                <ArrowLeft className="w-4 h-4 text-zinc-400" />
+                <span>Return to Servers</span>
+              </Link>
+              <span className="text-[10px] px-2.5 py-0.5 rounded-full bg-amber-500/15 border border-amber-500/30 text-amber-300 font-mono uppercase font-bold">
+                SETUP REQUIRED
+              </span>
+            </div>
+            <div className="flex items-center gap-3 font-mono text-xs text-zinc-500">
+              <span>GUILD ID: {guildId}</span>
+            </div>
+          </div>
+        </header>
+
+        {/* Gating Barrier Container */}
+        <div className="flex-1 max-w-4xl w-full mx-auto px-4 sm:px-6 py-12 flex flex-col items-center justify-center space-y-8">
+          <div className="text-center space-y-3 max-w-xl">
+            <div className="w-16 h-16 rounded-2xl bg-amber-500/10 border border-amber-500/30 mx-auto flex items-center justify-center text-amber-400 shadow-xl shadow-amber-500/10 mb-4">
+              <Shield className="w-8 h-8" />
+            </div>
+            <h1 className="text-2xl sm:text-3xl font-black text-white tracking-tight uppercase">
+              Bot Not Connected
+            </h1>
+            <p className="text-xs sm:text-sm text-zinc-400 leading-relaxed font-normal">
+              Neither <span className="text-white font-semibold">VePlexity Bot</span> nor <span className="text-white font-semibold">PingPlex</span> is currently a member of this server. Select an engine below to invite it with the required Discord permissions.
+            </p>
+          </div>
+
+          {/* Dual Action Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full">
+            {/* VePlexity Full Suite Card */}
+            <div className="p-6 rounded-2xl bg-[#0d0f17] border border-zinc-800 hover:border-blue-500/50 flex flex-col justify-between space-y-6 transition-all duration-300 relative group shadow-xl">
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <div className="w-12 h-12 rounded-xl bg-blue-500/10 border border-blue-500/30 flex items-center justify-center text-blue-400">
+                    <DiscordLogo className="w-6 h-6" fill="#3b82f6" />
+                  </div>
+                  <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-blue-500/15 text-blue-300 border border-blue-500/30 font-bold uppercase">
+                    RECOMMENDED • FULL SUITE
+                  </span>
+                </div>
+                <div>
+                  <h3 className="text-lg font-bold text-white group-hover:text-blue-300 transition-colors">VePlexity Bot</h3>
+                  <p className="text-xs text-zinc-400 mt-1 leading-relaxed">
+                    Complete community automation suite: 24/7 Lossless Audio DJ, AutoMod Defense, XP Leveling, Reaction Roles, Welcomes &amp; Gemini AI Chatbot.
+                  </p>
+                </div>
+                <div className="p-3 rounded-xl bg-[#090b12] border border-zinc-800/80 text-[11px] font-mono text-zinc-400 space-y-1">
+                  <div className="flex justify-between">
+                    <span className="text-zinc-500">Client ID:</span>
+                    <span>1556640364448714752</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-zinc-500">Permissions:</span>
+                    <span className="text-blue-400">Administrator (8)</span>
+                  </div>
+                </div>
+              </div>
+
+              <a
+                href={`/invite?guild_id=${guildId}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full py-3 px-4 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-black transition-all flex items-center justify-between cursor-pointer shadow-lg shadow-blue-600/20 active:scale-98"
+              >
+                <span className="tracking-wider uppercase">INVITE VEPLEXITY BOT</span>
+                <ChevronRight className="w-4 h-4 stroke-[3]" />
+              </a>
+            </div>
+
+            {/* PingPlex Social Alerts Card */}
+            <div className="p-6 rounded-2xl bg-[#0d0f17] border border-zinc-800 hover:border-fuchsia-500/50 flex flex-col justify-between space-y-6 transition-all duration-300 relative group shadow-xl">
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <div className="w-12 h-12 rounded-xl bg-fuchsia-500/10 border border-fuchsia-500/30 flex items-center justify-center text-fuchsia-400">
+                    <Radio className="w-6 h-6" />
+                  </div>
+                  <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-fuchsia-500/15 text-fuchsia-300 border border-fuchsia-500/30 font-bold uppercase">
+                    SPECIALIZED • SOCIAL ALERTS
+                  </span>
+                </div>
+                <div>
+                  <h3 className="text-lg font-bold text-white group-hover:text-fuchsia-300 transition-colors">PingPlex Creator Studio</h3>
+                  <p className="text-xs text-zinc-400 mt-1 leading-relaxed">
+                    Zero-delay real-time notification engine: automated alerts for YouTube uploads, Twitch streams, TikToks, X posts, and Reddit threads. Zero paywalls.
+                  </p>
+                </div>
+                <div className="p-3 rounded-xl bg-[#090b12] border border-zinc-800/80 text-[11px] font-mono text-zinc-400 space-y-1">
+                  <div className="flex justify-between">
+                    <span className="text-zinc-500">Client ID:</span>
+                    <span>1559520031916687430</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-zinc-500">Permissions:</span>
+                    <span className="text-fuchsia-400">Alert Engine (137976334336)</span>
+                  </div>
+                </div>
+              </div>
+
+              <a
+                href={`/invite/pingplex?guild_id=${guildId}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full py-3 px-4 rounded-xl bg-fuchsia-600 hover:bg-fuchsia-500 text-white text-xs font-black transition-all flex items-center justify-between cursor-pointer shadow-lg shadow-fuchsia-600/20 active:scale-98"
+              >
+                <span className="tracking-wider uppercase">INVITE PINGPLEX</span>
+                <ChevronRight className="w-4 h-4 stroke-[3]" />
+              </a>
+            </div>
+          </div>
+
+          {/* Re-check Bar */}
+          <div className="flex items-center gap-4 pt-4">
+            <button
+              onClick={() => fetchGuildData()}
+              className="px-4 py-2 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-zinc-300 hover:text-white text-xs font-semibold flex items-center gap-2 transition cursor-pointer"
+            >
+              <RotateCcw className="w-3.5 h-3.5" />
+              <span>Re-check Server Connection</span>
+            </button>
+            <Link
+              href="/dashboard"
+              className="px-4 py-2 rounded-xl text-zinc-500 hover:text-zinc-300 text-xs font-semibold transition"
+            >
+              Cancel &amp; Select Another Server
+            </Link>
+          </div>
+        </div>
+      </main>
+    );
+  }
+
+  // ─── ERROR FALLBACK: GUILD DATA NOT LOADED ─────────────────────────────────
+  if (!guild) {
+    return (
+      <main className="min-h-screen bg-[#090a0f] text-zinc-100 flex flex-col items-center justify-center p-6 font-sans">
+        <div className="max-w-md w-full p-8 rounded-2xl bg-[#0d0f15] border border-red-500/30 text-center space-y-4">
+          <AlertCircle className="w-12 h-12 text-red-400 mx-auto" />
+          <h2 className="text-xl font-bold text-white uppercase">Server Sync Issue</h2>
+          <p className="text-xs text-zinc-400">{fetchError || "Could not retrieve Discord server configuration."}</p>
+          <div className="flex items-center justify-center gap-3 pt-2">
+            <button
+              onClick={() => fetchGuildData()}
+              className="px-4 py-2 rounded-xl bg-red-500/20 hover:bg-red-500/30 text-red-300 text-xs font-bold uppercase transition cursor-pointer"
+            >
+              Retry
+            </button>
+            <Link
+              href="/dashboard"
+              className="px-4 py-2 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-zinc-300 text-xs font-bold transition"
+            >
+              Return to Servers
+            </Link>
           </div>
         </div>
       </main>
@@ -1240,13 +1443,67 @@ export default function GuildDashboard({ params }: { params: Promise<{ guildId: 
             <div>
               <div className="flex items-center gap-2">
                 <span className="font-bold text-sm sm:text-base text-white truncate max-w-xs sm:max-w-sm">{guild?.name}</span>
-                <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber-500/15 text-amber-400 font-mono hidden md:inline-flex items-center gap-1.5 border border-amber-500/30 font-bold">
-                  <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
-                  LIMITED ACCESS DEMO
-                </span>
+                {isPingPlexMode ? (
+                  <span className="text-[10px] px-2 py-0.5 rounded-full bg-fuchsia-500/15 text-fuchsia-300 font-mono hidden md:inline-flex items-center gap-1.5 border border-fuchsia-500/40 font-bold">
+                    <span className="w-1.5 h-1.5 rounded-full bg-fuchsia-400 animate-pulse" />
+                    PINGPLEX STUDIO
+                  </span>
+                ) : guild?.bots?.veplexity && guild?.bots?.pingplex ? (
+                  <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 font-mono hidden md:inline-flex items-center gap-1.5 border border-emerald-500/40 font-bold">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                    DUAL ENGINE ACTIVE
+                  </span>
+                ) : (
+                  <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber-500/15 text-amber-400 font-mono hidden md:inline-flex items-center gap-1.5 border border-amber-500/30 font-bold">
+                    <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
+                    LIMITED ACCESS DEMO
+                  </span>
+                )}
               </div>
+              {isPingPlexMode && (
+                <p className="text-[10px] font-mono text-fuchsia-400/90 hidden sm:block">
+                  📡 Dedicated Social Media Alerts Engine
+                </p>
+              )}
             </div>
           </div>
+
+          {/* Dual-Engine Mode Switcher Pill */}
+          {guild?.bots?.veplexity && guild?.bots?.pingplex && (
+            <div className="hidden lg:flex items-center p-0.5 rounded-xl bg-zinc-900 border border-zinc-800 text-xs ml-2">
+              <button
+                onClick={() => {
+                  dashboardAudio.playClick();
+                  setForceBotMode("veplexity");
+                }}
+                className={`px-3 py-1 rounded-lg font-bold flex items-center gap-1.5 transition-all cursor-pointer ${
+                  !isPingPlexMode
+                    ? "bg-blue-600 text-white shadow-xs"
+                    : "text-zinc-400 hover:text-white"
+                }`}
+                title="Switch to VePlexity Bot Full Suite"
+              >
+                <Zap className="w-3.5 h-3.5" />
+                <span>VePlexity Suite</span>
+              </button>
+              <button
+                onClick={() => {
+                  dashboardAudio.playClick();
+                  setForceBotMode("pingplex");
+                  setActiveTab("notifications");
+                }}
+                className={`px-3 py-1 rounded-lg font-bold flex items-center gap-1.5 transition-all cursor-pointer ${
+                  isPingPlexMode
+                    ? "bg-fuchsia-600 text-white shadow-xs"
+                    : "text-zinc-400 hover:text-white"
+                }`}
+                title="Switch to PingPlex Creator Studio"
+              >
+                <Radio className="w-3.5 h-3.5" />
+                <span>PingPlex Studio</span>
+              </button>
+            </div>
+          )}
         </div>
 
         <div className="flex items-center gap-2 sm:gap-3">
@@ -1527,6 +1784,7 @@ export default function GuildDashboard({ params }: { params: Promise<{ guildId: 
                 ].map((item) => {
                   const Icon = item.icon;
                   const active = activeTab === item.id;
+                  const isLockedByPingPlex = isPingPlexMode && !guild?.bots?.veplexity && item.id !== "notifications" && item.id !== "perks";
                   return (
                     <button
                       key={item.id}
@@ -1537,6 +1795,8 @@ export default function GuildDashboard({ params }: { params: Promise<{ guildId: 
                       className={`w-full text-left px-3 py-2 rounded-lg text-xs font-semibold flex items-center justify-between transition-all cursor-pointer select-none group relative ${
                         active
                           ? `${item.activeBg} ${item.activeText} border ${item.activeBorder} shadow-xs`
+                          : isLockedByPingPlex
+                          ? "text-zinc-500 hover:text-zinc-300 hover:bg-zinc-800/40 border border-transparent opacity-80"
                           : "text-zinc-400 hover:text-white hover:bg-zinc-800/60 border border-transparent"
                       }`}
                     >
@@ -1544,14 +1804,25 @@ export default function GuildDashboard({ params }: { params: Promise<{ guildId: 
                         {active && (
                           <span className={`w-1 h-4 rounded-full ${item.indicator} shrink-0`} />
                         )}
-                        <Icon className={`w-4 h-4 shrink-0 transition-colors ${active ? item.activeIcon : "text-zinc-500 group-hover:text-zinc-300"}`} />
+                        <Icon className={`w-4 h-4 shrink-0 transition-colors ${
+                          active
+                            ? item.activeIcon
+                            : isLockedByPingPlex
+                            ? "text-zinc-600 group-hover:text-zinc-400"
+                            : "text-zinc-500 group-hover:text-zinc-300"
+                        }`} />
                         <span className="truncate">{item.label}</span>
                       </div>
-                      {item.tag && (
+                      {isLockedByPingPlex ? (
+                        <span className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-blue-950/40 text-blue-400 border border-blue-500/30 shrink-0 font-medium flex items-center gap-1">
+                          <Lock className="w-2.5 h-2.5" />
+                          <span>Bot</span>
+                        </span>
+                      ) : item.tag ? (
                         <span className="text-[9px] font-mono px-1.5 py-0.2 rounded bg-zinc-800 text-zinc-400 border border-zinc-700 shrink-0 font-medium">
                           {item.tag}
                         </span>
-                      )}
+                      ) : null}
                     </button>
                   );
                 })}
@@ -1626,8 +1897,51 @@ export default function GuildDashboard({ params }: { params: Promise<{ guildId: 
               config={notificationsConfig}
               onChange={setNotificationsConfig}
               onSendTest={handleSendTestNotification}
+              isPingPlexMode={isPingPlexMode}
             />
           )}
+
+          {/* ═══════════════════════════════════════════════════════════════════
+              LOCKED MODULE SCREEN FOR PINGPLEX-ONLY SERVERS
+          ═══════════════════════════════════════════════════════════════════ */}
+          {isPingPlexMode && !guild?.bots?.veplexity && activeTab !== "notifications" && activeTab !== "overview" && activeTab !== "perks" ? (
+            <div className="p-8 sm:p-12 rounded-2xl bg-[#0d0f17] border border-zinc-800 text-center space-y-6 max-w-2xl mx-auto my-12 shadow-2xl">
+              <div className="w-16 h-16 rounded-2xl bg-blue-500/10 border border-blue-500/30 mx-auto flex items-center justify-center text-blue-400 shadow-xl shadow-blue-500/10">
+                <Lock className="w-8 h-8" />
+              </div>
+              <div className="space-y-2">
+                <span className="text-[10px] font-mono px-2.5 py-1 rounded-full bg-blue-500/15 text-blue-300 border border-blue-500/30 font-bold uppercase">
+                  REQUIRES VEPLEXITY BOT ENGINE
+                </span>
+                <h2 className="text-xl sm:text-2xl font-black text-white tracking-tight">
+                  {MODULE_TITLES[activeTab]} is Managed by VePlexity Bot
+                </h2>
+                <p className="text-xs sm:text-sm text-zinc-400 leading-relaxed max-w-lg mx-auto">
+                  You are currently managing this server via the <strong>PingPlex Creator Studio</strong>. 
+                  This module requires the full <strong>VePlexity Bot</strong> engine. 
+                  Invite VePlexity Bot to unlock 24/7 Lossless Audio DJ, AutoMod Defense, XP Leveling, Welcomes, and full server automations.
+                </p>
+              </div>
+              <div className="pt-2 flex flex-col sm:flex-row items-center justify-center gap-3">
+                <a
+                  href={`/invite?guild_id=${guildId}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="py-3 px-6 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-black transition-all flex items-center gap-2 cursor-pointer shadow-lg shadow-blue-600/20 active:scale-98 uppercase"
+                >
+                  <DiscordLogo className="w-4 h-4" fill="#ffffff" />
+                  <span>Invite VePlexity Bot</span>
+                </a>
+                <button
+                  onClick={() => setActiveTab("notifications")}
+                  className="py-3 px-6 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-zinc-300 text-xs font-bold transition cursor-pointer"
+                >
+                  Return to Social Alerts Studio
+                </button>
+              </div>
+            </div>
+          ) : (
+            <>
 
           {/* ═══════════════════════════════════════════════════════════════════
               2. BOT MASTERS & MODERATOR ROLES (MEE6 STYLE - SCREENSHOT 2)
@@ -4218,6 +4532,8 @@ export default function GuildDashboard({ params }: { params: Promise<{ guildId: 
               </div>
             </div>
           )}
+            </>
+          )}
         </main>
       </div>
 
@@ -4254,5 +4570,33 @@ export default function GuildDashboard({ params }: { params: Promise<{ guildId: 
         </div>
       )}
     </div>
+  );
+}
+
+export default function GuildDashboard({ params }: { params: Promise<{ guildId: string }> }) {
+  return (
+    <Suspense
+      fallback={
+        <main className="min-h-screen bg-[#090a0f] text-white flex flex-col font-sans">
+          <header className="h-16 border-b border-zinc-800/80 bg-[#0c0d14] px-4 flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 rounded-lg bg-zinc-800 animate-pulse" />
+              <div className="w-32 h-4 rounded bg-zinc-800 animate-pulse" />
+            </div>
+            <div className="w-24 h-8 rounded-lg bg-zinc-800 animate-pulse" />
+          </header>
+          <div className="flex-1 flex overflow-hidden">
+            <aside className="w-64 border-r border-zinc-800 bg-[#0c0d14] p-4 space-y-3 hidden md:block">
+              <div className="w-full h-8 rounded-lg bg-zinc-800 animate-pulse" />
+            </aside>
+            <div className="flex-1 p-6 space-y-6 overflow-y-auto">
+              <div className="w-full h-28 rounded-2xl bg-zinc-900/80 border border-zinc-800 animate-pulse" />
+            </div>
+          </div>
+        </main>
+      }
+    >
+      <GuildDashboardInner params={params} />
+    </Suspense>
   );
 }

@@ -15,8 +15,21 @@ export async function GET(
     const data = await fetchBotApi(`/api/guilds/${guildId}`);
     return Response.json(data);
   } catch (error: any) {
-    console.error(`[Guild API] Error fetching guild ${guildId}:`, error);
-    return Response.json({ error: error.message || "Failed to load guild data" }, { status: 500 });
+    const status = error.status || 500;
+    const isNotFound =
+      status === 404 ||
+      error.message?.toLowerCase().includes("not found") ||
+      error.message?.toLowerCase().includes("neither bot");
+
+    console.error(`[Guild API] Error fetching guild ${guildId} (status ${status}):`, error.message);
+    return Response.json(
+      {
+        error: error.message || "Failed to load guild data",
+        status,
+        notInvited: isNotFound,
+      },
+      { status: isNotFound ? 404 : 500 }
+    );
   }
 }
 

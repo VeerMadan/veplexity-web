@@ -47,6 +47,7 @@ interface SocialAlertsStudioProps {
   config: NotificationsConfig;
   onChange: (updated: NotificationsConfig) => void;
   onSendTest?: (platform: string, channelId: string) => Promise<void>;
+  isPingPlexMode?: boolean;
 }
 
 type PlatformKey = "youtube" | "twitch" | "tiktok" | "twitter" | "reddit";
@@ -146,6 +147,7 @@ export function SocialAlertsStudio({
   config,
   onChange,
   onSendTest,
+  isPingPlexMode,
 }: SocialAlertsStudioProps) {
   const [activePlatform, setActivePlatform] = useState<PlatformKey>("youtube");
   const [testSending, setTestSending] = useState(false);
@@ -216,22 +218,34 @@ export function SocialAlertsStudio({
   return (
     <div className="space-y-6 w-full">
       {/* Module Master Banner */}
-      <div className="p-6 rounded-2xl pro-card flex flex-col md:flex-row items-start md:items-center justify-between gap-5 border border-zinc-800">
+      <div className={`p-6 rounded-2xl pro-card flex flex-col md:flex-row items-start md:items-center justify-between gap-5 border ${
+        isPingPlexMode ? "border-fuchsia-500/30 bg-[#0d0a14]" : "border-zinc-800"
+      }`}>
         <div className="flex items-center gap-4">
-          <div className="w-14 h-14 rounded-2xl bg-[#5865F2]/10 border border-[#5865F2]/25 flex items-center justify-center text-[#5865F2] shrink-0">
+          <div className={`w-14 h-14 rounded-2xl flex items-center justify-center shrink-0 ${
+            isPingPlexMode
+              ? "bg-fuchsia-500/10 border border-fuchsia-500/25 text-fuchsia-400"
+              : "bg-[#5865F2]/10 border border-[#5865F2]/25 text-[#5865F2]"
+          }`}>
             <Radio className="w-7 h-7" />
           </div>
           <div>
             <div className="flex items-center gap-2.5">
               <h2 className="text-lg sm:text-xl font-bold text-white tracking-tight">
-                Social Media Alerts &amp; Streams
+                {isPingPlexMode ? "PingPlex Creator Alerts Studio" : "Social Media Alerts & Streams"}
               </h2>
-              <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-[#5865F2]/10 text-[#5865F2] border border-[#5865F2]/20 font-bold">
-                PINGCORD ENGINE
+              <span className={`text-[10px] font-mono px-2 py-0.5 rounded-full font-bold ${
+                isPingPlexMode
+                  ? "bg-fuchsia-500/15 text-fuchsia-300 border border-fuchsia-500/30"
+                  : "bg-[#5865F2]/10 text-[#5865F2] border border-[#5865F2]/20"
+              }`}>
+                {isPingPlexMode ? "📡 PINGPLEX v2.0" : "PINGCORD ENGINE"}
               </span>
             </div>
             <p className="text-xs text-zinc-400 mt-1 max-w-2xl leading-relaxed">
-              Post instant notifications when channels go live or publish new videos. Supports YouTube, Twitch, TikTok, X (Twitter), and Reddit with custom roles and embeds.
+              {isPingPlexMode
+                ? "Zero-delay real-time notification engine. PingPlex monitors your creator feeds and broadcasts rich embeds to Discord channels with custom roles and zero paywalls."
+                : "Post instant notifications when channels go live or publish new videos. Supports YouTube, Twitch, TikTok, X (Twitter), and Reddit with custom roles and embeds."}
             </p>
           </div>
         </div>
