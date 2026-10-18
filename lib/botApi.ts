@@ -1,4 +1,4 @@
-const BOT_API_URL = process.env.BOT_API_URL || 'https://veplexity-bot.onrender.com';
+const BOT_API_URL = process.env.BOT_API_URL || 'http://localhost:8081';
 const BOT_API_KEY = process.env.BOT_API_KEY || 'veplexity_secret_123';
 
 export const PINGPLEX_API_URL = process.env.PINGPLEX_API_URL || 'https://pingplex.onrender.com';

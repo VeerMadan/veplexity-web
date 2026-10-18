@@ -14,7 +14,7 @@ import {
 import { TactileToggle } from "./TactileToggle";
 import { dashboardAudio } from "@/lib/dashboardAudio";
 
-export type ModuleCategory = "all" | "essentials" | "engagement" | "security" | "utilities";
+export type ModuleCategory = "all" | "essentials" | "engagement" | "security" | "social" | "utilities";
 
 export interface OverviewModuleItem {
   id: string;
@@ -25,7 +25,6 @@ export interface OverviewModuleItem {
   icon: React.ComponentType<{ className?: string }>;
   accentColor: string;
   bgColor: string;
-  badges?: string[];
   active: boolean;
   onToggle: (val: boolean) => void;
 }
@@ -45,13 +44,94 @@ interface ServerOverviewTabProps {
   modules: OverviewModuleItem[];
 }
 
-const CATEGORY_TABS: Array<{ id: ModuleCategory; label: string; countSuffix: number }> = [
-  { id: "all", label: "All Modules", countSuffix: 15 },
-  { id: "essentials", label: "Essentials", countSuffix: 3 },
-  { id: "engagement", label: "Engagement & XP", countSuffix: 6 },
-  { id: "security", label: "Security & Mod", countSuffix: 3 },
-  { id: "utilities", label: "Utilities", countSuffix: 3 },
+const CATEGORY_TABS: Array<{ id: ModuleCategory; label: string }> = [
+  { id: "all", label: "All Modules" },
+  { id: "essentials", label: "Essentials" },
+  { id: "engagement", label: "Engagement & XP" },
+  { id: "security", label: "Security & Mod" },
+  { id: "social", label: "Social Alerts" },
+  { id: "utilities", label: "Utilities" },
 ];
+
+// Specialized live preview telemetry badge for each module cartridge
+function getModulePreviewBadge(id: string) {
+  switch (id) {
+    case "notifications":
+      return (
+        <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-purple-500/15 border border-purple-500/30 text-purple-300 font-mono text-[10px] font-bold">
+          <span className="w-1.5 h-1.5 rounded-full bg-purple-400 animate-pulse" />
+          <span>YouTube • Twitch • X • TikTok Live</span>
+        </span>
+      );
+    case "music":
+      return (
+        <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-sky-500/15 border border-sky-500/30 text-sky-300 font-mono text-[10px] font-bold">
+          <span className="flex items-end gap-0.5 h-2.5">
+            <span className="w-0.5 h-2 bg-sky-400 animate-pulse" />
+            <span className="w-0.5 h-3 bg-sky-400" />
+            <span className="w-0.5 h-1.5 bg-sky-400 animate-pulse" />
+          </span>
+          <span>24/7 Lossless Stream • -14 LUFS DSP</span>
+        </span>
+      );
+    case "leveling":
+      return (
+        <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-amber-500/15 border border-amber-500/30 text-amber-300 font-mono text-[10px] font-bold">
+          <span>⭐ Rank Studio • 2x Voice XP Multiplier</span>
+        </span>
+      );
+    case "automod":
+      return (
+        <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-red-500/15 border border-red-500/30 text-red-300 font-mono text-[10px] font-bold">
+          <span>🛡️ 0-Day Anti-Raid • Link & Spam Shield</span>
+        </span>
+      );
+    case "welcome":
+      return (
+        <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-rose-500/15 border border-rose-500/30 text-rose-300 font-mono text-[10px] font-bold">
+          <span>👋 Canvas Graphic Cards • Instant Auto-Role</span>
+        </span>
+      );
+    case "reactionroles":
+      return (
+        <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-pink-500/15 border border-pink-500/30 text-pink-300 font-mono text-[10px] font-bold">
+          <span>🎭 Interactive Discord Button & Dropdown Picker</span>
+        </span>
+      );
+    case "rewards":
+      return (
+        <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-cyan-500/15 border border-cyan-500/30 text-cyan-300 font-mono text-[10px] font-bold">
+          <span>🎙️ Voice Time Farming • Activity Role Tiers</span>
+        </span>
+      );
+    case "starboard":
+      return (
+        <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-amber-500/15 border border-amber-500/30 text-amber-300 font-mono text-[10px] font-bold">
+          <span>⭐ Community Hall of Fame Pinning</span>
+        </span>
+      );
+    case "community":
+      return (
+        <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-fuchsia-500/15 border border-fuchsia-500/30 text-fuchsia-300 font-mono text-[10px] font-bold">
+          <span>🎂 Automated Birthday Shoutouts • Counting Streaks</span>
+        </span>
+      );
+    case "boosters":
+      return (
+        <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-purple-500/15 border border-purple-500/30 text-purple-300 font-mono text-[10px] font-bold">
+          <span>⚡ Automatic Server Booster Appreciation</span>
+        </span>
+      );
+    case "ai":
+      return (
+        <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-teal-500/15 border border-teal-500/30 text-teal-300 font-mono text-[10px] font-bold">
+          <span>🤖 Gemini 1.5 Flash Conversational Brain</span>
+        </span>
+      );
+    default:
+      return null;
+  }
+}
 
 export function ServerOverviewTab({
   guild,
@@ -100,31 +180,16 @@ export function ServerOverviewTab({
   return (
     <div className="space-y-6 w-full max-w-7xl mx-auto">
       {/* ─── 1. HIGH-PRECISION SERVER COMMAND DECK ─────────────────────────────── */}
-      <div 
-        className="p-5 sm:p-6 rounded-2xl border shadow-2xl relative overflow-hidden backdrop-blur-xl"
-        style={{
-          backgroundColor: "var(--card-bg, rgba(25, 28, 41, 0.7))",
-          borderColor: "var(--border-divider, rgba(255, 255, 255, 0.08))",
-        }}
-      >
+      <div className="p-5 sm:p-6 rounded-2xl bg-[#0e0817] border border-zinc-800/80 shadow-2xl relative overflow-hidden">
         {/* Luminous Mesh Backdrop */}
-        <div className="absolute top-0 right-0 w-96 h-96 bg-[radial-gradient(ellipse_at_top_right,var(--primary,rgba(189,95,255,0.18)),transparent_70%)] pointer-events-none" />
-        <div className="absolute bottom-0 left-0 w-80 h-80 bg-[radial-gradient(ellipse_at_bottom_left,var(--accent,rgba(255,221,0,0.12)),transparent_70%)] pointer-events-none" />
+        <div className="absolute top-0 right-0 w-96 h-96 bg-[radial-gradient(ellipse_at_top_right,rgba(244,63,94,0.14),transparent_70%)] pointer-events-none" />
+        <div className="absolute bottom-0 left-0 w-80 h-80 bg-[radial-gradient(ellipse_at_bottom_left,rgba(249,115,22,0.08),transparent_70%)] pointer-events-none" />
 
         <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6 relative z-10">
           <div className="flex items-center gap-5 sm:gap-6">
             {/* Holographic Server Avatar Cradle */}
-            <div 
-              className="w-18 h-18 sm:w-20 sm:h-20 rounded-2xl border-2 p-1 overflow-hidden flex items-center justify-center shrink-0 relative group shadow-lg"
-              style={{
-                backgroundColor: "rgba(12, 14, 20, 0.8)",
-                borderColor: "var(--primary, #BD5FFF)",
-              }}
-            >
-              <div 
-                className="absolute inset-0 opacity-20 animate-pulse pointer-events-none" 
-                style={{ backgroundColor: "var(--primary, #BD5FFF)" }}
-              />
+            <div className="w-18 h-18 sm:w-20 sm:h-20 rounded-2xl bg-[#190f26] border-2 border-rose-500/50 p-1 shadow-[0_0_30px_rgba(244,63,94,0.2)] overflow-hidden flex items-center justify-center shrink-0 relative group">
+              <div className="absolute inset-0 bg-rose-500/10 animate-pulse pointer-events-none" />
               {guildIconUrl ? (
                 <img
                   src={guildIconUrl}
@@ -146,9 +211,9 @@ export function ServerOverviewTab({
                 <h1 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
                   {guild?.name}
                 </h1>
-                <span className="text-[10px] font-mono px-2.5 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 font-bold flex items-center gap-1.5 shadow-xs">
-                  <span className="w-2 h-2 rounded-full bg-[#2ECC71] animate-pulse" />
-                  <span>FLEET ENGINE ONLINE</span>
+                <span className="text-[10px] font-mono px-2.5 py-0.5 rounded-full bg-gradient-to-r from-orange-500/15 to-rose-500/15 text-rose-300 border border-rose-500/40 font-black flex items-center gap-1.5 shadow-xs">
+                  <span className="w-1.5 h-1.5 rounded-full bg-rose-400 animate-pulse" />
+                  FLEET ENGINE ONLINE
                 </span>
               </div>
 
@@ -157,34 +222,27 @@ export function ServerOverviewTab({
                 <button
                   onClick={handleCopyId}
                   title="Click to copy Server ID"
-                  className="px-2.5 py-1 rounded-full bg-black/40 border border-white/10 text-zinc-400 hover:text-white font-mono text-[11px] font-semibold flex items-center gap-1.5 transition-colors cursor-pointer"
+                  className="px-2.5 py-1 rounded-full bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-white font-mono text-[11px] font-semibold flex items-center gap-1.5 transition-colors cursor-pointer"
                 >
                   <span>ID: {guild?.id}</span>
                   {copiedId ? (
-                    <Check className="w-3 h-3 text-emerald-400" />
+                    <Check className="w-3 h-3 text-rose-400" />
                   ) : (
                     <Copy className="w-3 h-3 text-zinc-500" />
                   )}
                 </button>
 
-                <span className="px-3 py-1 rounded-full bg-black/40 border border-white/10 text-zinc-300 font-medium">
+                <span className="px-3 py-1 rounded-full bg-zinc-900 border border-zinc-800 text-zinc-300 font-medium">
                   👥 {guild?.memberCount?.toLocaleString() || 0} Members
                 </span>
 
-                <span className="px-3 py-1 rounded-full bg-purple-500/15 border border-purple-500/30 text-purple-300 font-mono font-bold flex items-center gap-1.5">
-                  <CheckCircle2 className="w-3.5 h-3.5 text-purple-400" />
+                <span className="px-3 py-1 rounded-full bg-rose-950/50 border border-rose-500/30 text-rose-300 font-mono font-bold flex items-center gap-1.5">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-rose-400" />
                   <span>{activeModulesCount} of {modules.length} Armed</span>
                 </span>
 
-                <span 
-                  className="px-3 py-1 rounded-full font-mono text-[11px] font-bold border"
-                  style={{
-                    backgroundColor: "rgba(255, 221, 0, 0.12)",
-                    borderColor: "rgba(255, 221, 0, 0.4)",
-                    color: "#FFDD00",
-                  }}
-                >
-                  ⚡ VIP Perks Active
+                <span className="px-3 py-1 rounded-full bg-gradient-to-r from-orange-500/15 to-rose-500/15 border border-rose-500/40 text-rose-300 font-mono text-[11px] font-bold">
+                  💎 VIP Perks Active
                 </span>
               </div>
             </div>
@@ -193,7 +251,7 @@ export function ServerOverviewTab({
           <div className="flex items-center gap-3 self-stretch lg:self-auto justify-end">
             <Link
               href="/discord-bots"
-              className="px-4 py-2.5 rounded-xl text-xs font-bold transition flex items-center gap-2 cursor-pointer shadow-sm bg-white/10 hover:bg-white/15 border border-white/10 hover:border-white/20 text-white"
+              className="btn-secondary px-4 py-2.5 rounded-xl text-xs font-bold transition flex items-center gap-2 cursor-pointer shadow-sm hover:border-zinc-700"
             >
               <span>Switch Server</span>
               <ChevronRight className="w-4 h-4 text-zinc-400" />
@@ -220,23 +278,22 @@ export function ServerOverviewTab({
                   dashboardAudio.playClick();
                   setActiveCategory(tab.id);
                 }}
-                className={`px-4 py-2 rounded-xl text-xs font-black transition-all cursor-pointer whitespace-nowrap flex items-center gap-2 select-none border ${
+                className={`px-4 py-2 rounded-xl text-xs font-black transition-all cursor-pointer whitespace-nowrap flex items-center gap-2 select-none ${
                   isSelected
-                    ? "text-white shadow-lg"
-                    : "text-zinc-400 hover:text-white border-white/10 hover:border-white/20"
+                    ? "bg-gradient-to-r from-orange-500 via-rose-500 to-fuchsia-600 text-white shadow-md shadow-rose-500/20"
+                    : "bg-[#0e0817] text-zinc-400 hover:text-white border border-zinc-800 hover:border-zinc-700"
                 }`}
-                style={
-                  isSelected
-                    ? {
-                        background: "linear-gradient(135deg, var(--primary, #BD5FFF) 0%, #7928CA 100%)",
-                        borderColor: "var(--primary, #BD5FFF)",
-                      }
-                    : {
-                        backgroundColor: "var(--card-bg, rgba(25, 28, 41, 0.7))",
-                      }
-                }
               >
-                <span>{tab.label} ({count})</span>
+                <span>{tab.label}</span>
+                <span
+                  className={`text-[10px] font-mono px-1.5 py-0.2 rounded-full font-bold ${
+                    isSelected
+                      ? "bg-black/30 text-white"
+                      : "bg-zinc-800 text-zinc-400"
+                  }`}
+                >
+                  {count}
+                </span>
               </button>
             );
           })}
@@ -250,10 +307,7 @@ export function ServerOverviewTab({
             placeholder="Search modules..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-9 pr-8 py-2 rounded-xl border border-white/10 text-xs text-white placeholder-zinc-500 focus:outline-none transition font-medium backdrop-blur-md"
-            style={{
-              backgroundColor: "var(--card-bg, rgba(25, 28, 41, 0.7))",
-            }}
+            className="w-full pl-9 pr-8 py-2 rounded-xl bg-[#0e0817] border border-zinc-800 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-rose-500 transition font-medium"
           />
           {searchQuery && (
             <button
@@ -267,9 +321,10 @@ export function ServerOverviewTab({
       </div>
 
       {/* ─── 3. VIBRANT HIGH-TECH MODULE CARTRIDGES GRID ───────────────────────── */}
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
         {filteredModules.map((module) => {
           const Icon = module.icon;
+          const previewBadge = getModulePreviewBadge(module.id);
 
           return (
             <motion.div
@@ -279,21 +334,12 @@ export function ServerOverviewTab({
                 dashboardAudio.playClick();
                 setActiveTab(module.id);
               }}
-              className="rounded-2xl p-5 flex flex-col justify-between gap-4 group border transition-all duration-200 cursor-pointer relative overflow-hidden backdrop-blur-md hover:shadow-2xl"
-              style={{
-                backgroundColor: "var(--card-bg, rgba(25, 28, 41, 0.7))",
-                borderColor: "var(--border-divider, rgba(255, 255, 255, 0.08))",
-              }}
+              className="rounded-2xl bg-[#0e0817] p-5 flex flex-col justify-between gap-4 group border border-zinc-800/80 hover:border-rose-500/50 hover:shadow-2xl hover:shadow-rose-500/10 transition-all duration-200 cursor-pointer relative overflow-hidden"
             >
-              {/* Luminous Top Accent Glow on hover */}
-              <div 
-                className="absolute top-0 inset-x-0 h-1 opacity-0 group-hover:opacity-100 transition-opacity" 
-                style={{
-                  background: "linear-gradient(90deg, transparent, var(--primary, #BD5FFF), transparent)",
-                }}
-              />
+              {/* Luminous Top Accent Glow */}
+              <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-transparent via-rose-500/40 to-transparent group-hover:via-orange-400 transition-colors" />
 
-              {/* Top Row: Squircle Icon & Tactile Toggle */}
+              {/* Top Row: 3D Squircle Icon & Tactile Toggle */}
               <div className="flex items-start justify-between gap-4">
                 <div
                   className={`w-12 h-12 rounded-2xl flex items-center justify-center font-bold text-lg border ${module.bgColor} shadow-md shrink-0 group-hover:scale-105 transition-transform duration-200`}
@@ -313,13 +359,13 @@ export function ServerOverviewTab({
                 </div>
               </div>
 
-              {/* Middle Section: Title, Category Badge & Live Cues */}
+              {/* Middle Section: Title, Category Badge & Live Cue */}
               <div className="space-y-2 flex-1">
                 <div>
-                  <h3 className="font-black text-base text-white group-hover:text-purple-300 transition-colors tracking-tight line-clamp-1">
+                  <h3 className="font-black text-base text-white group-hover:text-rose-300 transition-colors tracking-tight line-clamp-1">
                     {module.name}
                   </h3>
-                  <span className="inline-block text-[9px] font-mono font-bold uppercase tracking-wider text-zinc-400 bg-black/40 px-2 py-0.5 rounded border border-white/10 mt-1">
+                  <span className="inline-block text-[9px] font-mono font-bold uppercase tracking-wider text-zinc-500 bg-zinc-900/90 px-2 py-0.5 rounded border border-zinc-800 mt-1">
                     {module.categoryLabel}
                   </span>
                 </div>
@@ -328,27 +374,19 @@ export function ServerOverviewTab({
                   {module.desc}
                 </p>
 
-                {/* Module Badges per 3.2 Matrix */}
-                {module.badges && module.badges.length > 0 && (
-                  <div className="flex flex-wrap gap-1.5 pt-1">
-                    {module.badges.map((badge, bIdx) => (
-                      <span
-                        key={bIdx}
-                        className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-mono font-semibold bg-white/5 border border-white/10 text-zinc-300"
-                      >
-                        <span>{badge}</span>
-                      </span>
-                    ))}
+                {previewBadge && (
+                  <div className="pt-1">
+                    {previewBadge}
                   </div>
                 )}
               </div>
 
               {/* Bottom Row: Configure Studio Button */}
-              <div className="pt-3 border-t border-white/10 flex items-center justify-between gap-2">
+              <div className="pt-3 border-t border-zinc-800/60 flex items-center justify-between gap-2">
                 <div className="flex items-center gap-1.5 text-[11px] font-mono">
                   {module.active ? (
-                    <span className="flex items-center gap-1 text-emerald-400 font-bold">
-                      <span className="w-1.5 h-1.5 rounded-full bg-[#2ECC71] animate-pulse" />
+                    <span className="flex items-center gap-1 text-rose-400 font-bold">
+                      <span className="w-1.5 h-1.5 rounded-full bg-rose-400 animate-pulse" />
                       ACTIVE
                     </span>
                   ) : (
@@ -359,9 +397,7 @@ export function ServerOverviewTab({
                   )}
                 </div>
 
-                <span 
-                  className="py-1 px-2.5 rounded-lg bg-white/5 group-hover:bg-purple-600/40 text-zinc-300 group-hover:text-white font-black text-xs transition-colors flex items-center gap-1 border border-transparent group-hover:border-purple-500/40"
-                >
+                <span className="py-1 px-2.5 rounded-lg bg-zinc-900 group-hover:bg-gradient-to-r group-hover:from-orange-500 group-hover:to-rose-500 text-zinc-300 group-hover:text-white font-black text-xs transition-colors flex items-center gap-1">
                   <span>STUDIO</span>
                   <ChevronRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5 stroke-[3]" />
                 </span>
@@ -372,13 +408,7 @@ export function ServerOverviewTab({
       </div>
 
       {filteredModules.length === 0 && (
-        <div 
-          className="p-12 text-center rounded-2xl border text-zinc-400 space-y-2 backdrop-blur-md"
-          style={{
-            backgroundColor: "var(--card-bg, rgba(25, 28, 41, 0.7))",
-            borderColor: "var(--border-divider, rgba(255, 255, 255, 0.08))",
-          }}
-        >
+        <div className="p-12 text-center rounded-2xl bg-[#0d0f17] border border-zinc-800 text-zinc-400 space-y-2">
           <p className="font-bold text-sm text-white">No modules found</p>
           <p className="text-xs">No active bot feature matches &ldquo;{searchQuery}&rdquo;</p>
         </div>

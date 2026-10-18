@@ -182,18 +182,6 @@ class DashboardSoundEngine {
       osc.stop(now + 0.05);
     } catch {}
   }
-
-  public playSuccess() {
-    this.playSuccessChime();
-  }
-
-  public playAction() {
-    this.playClick();
-  }
-
-  public playError() {
-    this.playShieldDeflect();
-  }
 }
 
 export const dashboardAudio = new DashboardSoundEngine();

@@ -152,20 +152,14 @@ export default function DiscordBotsHubPage() {
               <div className="flex items-center justify-between text-[11px] font-mono pt-2 text-zinc-500 border-t border-zinc-800">
                 <div className="flex items-center gap-3">
                   <Link href="/discord-bot/veplexity/terms" className="hover:text-orange-400 transition-colors underline">
-                    Terms
+                    Terms of Service
                   </Link>
                   <span>•</span>
                   <Link href="/discord-bot/veplexity/privacy" className="hover:text-orange-400 transition-colors underline">
-                    Privacy
+                    Privacy Policy
                   </Link>
                 </div>
-                <Link
-                  href="/discord-bots/veplexity/dashboard"
-                  className="text-orange-400 hover:text-orange-300 font-bold flex items-center gap-1 transition"
-                >
-                  <span>Dashboard Console</span>
-                  <ChevronRight className="w-3.5 h-3.5" />
-                </Link>
+                <span className="text-zinc-500 font-medium">100+ Free Commands</span>
               </div>
             </div>
           </motion.div>
@@ -271,20 +265,14 @@ export default function DiscordBotsHubPage() {
               <div className="flex items-center justify-between text-[11px] font-mono pt-2 text-zinc-500 border-t border-zinc-800">
                 <div className="flex items-center gap-3">
                   <Link href="/discord-bot/pingplex/terms" className="hover:text-fuchsia-400 transition-colors underline">
-                    Terms
+                    Terms of Service
                   </Link>
                   <span>•</span>
                   <Link href="/discord-bot/pingplex/privacy" className="hover:text-fuchsia-400 transition-colors underline">
-                    Privacy
+                    Privacy Policy
                   </Link>
                 </div>
-                <Link
-                  href="/discord-bots/pingplex/dashboard"
-                  className="text-fuchsia-400 hover:text-fuchsia-300 font-bold flex items-center gap-1 transition"
-                >
-                  <span>Dashboard Console</span>
-                  <ChevronRight className="w-3.5 h-3.5" />
-                </Link>
+                <span className="text-zinc-500 font-medium">Free Multi-Feed</span>
               </div>
             </div>
           </motion.div>
