@@ -31,6 +31,9 @@ interface GuildDetails {
     veplexity: boolean;
     pingplex: boolean;
   };
+  bot?: {
+    joined?: boolean;
+  };
   config?: any;
 }
 

@@ -25,23 +25,27 @@ export interface FlightGuildData {
  */
 export function ServerFlightCanvas({
   rect,
+  startRect,
   guild,
   isExpanding,
 }: {
-  rect: FlightRect | null;
+  rect?: FlightRect | null;
+  startRect?: FlightRect | null;
   guild: FlightGuildData | null;
   isExpanding?: boolean;
 }) {
+  const effectiveRect = rect || startRect;
+
   return (
     <AnimatePresence>
-      {rect && guild && (
+      {effectiveRect && guild && (
         <motion.div
           key={`flight-canvas-${guild.id}`}
           initial={{
-            top: rect.top,
-            left: rect.left,
-            width: rect.width,
-            height: rect.height,
+            top: effectiveRect.top,
+            left: effectiveRect.left,
+            width: effectiveRect.width,
+            height: effectiveRect.height,
             borderRadius: 14,
             opacity: 1,
           }}

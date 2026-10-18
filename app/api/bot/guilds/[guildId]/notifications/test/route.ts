@@ -11,8 +11,9 @@ export async function POST(
   }
 
   const { guildId } = await params;
+  let body: any = null;
   try {
-    const body = await req.json();
+    body = await req.json();
     const data = await fetchBotApi(`/api/guilds/${guildId}/notifications/test`, {
       method: "POST",
       body: JSON.stringify(body),
