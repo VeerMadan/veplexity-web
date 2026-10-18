@@ -244,6 +244,66 @@ export default function VePlexitySaaSConsole({
     return allServers.find((s) => s.id === activeServerId) || allServers[0];
   }, [allServers, activeServerId]);
 
+  // Sync real guild configuration from bot backend when active server is real
+  useEffect(() => {
+    if (activeServer?.isReal && activeServerId && !activeServerId.startsWith("demo-")) {
+      fetch(`/api/bot/guilds/${activeServerId}`)
+        .then((res) => (res.ok ? res.json() : Promise.reject()))
+        .then((data) => {
+          if (data?.config) {
+            const cfg = data.config;
+            if (cfg.autoMod) {
+              setAutoModFilters({
+                antiInvite: !!cfg.autoMod.antiInvite,
+                antiSpam: !!cfg.autoMod.antiSpam,
+                antiGhostPing: !!cfg.autoMod.antiGhostPing,
+                antiBadWords: !!cfg.autoMod.antiBadWords,
+                antiCaps: !!cfg.autoMod.antiCaps,
+              });
+            }
+            if (cfg.music) {
+              if (typeof cfg.music.defaultVolume === "number") setVolume(cfg.music.defaultVolume);
+              if (typeof cfg.music.stay247 === "boolean") setStay247(cfg.music.stay247);
+            }
+            setModuleStates((prev) => ({
+              ...prev,
+              welcome: !!cfg.welcome?.enabled,
+              leveling: !!cfg.leveling?.enabled,
+              boosters: !!cfg.boosters?.enabled,
+              chatbot: !!cfg.chatbot?.enabled,
+              starboard: !!cfg.starboard?.channelId,
+              tempvc: !!cfg.tempVc?.hubChannelId,
+              automod: !!(cfg.autoMod?.antiInvite || cfg.autoMod?.antiSpam || cfg.autoMod?.antiBadWords),
+              music: true,
+            }));
+          }
+        })
+        .catch(() => {});
+    }
+  }, [activeServerId, activeServer?.isReal]);
+
+  // Sync live moderation cases from bot backend
+  useEffect(() => {
+    if (authStatus === "authenticated") {
+      fetch("/api/moderation/cases")
+        .then((res) => (res.ok ? res.json() : Promise.reject()))
+        .then((data) => {
+          if (Array.isArray(data.cases) && data.cases.length > 0) {
+            const formatted = data.cases.slice(0, 10).map((c: any) => ({
+              id: `#${c.id || c.caseId || "101"}`,
+              action: (c.action || "Warn").charAt(0).toUpperCase() + (c.action || "Warn").slice(1),
+              target: c.user || c.userId || "Unknown User",
+              mod: c.moderator || c.moderatorId || "AutoMod Shield",
+              reason: c.reason || "Manual server action",
+              time: c.createdAt ? new Date(c.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : "Recently",
+            }));
+            setModCases(formatted);
+          }
+        })
+        .catch(() => {});
+    }
+  }, [authStatus, activeTab]);
+
   const handleCopyUpi = () => {
     navigator.clipboard.writeText("madan.45@superyes");
     setCopiedUpi(true);
@@ -263,7 +323,7 @@ export default function VePlexitySaaSConsole({
     setSavingConfig(true);
     dashboardAudio.playClick();
 
-    // If real server and authenticated, attempt backend API save
+    // If real server and authenticated, perform live backend API save
     if (activeServer.isReal && activeServer.id) {
       try {
         const res = await fetch(`/api/guilds/${activeServer.id}/config`, {
@@ -272,10 +332,11 @@ export default function VePlexitySaaSConsole({
           body: JSON.stringify({
             guildId: activeServer.id,
             autoMod: {
-              enabled: true,
               antiInvite: autoModFilters.antiInvite,
               antiSpam: autoModFilters.antiSpam,
+              antiGhostPing: autoModFilters.antiGhostPing,
               antiBadWords: autoModFilters.antiBadWords,
+              antiCaps: autoModFilters.antiCaps,
             },
             music: {
               stay247,
@@ -293,7 +354,7 @@ export default function VePlexitySaaSConsole({
       } catch {}
     }
 
-    // Default simulation save
+    // Resilient simulated save for demo & offline mode
     setTimeout(() => {
       setSavingConfig(false);
       setHasUnsavedChanges(false);
@@ -523,6 +584,23 @@ export default function VePlexitySaaSConsole({
 
         {/* Sidebar Footer: Active Server Switcher & Support Creator */}
         <div className="p-4 border-t space-y-3" style={{ borderColor: currentTheme.border }}>
+          {/* Quick Return to Website & Directory */}
+          <div className="flex items-center justify-between pb-1">
+            <Link
+              href="/discord-bot/veplexity"
+              className="text-[11px] font-mono text-zinc-400 hover:text-white flex items-center gap-1.5 transition"
+            >
+              <ArrowLeft size={13} />
+              <span>Bot Overview</span>
+            </Link>
+            <Link
+              href="/discord-bot"
+              className="text-[11px] font-mono text-purple-400 hover:text-purple-300 transition"
+            >
+              All Bots ↗
+            </Link>
+          </div>
+
           {/* Active Server Switcher */}
           <div>
             <div className="flex items-center justify-between mb-1.5">
@@ -1279,6 +1357,18 @@ export default function VePlexitySaaSConsole({
                         if (!quickActionUserId) {
                           showToast("Please enter a Target User ID", "error");
                           return;
+                        }
+                        if (activeServer.isReal && activeServer.id) {
+                          fetch("/api/moderation/action", {
+                            method: "POST",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify({
+                              guildId: activeServer.id,
+                              userId: quickActionUserId,
+                              action: btn.action.toLowerCase(),
+                              reason: quickActionReason || "Manual action via VePlexity Console",
+                            }),
+                          }).catch(() => {});
                         }
                         const newCase = {
                           id: `#${105 + modCases.length}`,

@@ -1,14 +1,21 @@
-import { auth } from "@/auth";
+import { validateUserGuildAccess } from "@/lib/guildAuth";
 import { fetchBotApi } from "@/lib/botApi";
 
 export async function POST(req: Request) {
-  const session = await auth();
-  if (!session) {
-    return Response.json({ error: "Unauthorized" }, { status: 401 });
-  }
-
   try {
     const body = await req.json();
+    const guildId = body?.guildId;
+
+    if (!guildId) {
+      return Response.json({ error: "Missing required guildId parameter" }, { status: 400 });
+    }
+
+    // Enforce server-side authorization check
+    const authResult = await validateUserGuildAccess(guildId);
+    if (!authResult.authorized) {
+      return Response.json({ error: authResult.error }, { status: authResult.status });
+    }
+
     const data = await fetchBotApi(`/api/moderation/action`, {
       method: "POST",
       body: JSON.stringify(body),

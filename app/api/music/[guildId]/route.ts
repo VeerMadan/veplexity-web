@@ -1,16 +1,18 @@
-import { auth } from "@/auth";
+import { validateUserGuildAccess } from "@/lib/guildAuth";
 import { fetchBotApi } from "@/lib/botApi";
 
 export async function GET(
   req: Request,
   { params }: { params: Promise<{ guildId: string }> }
 ) {
-  const session = await auth();
-  if (!session) {
-    return Response.json({ error: "Unauthorized" }, { status: 401 });
+  const { guildId } = await params;
+
+  // Enforce server-side authorization
+  const authResult = await validateUserGuildAccess(guildId);
+  if (!authResult.authorized) {
+    return Response.json({ error: authResult.error }, { status: authResult.status });
   }
 
-  const { guildId } = await params;
   try {
     const data = await fetchBotApi(`/api/music/${guildId}`);
     return Response.json(data);
