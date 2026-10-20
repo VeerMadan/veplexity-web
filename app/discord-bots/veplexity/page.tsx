@@ -75,23 +75,104 @@ export default function VePlexityBotLandingPage() {
       }
     },
     {
-      name: ".purge",
-      category: "prefix",
-      syntax: ".purge <amount>",
-      userCommand: ".purge 25",
-      description: "Instant rapid-fire message purge with dual-engine runner and 5-second auto-clearing feedback embed.",
-      badge: "Dual-Engine",
+      name: "/247",
+      category: "music",
+      syntax: "/247 [enabled: True/False]",
+      userCommand: "/247 enabled: True",
+      description: "Locks the bot in your voice channel 24/7 so it never disconnects even when idle or queue finishes.",
+      badge: "24/7 Voice Lock",
+      botResponse: {
+        embedTitle: "🔒 24/7 Voice Persistence: Activated",
+        embedColor: "#f97316",
+        embedDesc: "VePlexity is now **permanently bound** to **🔊 #music-lounge**.\n\nThe bot persists in this voice channel indefinitely—zero auto-disconnect when the queue finishes or when members disconnect.",
+        fields: [
+          { name: "Bound Channel", value: "🔊 music-lounge", inline: true },
+          { name: "Audio Stream", value: "48kHz VOIP Master", inline: true },
+          { name: "Persistence", value: "Cloud DB Saved", inline: true }
+        ],
+        footer: "VePlexity Voice Engine • Fast Aliases: .247, .24-7",
+        buttons: ["Disable 24/7 🔓", "Voice Telemetry 📊"]
+      }
+    },
+    {
+      name: "/connect",
+      category: "music",
+      syntax: "/connect",
+      userCommand: "/connect",
+      description: "Instantly summons the bot to your current voice channel without needing an immediate track search query.",
+      badge: "Instant Summon",
+      botResponse: {
+        embedTitle: "🔊 Connected to Voice Channel",
+        embedColor: "#06b6d4",
+        embedDesc: "Successfully joined **🔊 Study & Beats**.\nVoice socket initialized and awaiting your tracks, radio streams, or sound effects.",
+        fields: [
+          { name: "Connected Channel", value: "🔊 Study & Beats", inline: true },
+          { name: "Audio Bitrate", value: "384 kbps Ultra", inline: true },
+          { name: "Status", value: "Standby (0 tracks)", inline: true }
+        ],
+        footer: "VePlexity VOIP Engine • Fast Aliases: .connect, .join",
+        buttons: ["Play Music 🎵", "Disconnect ⏹️"]
+      }
+    },
+    {
+      name: "/purge",
+      category: "moderation",
+      syntax: "/purge [amount: 1-1000] [all: true] [bots: true] [user: @member]",
+      userCommand: "/purge amount: 500",
+      description: "High-speed ephemeral message sweeper supporting up to 1,000 messages with 1-click 14-day nuke channel fallback.",
+      badge: "Up to 1000 Msgs",
       permissions: "Manage Messages",
       botResponse: {
         embedTitle: "🛡️ Channel Purge Completed",
         embedColor: "#f43f5e",
-        embedDesc: "Successfully wiped **25 messages** from this channel.\n\n*This audit alert will automatically delete itself in 5 seconds to keep your chat clean.*",
+        embedDesc: "Successfully swept and deleted **500 messages** from this channel.\n\n*Discord API Note: Bulk delete for messages older than 14 days is restricted by Discord. Click below to safely clone and wipe 100% of channel history.*",
         fields: [
-          { name: "Moderator", value: "<@Veer>", inline: true },
-          { name: "Channel", value: "#general-chat", inline: true },
-          { name: "Filter", value: "All Messages", inline: true }
+          { name: "Wiped Messages", value: "500", inline: true },
+          { name: "Deferral Mode", value: "Ephemeral Private", inline: true },
+          { name: "Audit Modlog", value: "Case #492 Logged", inline: true }
         ],
-        footer: "VePlexity Defense Matrix • Instant Execution"
+        footer: "VePlexity Defense Matrix • Fast Alias: .clear all",
+        buttons: ["💣 Wipe 100% of Messages (Nuke Channel)"]
+      }
+    },
+    {
+      name: "/donate",
+      category: "prefix",
+      syntax: "/donate",
+      userCommand: "/donate",
+      description: "Direct developer support featuring instant zero-fee UPI ID (India) and Buy Me a Coffee (Worldwide).",
+      badge: "Instant UPI & BMC",
+      botResponse: {
+        embedTitle: "💖 Support Developer Veer Madan",
+        embedColor: "#f59e0b",
+        embedDesc: "Support the independent engineering, 24/7 cloud hosting, and continuous feature updates of VePlexity Network!\n\n🇮🇳 **India Instant UPI (Zero Fees):** `madan.45@superyes`\n🌍 **Worldwide:** [Buy Me a Coffee](https://www.buymeacoffee.com/veplexity1)",
+        albumArt: "https://api.qrserver.com/v1/create-qr-code/?size=260x260&data=upi%3A%2F%2Fpay%3Fpa%3Dmadan.45%40superyes%26pn%3DVeer%2520Madan%26cu%3DINR",
+        fields: [
+          { name: "UPI VPA (India)", value: "madan.45@superyes", inline: true },
+          { name: "Global Platform", value: "Buy Me a Coffee", inline: true },
+          { name: "VIP Discord Role", value: "Supporter Badge", inline: true }
+        ],
+        footer: "VePlexity Network • Fast Aliases: .donate, .upi",
+        buttons: ["☕ Buy Me a Coffee", "📋 Copy UPI ID"]
+      }
+    },
+    {
+      name: "/action",
+      category: "xp",
+      syntax: "/action <type: 14 choices> [user: @member]",
+      userCommand: "/action type: hug user: @Veer",
+      description: "Consolidated 14-in-1 anime expressive reaction system (hug, kiss, pat, slap, cuddle, bonk, etc.).",
+      badge: "14 Reactions",
+      botResponse: {
+        embedTitle: "✨ Warm Community Hug",
+        embedColor: "#d946ef",
+        embedDesc: "**Veer** gave **@Alex** a big warm wholesome hug! 🤗\n\n*Social interaction registered with +5 Server Affinity XP.*",
+        fields: [
+          { name: "Reaction Type", value: "Wholesome Hug", inline: true },
+          { name: "Consolidated Menu", value: "14 Anime Actions", inline: true }
+        ],
+        footer: "VePlexity Social Matrix • Fast Aliases: .hug, .kiss, .slap, .pat",
+        buttons: ["Hug Back 🤗", "View Leaderboard 🏆"]
       }
     },
     {
@@ -294,7 +375,7 @@ export default function VePlexityBotLandingPage() {
 
               {/* Subtitle Overview */}
               <p className="text-base sm:text-lg text-zinc-300 leading-relaxed font-normal">
-                Enterprise community infrastructure engineered with zero compromises. Features hardware-accelerated <strong>24/7 Lossless VOIP Audio</strong>, <strong>Proactive AutoMod Shield</strong>, <strong>Google Gemini Multi-Modal AI</strong>, <strong>XP Leveling &amp; Rank Cards</strong>, and <strong>Dynamic Temp Voice Hubs</strong> — 100% free with no paywalls.
+                Enterprise community infrastructure engineered with zero compromises. Loaded with <strong>96 production slash commands</strong>, hardware-accelerated <strong>24/7 Lossless VOIP Audio</strong>, <strong>Proactive AutoMod Shield</strong>, <strong>Google Gemini Multi-Modal AI</strong>, <strong>XP Leveling &amp; Rank Cards</strong>, and <strong>Dynamic Temp Voice Hubs</strong> — 100% free with no paywalls.
               </p>
 
               {/* Capability Badges */}

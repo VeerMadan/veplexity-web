@@ -12,7 +12,7 @@ export default function FeaturedBot() {
     {
       icon: Terminal,
       title: "Dual-Engine Hybrid Runner",
-      desc: "Instant execution via prefixes (., ?, !) and modern slash commands (/). Features rapid-typing aliases (.purge, .afk, .bal, .p) and 5s auto-cleaning embeds.",
+      desc: "Instant execution via prefixes (., ?, !) and modern slash commands (/). Features rapid-typing aliases (.purge, .afk, .connect, .247, .p) and 5s auto-cleaning embeds.",
       color: "from-orange-500 to-amber-500",
     },
     {
@@ -71,7 +71,7 @@ export default function FeaturedBot() {
 
           <p className="text-zinc-400 text-base sm:text-xl max-w-3xl leading-relaxed font-normal">
             Engineered specifically to replace 10 different single-purpose bots with one sleek, unified commercial architecture. 
-            Loaded with 100 production commands, a hybrid dual-engine runner (Slash &amp; Instant Prefixes <code className="text-orange-400 font-mono">.</code> / <code className="text-pink-400 font-mono">?</code> / <code className="text-fuchsia-400 font-mono">!</code>), lossless audio pipelines, and full cloud control.
+            Loaded with 96 production slash commands, a hybrid dual-engine runner (Slash &amp; Instant Prefixes <code className="text-orange-400 font-mono">.</code> / <code className="text-pink-400 font-mono">?</code> / <code className="text-fuchsia-400 font-mono">!</code>), lossless audio pipelines, and full cloud control.
           </p>
         </div>
 
@@ -121,7 +121,7 @@ export default function FeaturedBot() {
                 Upgrade Your Discord Server Today
               </h3>
               <p className="text-zinc-400 text-sm sm:text-base leading-relaxed">
-                Connect your server directly through our Next.js cloud dashboard or invite the bot with zero configuration required. All 100 commands are live 24/7 with dual-engine Slash &amp; Prefix support.
+                Connect your server directly through our Next.js cloud dashboard or invite the bot with zero configuration required. All 96 slash commands are live 24/7 with dual-engine Slash &amp; Prefix support.
               </p>
             </div>
 

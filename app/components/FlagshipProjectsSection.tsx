@@ -35,7 +35,7 @@ const FLAGSHIP_PROJECTS: ProjectData[] = [
   {
     id: "veplexity-bot",
     name: "VePlexity Bot",
-    tagline: "Commercial Cloud Discord Infrastructure • 100 Command Dual-Engine System",
+    tagline: "Commercial Cloud Discord Infrastructure • 96 Command Dual-Engine System",
     badge: "CLOUD NODE 24/7",
     status: "OPERATIONAL",
     category: "Cloud Daemon & Community Automation",
@@ -46,15 +46,15 @@ const FLAGSHIP_PROJECTS: ProjectData[] = [
     heroImage: "/vp-no-bg.png",
     previewType: "architecture",
     description:
-      "Enterprise-grade Discord daemon built on Node.js and Discord.js v14, deployed 24/7 on Render cloud web services with MongoDB Atlas cluster persistence. Featuring 100 slash commands, a hybrid prefix runner (., ?, !), lossless FFmpeg music streaming, Gemini AI chat intelligence, 100% free moderation, and native Buy Me a Coffee VIP role synchronization.",
+      "Enterprise-grade Discord daemon built on Node.js and Discord.js v14, deployed 24/7 on Render cloud web services with MongoDB Atlas cluster persistence. Featuring 96 slash commands, a hybrid prefix runner (., ?, !), lossless FFmpeg music streaming, Gemini AI chat intelligence, 100% free moderation, and native Buy Me a Coffee VIP role synchronization.",
     architectureHighlights: [
-      "100 modular slash commands plus instant hybrid prefix runner (., ?, !) with rapid-typing shortcuts (.purge, .afk, .bal).",
+      "96 modular slash commands plus instant hybrid prefix runner (., ?, !) with rapid-typing shortcuts (.purge, .afk, .connect, .247, .donate).",
       "Lossless audio playback pipeline streaming high-fidelity audio directly into voice channels with 24/7 retention.",
       "MongoDB Atlas cluster with connection pooling and automated session recovery (<15ms query time).",
       "Dual-engine mock interaction adapter with auto-clearing moderation feedback embeds (5s auto-delete)."
     ],
     specs: [
-      { label: "Command Engine", value: "100 Slash + Prefixes (., ?, !)" },
+      { label: "Command Engine", value: "96 Slash + Prefixes (., ?, !)" },
       { label: "Cloud Node", value: "Render Web Service (24/7)" },
       { label: "Database", value: "MongoDB Atlas Cluster" },
       { label: "Intelligence", value: "Google Gemini AI API" },

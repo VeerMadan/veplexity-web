@@ -159,7 +159,7 @@ export default function DiscordBotsHubPage() {
                     Privacy Policy
                   </Link>
                 </div>
-                <span className="text-zinc-500 font-medium">100+ Free Commands</span>
+                <span className="text-zinc-500 font-medium">96 Production Commands</span>
               </div>
             </div>
           </motion.div>

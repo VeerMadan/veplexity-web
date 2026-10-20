@@ -11,7 +11,7 @@ export default function SupportHub() {
     "🎙️ Name recognized in official stream credits & broadcast archives",
     "🚀 Helps cover 24/7 cloud servers (Render, MongoDB Atlas, Vercel)",
     "🎥 Funds hardware R&D for the VePlexity Cam studio rig",
-    "💖 Keeps all 97+ Discord bot commands 100% free for everyone",
+    "💖 Keeps all 96 Discord bot commands 100% free for everyone",
   ];
 
   return (
