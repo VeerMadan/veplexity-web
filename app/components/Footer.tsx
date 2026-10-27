@@ -37,6 +37,12 @@ export default function Footer() {
           <Link href="/discord-bot" className="text-sm font-bold uppercase tracking-widest text-zinc-400 hover:text-rose-400 transition-colors">
             Discord Bots
           </Link>
+          <Link href="/architecture" className="text-sm font-bold uppercase tracking-widest text-zinc-400 hover:text-orange-400 transition-colors">
+            Architecture
+          </Link>
+          <Link href="/status" className="text-sm font-bold uppercase tracking-widest text-zinc-400 hover:text-emerald-400 transition-colors">
+            Status
+          </Link>
           <Link href="/discord-bot/veplexity" className="text-sm font-bold uppercase tracking-widest text-zinc-400 hover:text-orange-400 transition-colors">
             VePlexity Bot
           </Link>

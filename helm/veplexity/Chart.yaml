@@ -1,0 +1,9 @@
+apiVersion: v2
+name: veplexity-cloud
+description: Production Kubernetes Helm Chart for VePlexity Bot Microservices & Web Tier
+type: application
+version: 1.0.0
+appVersion: "2.0.0"
+maintainers:
+  - name: Veer Madan
+    email: contact@veplexity.dev

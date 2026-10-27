@@ -14,6 +14,8 @@ export default function Navbar() {
   const navLinks = [
     { name: "Overview", href: "/" },
     { name: "Discord Bots", href: "/discord-bot" },
+    { name: "Architecture", href: "/architecture" },
+    { name: "Status", href: "/status" },
     { name: "Newswire", href: "/news-wire" },
     { name: "Support", href: "/support" },
   ];
